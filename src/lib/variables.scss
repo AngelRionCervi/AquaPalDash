@@ -1,0 +1,8 @@
+@import "$lib/themes/light.scss";
+
+:root {
+  --primary: #{$primary-light};
+  --secondary: #{$secondary-light};
+  --primary-success: #{$primary-success-light};
+  --primary-error: #{$primary-error-light};
+}
