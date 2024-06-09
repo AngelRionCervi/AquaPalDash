@@ -7,7 +7,6 @@
 
 <div class="main-layout">
 	<Header />
-	hello from layout
 	{@render children()}
 	<Footer />
 </div>
@@ -16,11 +15,11 @@
 	@import '$lib/variables.scss';
 
 	.main-layout {
-		width: 100vw;
-		height: 100vh;
+		width: calc(100vw - 128px);
+		height: calc(100vh - 128px);
 		display: flex;
 		flex-direction: column;
 		justify-content: space-between;
-		background-color: var(--primary);
+		margin: 64px;
 	}
 </style>
