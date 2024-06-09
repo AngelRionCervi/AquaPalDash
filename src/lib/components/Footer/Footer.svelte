@@ -7,7 +7,7 @@
 <div class="footer">
   <div class="left-container">
     <span>slots 4/5</span>
-    <PrimaryButton label="Add new device" icon="plus" />
+    <PrimaryButton label="Add new device" icon="add" />
     <PrimaryButton label="Remove devices" icon="bin" />
   </div>
   <div class="right-container">
