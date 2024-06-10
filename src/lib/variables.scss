@@ -2,11 +2,14 @@
 
 :root {
   --primary: #{$primary-light};
+  --primary-darker: #{$primary-darker-light};
   --secondary: #{$secondary-light};
   --primary-success: #{$primary-success-light};
   --primary-error: #{$primary-error-light};
   --secondary-success: #{$secondary-success-light};
   --secondary-error: #{$secondary-error-light};
+  --primary-success-darker: #{$primary-success-darker-light};
+  --primary-error-darker: #{$primary-error-darker-light};
   --primary-text: #{$primary-text};
   --secondary-text: #{$secondary-text};
   --font-XL: 48px;

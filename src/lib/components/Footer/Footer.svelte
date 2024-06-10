@@ -1,6 +1,6 @@
 <script lang="ts">
 	import PrimaryButton from "$lib/components/Buttons/PrimaryButton.svelte";
-
+  import UndoIcon from "$lib/icons/undo.svg?component";
 
 </script>
 
@@ -13,7 +13,10 @@
   <div class="right-container">
     <div class="unsaved-infos">
       <p>Some modifications are <span class="unsaved-label">unsaved</span></p>
-      <button class="button-undo">icon - Undo all modifications</button>
+      <button class="button-undo"> 
+        <svelte:component this={UndoIcon} width={16} height={16} fill="var(--secondary)" />
+        <span>Undo all modifications</span>
+      </button>
     </div>
     <PrimaryButton type="green" label="Save and restart" />
   </div>
@@ -55,6 +58,12 @@
   }
 
   .button-undo {
-    text-decoration: underline;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    span {
+      text-decoration: underline;
+    }
   }
 </style>

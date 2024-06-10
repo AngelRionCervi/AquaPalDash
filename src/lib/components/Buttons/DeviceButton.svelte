@@ -29,8 +29,12 @@
     height: 88px;
 		border-radius: 999px;
     background-color: var(--primary-success);
-		border: 3px solid var(--secondary-success);
+		border: 2px solid var(--secondary-success);
     margin-bottom: 2px;
+
+    &:hover {
+      background-color: var(--primary-success-darker);
+    }
 	}
 
 	.button-label {

@@ -1,30 +1,13 @@
 <script lang="ts">
-	import AddIcon from '$lib/icons/add.svg?component';
-	import BinIcon from '$lib/icons/bin.svg?component';
-	import type { Component, ComponentType } from 'svelte';
-
 	interface Props {
 		label: string;
 		type?: 'default' | 'green';
-		icon?: 'add' | 'bin';
 	}
 
-	type IconMapType = {
-		[key in Exclude<Props['icon'], undefined>]: ComponentType;
-	};
-
-	const iconMap: IconMapType = {
-		add: AddIcon,
-		bin: BinIcon
-	};
-
-	const { label, type = 'default', icon = undefined }: Props = $props();
+	const { label, type = 'default' }: Props = $props();
 </script>
 
 <button class="primary-button button-{type}">
-	{#if icon}
-		<svelte:component this={iconMap[icon]} width={24} height={24} fill="var(--secondary);" />
-	{/if}
 	<span>{label}</span>
 </button>
 
@@ -33,9 +16,9 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 8px;
 		border-radius: var(--radius-S);
-		padding: 10px 16px;
+		padding: 2px 8px;
+    font-size: var(--font-S);
 	}
 
 	.button-default {

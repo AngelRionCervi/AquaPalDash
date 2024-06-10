@@ -24,6 +24,10 @@
 		border-radius: 999px;
     background-color: var(--primary-success);
 		border: 5px solid var(--secondary-success);
+
+    &:hover {
+      background-color: var(--primary-success-darker);
+    }
 	}
 
 	.button-label {
