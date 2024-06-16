@@ -1,4 +1,4 @@
-import type { Route } from "./types";
+import type { Route } from "../components/Navigation/types";
 
 const menuRoutes: Array<Route> = [
 	{ "id": "home", "label": "Home", "route": "/home" },

@@ -8,7 +8,7 @@
 
 <style lang="scss">
   .devices-main-container {
-    padding: 64px 0;
+    padding: 32px 64px;
     display: flex;
   }
 </style>

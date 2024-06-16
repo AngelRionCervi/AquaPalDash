@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/stores';
-	import menuRoutes from './navMenu';
+	import menuRoutes from '$lib/data/navMenu';
 
 	function checkCurrentRoute(route: string) {
 		return $page.url.pathname === route;
