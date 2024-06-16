@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { Setting } from './type';
-	import CaretIcon from '$lib/icons/caret.svg?component';
+	import Select from '$lib/components/Inputs/Select.svelte';
 
 	interface Props {
 		setting: Setting;
@@ -25,14 +25,7 @@
 			{#if type === 'text'}
 				<input class="input" type="text" value={defaultVal} />
 			{:else if type === 'select' && values?.length}
-				<div class="select-container">
-					<select {name} {id} class="select">
-						{#each values as { label, value }}
-							<option {value}>{label}</option>
-						{/each}
-					</select>
-					<CaretIcon width={32} height={32} />
-				</div>
+				<Select {id} {name} {values} />
 			{/if}
 		</div>
 	</div>
@@ -52,11 +45,11 @@
 		padding: 16px 0;
 	}
 
-  .left-container {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-  }
+	.left-container {
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+	}
 
 	.separator {
 		width: 100%;
@@ -64,26 +57,13 @@
 		background-color: var(--secondary);
 	}
 
-  .select-container {
-    width: 150px;
-    display: flex;
-    justify-content: space-between;
-    border: 1px solid transparent;
-    border-radius: var(--radius-S);
-    padding: 0 4px;
-
-    &:focus-within {
-      border: 1px solid var(--secondary);
-    }
-  }
-
 	.select,
 	.input {
 		font-size: var(--font-M);
 	}
 
 	.input {
-    width: 250px;
+		width: 250px;
 		border: 1px solid var(--secondary);
 		padding: 2px;
 		border-radius: var(--radius-S);

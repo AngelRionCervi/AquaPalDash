@@ -1,5 +1,5 @@
 * {
-  box-sizing: border-box;
+	box-sizing: border-box;
 }
 
 html {
@@ -15,52 +15,49 @@ body {
 	font-weight: 400;
 	font-style: normal;
 	font-size: var(--font-M);
-  background-color: var(--primary);
-  color: var(--primary-text);
+	background-color: var(--primary);
+	color: var(--primary-text);
 }
 
 a {
-  text-decoration: none;
-  color: var(--primary-text);
+	text-decoration: none;
+	color: var(--primary-text);
 }
 
 li {
-  list-style-type: none;
+	list-style-type: none;
 }
 
 ul {
-  padding: 0;
-  margin: 0;
+	padding: 0;
+	margin: 0;
 }
 
 button {
-  margin: 0;
+	margin: 0;
 	padding: 0;
-  cursor: pointer;
-  background-color: transparent;
-  border: none;
-  font-size: var(--font-M);
+	cursor: pointer;
+	background-color: transparent;
+	border: none;
+	font-size: var(--font-M);
 }
 
 p {
-  margin: 0;
+	margin: 0;
 }
 
-select, input {
-  box-sizing: border-box;
-  -webkit-appearance: none;
-  appearance: none;
-  background-color: transparent;
-  border: none;
-  padding: 0 1em 0 0;
-  margin: 0;
-  width: 100%;
-  font-family: inherit;
-  font-size: inherit;
-  cursor: inherit;
-  line-height: inherit;
-}
-
-select {
-  outline: none;
+select,
+input {
+	box-sizing: border-box;
+	-webkit-appearance: none;
+	appearance: none;
+	background-color: transparent;
+	border: none;
+	padding: 0 1em 0 0;
+	margin: 0;
+	width: 100%;
+	font-family: inherit;
+	font-size: inherit;
+	cursor: inherit;
+	line-height: inherit;
 }

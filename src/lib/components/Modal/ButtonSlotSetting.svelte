@@ -1,11 +1,121 @@
 <script lang="ts">
+	import Select from '$lib/components/Inputs/Select.svelte';
+	import PrimaryButton from '$lib/components/Buttons/PrimaryButton.svelte';
+	import modalStore from '$lib/stores/modalStore.svelte';
 
+	const { toggle } = modalStore;
+
+	const id = `select_button_slot`;
+
+	function onValidate() {
+		console.log('validate button slot');
+		toggle();
+	}
 </script>
 
 <div class="button-slot-setting-container">
-  button slot setting
+	<div class="top">
+		<div class="inner-container left">
+			<table class="buttons-table">
+				<tbody>
+					<tr>
+						<th>button 1:</th>
+						<td>light</td>
+					</tr>
+					<tr>
+						<th>button 2:</th>
+						<td>co2</td>
+					</tr>
+					<tr>
+						<th>button 3:</th>
+						<td>filter</td>
+					</tr>
+					<tr>
+						<th>button 4:</th>
+						<td class="id-free">free</td>
+					</tr>
+					<tr>
+						<th>button 5:</th>
+						<td class="id-free">free</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		<div class="separator"></div>
+		<div class="inner-container right">
+			<Select
+				{id}
+				name={id}
+				label="New button:"
+				values={[
+					{ label: '1', value: 1 },
+					{ label: '2', value: 2 },
+					{ label: '3', value: 3 },
+					{ label: '4', value: 4 },
+					{ label: '5', value: 5 }
+				]}
+				hasBorders
+			/>
+		</div>
+	</div>
+  <div class="change-recap">
+  -->display change recap if binding on already bound button
+  </div>
+	<div class="bottom">
+		<PrimaryButton onclick={onValidate} label="OK" />
+	</div>
 </div>
 
 <style lang="scss">
+	.button-slot-setting-container {
+		display: flex;
+		flex-direction: column;
+		gap: 24px;
+		justify-content: space-between;
+	}
 
+	.top {
+		display: flex;
+		justify-content: space-between;
+	}
+
+	.bottom {
+		display: flex;
+		justify-content: center;
+	}
+
+	.separator {
+		width: 1px;
+		height: auto;
+		background-color: var(--secondary);
+	}
+
+	.inner-container {
+		padding: 16px;
+		display: flex;
+		justify-content: center;
+		width: 100%;
+		flex-direction: column;
+		align-items: center;
+
+		&.left {
+			gap: 4px;
+
+			p {
+				width: 150px;
+			}
+		}
+
+		&.right {
+			margin-top: -32px;
+		}
+	}
+
+	.buttons-table {
+		text-align: left;
+	}
+
+	.id-free {
+		color: var(--primary-success);
+	}
 </style>

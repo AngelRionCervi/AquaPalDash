@@ -5,6 +5,7 @@
 
 	interface Props {
 		label: string;
+    onclick: () => void;
 		type?: 'default' | 'green';
 		icon?: 'add' | 'bin';
 	}
@@ -18,10 +19,10 @@
 		bin: BinIcon
 	};
 
-	const { label, type = 'default', icon = undefined }: Props = $props();
+	const { label, onclick, type = 'default', icon = undefined }: Props = $props();
 </script>
 
-<button class="primary-button button-{type}">
+<button class="primary-button button-{type}" {onclick}>
 	{#if icon}
 		<svelte:component this={iconMap[icon]} width={24} height={24} fill="var(--secondary);" />
 	{/if}
