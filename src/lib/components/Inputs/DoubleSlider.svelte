@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { minutesToHours } from '$lib/helpers/utils';
 	import { onMount } from 'svelte';
 
 	type InputOrNull = HTMLInputElement | null;
@@ -29,6 +30,8 @@
 
 		currentMinRange = minRange;
 		currentMaxRange = maxRange;
+
+    console.log(minutesToHours(currentMinRange), minutesToHours(currentMaxRange));
 	}
 
 	onMount(() => {
