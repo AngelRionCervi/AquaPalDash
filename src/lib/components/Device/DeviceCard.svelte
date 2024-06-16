@@ -2,11 +2,22 @@
 	import CloudIcon from '$lib/icons/cloud.svg?component';
 	import NoCloudIcon from '$lib/icons/no-cloud.svg?component';
 	import SmallButton from '$lib/components/Buttons/SmallButton.svelte';
+	import modalStore from '$lib/stores/modalStore.svelte';
 
 	const cloudIconMap = {
 		online: CloudIcon,
 		offline: NoCloudIcon
 	};
+
+	function onScheduleEdit() {
+		console.log('schedule edit');
+		modalStore.toggle('Schedule Edit', 'scheduleSetting');
+	}
+
+	function onButtonSlotEdit() {
+		console.log('button slot edit');
+		modalStore.toggle('Button Edit', 'buttonSlotSetting');
+	}
 </script>
 
 <div class="card-container">
@@ -28,13 +39,13 @@
 				<span class="setting-title">Button slot:</span>
 				<div class="current-value-slot"><span>1</span></div>
 			</div>
-			<SmallButton label="Edit" />
+			<SmallButton onclick={onButtonSlotEdit} label="Edit" />
 		</div>
 		<div class="semi-separator"></div>
 		<div class="editable-row-schedule">
 			<span class="setting-title">Schedule:</span>
 			<div class="current-value-schedule"><span>On between 88h30 and 88h30</span></div>
-			<SmallButton label="Edit" />
+			<SmallButton onclick={onScheduleEdit} label="Edit" />
 		</div>
 	</div>
 </div>
@@ -84,10 +95,10 @@
 		flex-direction: column;
 		align-items: flex-end;
 	}
-  
-  .setting-title {
-    font-size: var(--font-M);
-  }
+
+	.setting-title {
+		font-size: var(--font-M);
+	}
 
 	.pill {
 		border-radius: 15px;

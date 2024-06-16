@@ -1,13 +1,14 @@
 <script lang="ts">
 	interface Props {
 		label: string;
+    onclick: () => void;
 		type?: 'default' | 'green';
 	}
 
-	const { label, type = 'default' }: Props = $props();
+	const { label, onclick, type = 'default' }: Props = $props();
 </script>
 
-<button class="primary-button button-{type}">
+<button class="primary-button button-{type}" {onclick}>
 	<span>{label}</span>
 </button>
 

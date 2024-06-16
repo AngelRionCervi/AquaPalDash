@@ -3,6 +3,7 @@
 	import menuRoutes from '$lib/data/navMenu';
 	import Footer from '$lib/components/Footer/Footer.svelte';
 	import Header from '$lib/components/Header/Header.svelte';
+	import Modal from '$lib/components/Modal/Modal.svelte';
 
 	const { children } = $props();
 
@@ -12,6 +13,7 @@
 </script>
 
 <div class="main-layout">
+  <Modal />
 	<Header />
 	<span class="page-title">{getCurrentPageTitle()}</span>
 	{@render children()}
