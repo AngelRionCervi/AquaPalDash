@@ -8,6 +8,7 @@
 
 <style lang="scss">
 	.monitoring-main-container {
-		display: flex;
+    display: flex;
+    height: 100%;
 	}
 </style>

@@ -14,8 +14,9 @@
 <style lang="scss">
 	.settings-main-container {
 		justify-content: center;
-		align-items: center;
 		display: flex;
+    margin: 0 64px;
+    height: 100%;
 	}
 
 	.settings-container {

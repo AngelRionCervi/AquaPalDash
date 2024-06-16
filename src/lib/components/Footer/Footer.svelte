@@ -28,7 +28,7 @@
     justify-content: space-between;
     align-items: center;
     border-top: 1px solid var(--secondary);
-    width: calc(100vw - 128px);
+    width: 100vw;
     margin-left: -64px;
     padding: 32px 64px;
     gap: 32px;

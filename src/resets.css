@@ -1,3 +1,7 @@
+* {
+  box-sizing: border-box;
+}
+
 html {
 	margin: 0;
 	padding: 0;
@@ -42,8 +46,9 @@ p {
   margin: 0;
 }
 
-select {
+select, input {
   box-sizing: border-box;
+  -webkit-appearance: none;
   appearance: none;
   background-color: transparent;
   border: none;
@@ -54,4 +59,8 @@ select {
   font-size: inherit;
   cursor: inherit;
   line-height: inherit;
+}
+
+select {
+  outline: none;
 }

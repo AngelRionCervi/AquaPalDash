@@ -45,7 +45,7 @@
 		background-color: var(--primary);
 		border-radius: var(--radius-XL);
 		padding: 24px;
-		min-width: 200px;
+		width: 250px;
 	}
 
 	.device-name-container {
