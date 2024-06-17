@@ -18,23 +18,23 @@
 		<div class="inner-container left">
 			<table class="buttons-table">
 				<tbody>
-					<tr>
+					<tr class="table-row">
 						<th>button 1:</th>
 						<td>light</td>
 					</tr>
-					<tr>
+					<tr class="table-row">
 						<th>button 2:</th>
 						<td>co2</td>
 					</tr>
-					<tr>
+					<tr class="table-row">
 						<th>button 3:</th>
 						<td>filter</td>
 					</tr>
-					<tr>
+					<tr class="table-row">
 						<th>button 4:</th>
 						<td class="id-free">free</td>
 					</tr>
-					<tr>
+					<tr class="table-row">
 						<th>button 5:</th>
 						<td class="id-free">free</td>
 					</tr>
@@ -70,7 +70,7 @@
 	.button-slot-setting-container {
 		display: flex;
 		flex-direction: column;
-		gap: 24px;
+		gap: 36px;
 		justify-content: space-between;
 	}
 
@@ -118,4 +118,14 @@
 	.id-free {
 		color: var(--primary-success);
 	}
+
+  .table-row {
+    display: flex;
+    justify-content: flex-start;
+    gap: 8px;
+
+    th, td {
+      width: 90px;
+    }
+  }
 </style>

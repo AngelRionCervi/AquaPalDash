@@ -1,6 +1,4 @@
 <script lang="ts">
-	import CaretIcon from '$lib/icons/caret.svg?component';
-
 	interface Props {
 		name: string;
 		id: string;

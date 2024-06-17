@@ -1,37 +1,45 @@
 <script lang="ts">
-	import { minutesToHours } from '$lib/helpers/utils';
 	import { onMount } from 'svelte';
+
+	interface Props {
+		step: number;
+		min: number;
+		max: number;
+		defaultMin: number;
+		defaultMax: number;
+		onchange: ({ min, max }: { min: number; max: number }) => void;
+	}
 
 	type InputOrNull = HTMLInputElement | null;
 
-	const RANGE_MAX = 1440;
+	const { step, min, max, defaultMin, defaultMax, onchange }: Props = $props();
 
-	let minGap = 15;
 	let selectedRangeEl: HTMLSpanElement;
-	let rangeInputEls: [InputOrNull, InputOrNull] = [null, null];
-
-	let currentMinRange: number;
-	let currentMaxRange: number;
+	let rangeInputMinEl: InputOrNull;
+	let rangeInputMaxEl: InputOrNull;
+	let currentMinRange: number = $state(defaultMin);
+	let currentMaxRange: number = $state(defaultMax);
 
 	function onRangeInput() {
-		if (!rangeInputEls[0] || !rangeInputEls[1]) return;
+		if (!rangeInputMinEl || !rangeInputMaxEl) return;
 
-		let minRange = parseInt(rangeInputEls[0].value);
-		let maxRange = parseInt(rangeInputEls[1].value);
-		if (maxRange - minRange <= minGap && currentMinRange && currentMaxRange) {
-			rangeInputEls[0].value = currentMinRange.toString();
-			rangeInputEls[1].value = currentMaxRange.toString();
+		let minRange = parseInt(rangeInputMinEl.value);
+		let maxRange = parseInt(rangeInputMaxEl.value);
+		if (maxRange - minRange <= step && currentMinRange && currentMaxRange) {
+			rangeInputMinEl.value = currentMinRange.toString();
+			rangeInputMaxEl.value = currentMaxRange.toString();
+
 			return;
 		} else {
-			console.log(parseInt(rangeInputEls[0].max), parseInt(rangeInputEls[1].max));
-			selectedRangeEl.style.left = (minRange / RANGE_MAX) * 100 + '%';
-			selectedRangeEl.style.right = 100 - (maxRange / RANGE_MAX) * 100 + '%';
+			console.log(parseInt(rangeInputMinEl.max), parseInt(rangeInputMaxEl.max));
+			selectedRangeEl.style.left = (minRange / max) * 100 + '%';
+			selectedRangeEl.style.right = 100 - (maxRange / max) * 100 + '%';
 		}
 
 		currentMinRange = minRange;
 		currentMaxRange = maxRange;
 
-    console.log(minutesToHours(currentMinRange), minutesToHours(currentMaxRange));
+		onchange({ min: currentMinRange, max: currentMaxRange });
 	}
 
 	onMount(() => {
@@ -45,24 +53,24 @@
 	</div>
 	<div class="range-input">
 		<input
-			bind:this={rangeInputEls[0]}
+			bind:this={rangeInputMinEl}
 			oninput={onRangeInput}
 			type="range"
 			class="min"
-			min="0"
-			max="1440"
-			value="300"
-			step="15"
+			{min}
+			{max}
+			value={defaultMin}
+			{step}
 		/>
 		<input
-			bind:this={rangeInputEls[1]}
+			bind:this={rangeInputMaxEl}
 			oninput={onRangeInput}
 			type="range"
 			class="max"
-			min="0"
-			max="1440"
-			value="400"
-			step="15"
+			{min}
+			{max}
+			value={defaultMax}
+			{step}
 		/>
 	</div>
 </div>
@@ -90,7 +98,7 @@
 			position: absolute;
 			width: 100%;
 			height: 4px;
-      top: -4px;
+			top: -4px;
 			background: none;
 			pointer-events: none;
 			-webkit-appearance: none;

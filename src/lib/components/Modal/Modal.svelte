@@ -62,7 +62,7 @@
 	}
 
 	.modal-container {
-		width: 800px;
+		min-width: 600px;
 		z-index: 11;
 		border: 1px solid var(--secondary);
 		border-radius: var(--radius-XL);
