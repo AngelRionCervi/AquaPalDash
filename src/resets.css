@@ -61,3 +61,55 @@ input {
 	cursor: inherit;
 	line-height: inherit;
 }
+
+fieldset {
+	border: none;
+}
+
+input[type='text'], input[type='number'] {
+	border: 1px solid var(--secondary);
+	padding: 2px;
+	border-radius: var(--radius-S);
+	background-color: var(--primary-lighter);
+}
+
+input[type='checkbox'] {
+	width: 20px;
+	height: 20px;
+	padding: 0;
+	border-radius: var(--radius-S);
+	background-color: var(--primary-lighter);
+	border: 1px solid var(--secondary);
+	cursor: pointer;
+	display: grid;
+	place-content: center;
+}
+
+input[type='checkbox']::before {
+	content: '';
+	width: 18px;
+	height: 18px;
+	background-color: var(--secondary);
+	transform: scale(0);
+	transition: 0.1s transform linear;
+	border-radius: var(--radius-S);
+}
+
+input[type='checkbox']:checked::before {
+	transform: scale(0.75);
+}
+
+input[type='radio'] {
+	border-radius: 999px;
+	width: 16px;
+	height: 16px;
+	margin: 0;
+	padding: 0;
+	border: 2px solid var(--secondary-success);
+	transition: 0.1s all linear;
+	cursor: pointer;
+}
+
+input[type='radio']:checked {
+	border: 6px solid var(--secondary);
+}

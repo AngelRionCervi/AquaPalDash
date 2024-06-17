@@ -30,6 +30,5 @@
   .error-message {
     color: var(--primary-error);
     font-size: var(--font-M);
-    font-weight: bold;
   }
 </style>

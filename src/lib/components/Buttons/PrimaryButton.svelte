@@ -6,7 +6,7 @@
 	interface Props {
 		label: string;
     onclick: () => void;
-		type?: 'default' | 'green';
+		type?: 'default' | 'green' | 'red';
 		icon?: 'add' | 'bin';
 	}
 
@@ -56,6 +56,16 @@
 
     &:hover {
       background-color: var(--primary-success-darker);
+    }
+	}
+
+  .button-red {
+		border: 1px solid var(--secondary-error);
+		background-color: var(--primary-error);
+		color: var(--primary);
+
+    &:hover {
+      background-color: var(--primary-error-darker);
     }
 	}
 </style>

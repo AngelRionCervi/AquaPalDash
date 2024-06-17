@@ -1,1 +1,1 @@
-export type ModalTypes = 'scheduleSetting' | 'buttonSlotSetting';
+export type ModalTypes = 'scheduleSetting' | 'buttonSlotSetting' | 'removeDevices' | 'addDevice';

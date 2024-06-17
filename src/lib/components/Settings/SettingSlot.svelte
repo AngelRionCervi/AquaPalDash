@@ -23,7 +23,7 @@
 		</div>
 		<div class="right-container">
 			{#if type === 'text'}
-				<input class="input" type="text" value={defaultVal} />
+				<input class="input" type="text" {id} value={defaultVal} maxlength="30" />
 			{:else if type === 'select' && values?.length}
 				<Select {id} {name} {values} />
 			{/if}
@@ -64,9 +64,5 @@
 
 	.input {
 		width: 250px;
-		border: 1px solid var(--secondary);
-		padding: 2px;
-		border-radius: var(--radius-S);
-		background-color: var(--primary-lighter);
 	}
 </style>

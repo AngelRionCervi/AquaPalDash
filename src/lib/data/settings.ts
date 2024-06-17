@@ -2,7 +2,7 @@ import type { Setting } from '$lib/components/Settings/type';
 
 const settings: Array<Setting> = [
 	{
-		name: 'Auto schedule on after:',
+		name: 'Schedule auto turn on after:',
 		defaultVal: 30,
 		type: 'select',
 		values: [

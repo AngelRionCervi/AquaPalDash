@@ -44,7 +44,7 @@
 		<div class="separator"></div>
 		<div class="radio-schedule-type">
 			<fieldset class="radio-schedule-type-inner">
-				{#each scheduleRadioTypes as { id, name, value, checked, label }}
+				{#each scheduleRadioTypes as { id, name, value, checked, label } (id)}
 					<div class="input-row">
 						<input
 							class="radio-input"
@@ -65,7 +65,7 @@
 		<div class="slider-container">
 			<DoubleRangeSlider {min} {max} {step} {defaultMin} {defaultMax} onchange={onRangeChange} />
 			<div class="new-schedule">
-				<p>On between {minTimeString} and {maxTimeString}.</p>
+				<p>On between <b>{minTimeString}</b> and <b>{maxTimeString}</b>.</p>
 			</div>
 		</div>
 	{/if}
@@ -99,7 +99,6 @@
 	}
 
 	.radio-schedule-type-inner {
-		border: none;
 		display: flex;
 		flex-direction: column;
 		gap: 8px;
@@ -145,23 +144,14 @@
 	}
 
 	.radio-input {
-		border-radius: 999px;
-		width: 16px;
-		height: 16px;
-		margin: 0;
-		padding: 0;
-
-		border: 2px solid var(--secondary-success);
-		transition: 0.1s all linear;
-
 		&:checked {
 			border: 6px solid var(--primary-success);
 		}
 	}
 
-  .bottom {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
+	.bottom {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+	}
 </style>

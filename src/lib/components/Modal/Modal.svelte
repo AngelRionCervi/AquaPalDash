@@ -5,6 +5,8 @@
 	import CloseIcon from '$lib/icons/close.svg?component';
 	import ScheduleSetting from './ScheduleSetting.svelte';
 	import ButtonSlotSetting from './ButtonSlotSetting.svelte';
+	import RemoveDevices from './RemoveDevices.svelte';
+	import AddDevice from './AddDevice.svelte';
 
 	type ModalChildMap = {
 		[key in ModalTypes]: Component;
@@ -14,7 +16,9 @@
 
 	const modalChildMap: ModalChildMap = {
 		scheduleSetting: ScheduleSetting,
-		buttonSlotSetting: ButtonSlotSetting
+		buttonSlotSetting: ButtonSlotSetting,
+		removeDevices: RemoveDevices,
+		addDevice: AddDevice,
 	};
 
 	$effect(() => {
