@@ -3,17 +3,19 @@ import type { ModalTypes } from '$lib/components/Modal/types';
 interface ModalState {
 	isOpen: boolean;
 	title: string;
-  type: ModalTypes | null;
+	type: ModalTypes | null;
 }
 
 interface ModalStore {
 	isOpen: boolean;
-  title: string;
-  type: ModalTypes | null;
+	title: string;
+	type: ModalTypes | null;
 	toggle: (title?: string, type?: ModalTypes) => void;
 }
 
-let modalState = $state<ModalState>({ isOpen: false, title: '', type: null });
+const defaultModalStoreValue = { isOpen: false, title: '', type: null };
+
+let modalState = $state<ModalState>(defaultModalStoreValue);
 
 const modalStore: ModalStore = {
 	get isOpen() {
@@ -22,7 +24,7 @@ const modalStore: ModalStore = {
 	get title() {
 		return modalState.title;
 	},
-  get type() {
+	get type() {
 		return modalState.type;
 	},
 	toggle(title?: string, type?: ModalTypes) {
@@ -30,10 +32,10 @@ const modalStore: ModalStore = {
 		if (title) {
 			modalState.title = title;
 		}
-    if (type) {
+		if (type) {
 			modalState.type = type;
 		}
-	},
+	}
 };
 
 export default modalStore;

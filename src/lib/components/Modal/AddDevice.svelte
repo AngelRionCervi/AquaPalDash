@@ -41,7 +41,7 @@
 		</fieldset>
 	</div>
 	<div class="bottom">
-		<PrimaryButton label="OK" onclick={onAddDevice} />
+		<PrimaryButton label="Add device" onclick={onAddDevice} />
 	</div>
 </div>
 

@@ -1,0 +1,40 @@
+{
+	"devices": [
+		{
+			"name": "light",
+			"ip": "192.168.1.14",
+			"button": 0,
+			"schedule": [720, 1140]
+		},
+		{
+			"name": "co2",
+			"ip": "192.168.1.15",
+			"button": 1,
+			"schedule": [690, 1110]
+		},
+		{
+			"name": "skimmer",
+			"ip": "192.168.1.13",
+			"button": 3,
+			"schedule": false
+		},
+		{
+			"name": "filter",
+			"ip": "192.168.1.16",
+			"button": 2,
+			"schedule": true
+		}
+	],
+	"secrets": {
+		"wifiSSID": "LA6EC",
+		"wifiPass": "getRektm8",
+		"serverPass": "1234"
+	},
+	"settings": {
+		"autoSchedulesOnAfter": 30,
+		"prefetchHistorical": false,
+		"theme": "light",
+		"tempUnit": "celsius",
+		"aquariumLabel": "Main aquarium"
+	}
+}

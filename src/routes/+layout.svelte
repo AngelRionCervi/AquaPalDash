@@ -4,12 +4,19 @@
 	import Footer from '$lib/components/Footer/Footer.svelte';
 	import Header from '$lib/components/Header/Header.svelte';
 	import Modal from '$lib/components/Modal/Modal.svelte';
+	import { onMount } from 'svelte';
+	import ConfigApi from '$lib/api/configApi';
 
 	const { children } = $props();
 
 	function getCurrentPageTitle() {
 		return menuRoutes.find(({ route }) => route === $page.url.pathname)?.label || 'Home';
 	}
+
+  onMount(async () => {
+    await ConfigApi.login("1234");
+    await ConfigApi.fetchConfig();
+  })
 </script>
 
 <div class="main-layout">
