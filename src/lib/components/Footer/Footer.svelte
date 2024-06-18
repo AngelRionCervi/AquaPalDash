@@ -2,6 +2,7 @@
 	import PrimaryButton from '$lib/components/Buttons/PrimaryButton.svelte';
 	import UndoIcon from '$lib/icons/undo.svg?component';
 	import modalStore from '$lib/stores/modalStore.svelte';
+	import configStore from '$lib/stores/configStore.svelte';
 
 	const { toggle } = modalStore;
 
@@ -25,13 +26,15 @@
 		<PrimaryButton label="Remove devices" icon="bin" onclick={onRemoveDevices} />
 	</div>
 	<div class="right-container">
-		<div class="unsaved-infos">
-			<p>Some modifications are <span class="unsaved-label">unsaved</span></p>
-			<button class="button-undo">
-				<svelte:component this={UndoIcon} width={14} height={14} fill="var(--secondary)" />
-				<span>Undo all modifications</span>
-			</button>
-		</div>
+		{#if !configStore.isSync}
+			<div class="unsaved-infos">
+				<p>Some modifications are <span class="unsaved-label">unsaved</span></p>
+				<button class="button-undo">
+					<svelte:component this={UndoIcon} width={14} height={14} fill="var(--secondary)" />
+					<span>Undo all modifications</span>
+				</button>
+			</div>
+		{/if}
 		<PrimaryButton type="green" label="Save and restart" onclick={onSaveAndRestart} />
 	</div>
 </div>
@@ -77,7 +80,7 @@
 		gap: 6px;
 
 		span {
-      font-size: var(--font-S);
+			font-size: var(--font-S);
 			text-decoration: underline;
 		}
 	}

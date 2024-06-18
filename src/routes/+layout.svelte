@@ -5,7 +5,7 @@
 	import Header from '$lib/components/Header/Header.svelte';
 	import Modal from '$lib/components/Modal/Modal.svelte';
 	import { onMount } from 'svelte';
-	import ConfigApi from '$lib/api/configApi';
+	import configStore from '$lib/stores/configStore.svelte';
 
 	const { children } = $props();
 
@@ -13,9 +13,8 @@
 		return menuRoutes.find(({ route }) => route === $page.url.pathname)?.label || 'Home';
 	}
 
-  onMount(async () => {
-    await ConfigApi.login("1234");
-    await ConfigApi.fetchConfig();
+  onMount(() => {
+    configStore.fetchAndSetConfig();
   })
 </script>
 

@@ -15,7 +15,7 @@ interface ConfigStore {
 	config: Config | null;
 	isSync: boolean;
 	fetchAndSetConfig: () => Promise<void>;
-	updateDevice: (name: string, newDevice: Device) => void;
+	updateDevice: (name: string, partialDevice: Partial<Device>) => void;
 	updateSetting: (key: keyof ConfigSettings, value: any) => void;
 	updateSecret: (key: keyof ConfigSecrets, value: any) => void;
 	checkSync: () => void;
@@ -27,7 +27,7 @@ const callStates: ConfigState['callStates'] = $state({
 	updateSetting: {},
 	updateSecret: {}
 });
-const defaultConfigStoreValue = { config: null, isSync: false, callStates };
+const defaultConfigStoreValue: ConfigState = { config: null, isSync: false, callStates };
 
 let configState = $state<ConfigState>(defaultConfigStoreValue);
 let previousConfig: Config | null = null;
@@ -41,17 +41,19 @@ const configStore: ConfigStore = {
 	},
 	async fetchAndSetConfig() {
 		try {
+			callStates.fetchAndSetConfig.isLoading = true;
 			const newConfig = await ConfigApi.fetchConfig();
 			configState.config = newConfig;
 			previousConfig = Object.freeze(structuredClone(newConfig));
-			callStates.fetchAndSetConfig.isLoading = true;
+			configState.isSync = true;
+			console.log('config', newConfig);
 		} catch (err) {
 			callStates.fetchAndSetConfig.error = err.message;
 		} finally {
 			callStates.fetchAndSetConfig.isLoading = false;
 		}
 	},
-	updateDevice(name: string, newDevice: Device) {
+	updateDevice(name: string, partialDevice: Partial<Device>) {
 		if (!configState.config) return;
 
 		const devices = configState.config.devices;
@@ -64,9 +66,11 @@ const configStore: ConfigStore = {
 			return;
 		}
 
+		const newDevice = { ...configState.config.devices[corDeviceIndex], ...partialDevice };
+
 		if (!checkDeviceIntegrity(newDevice)) {
 			const message = 'Wrong device payload.';
-			console.error(message);
+			console.error(message, newDevice);
 			callStates.updateDevice.error = message;
 			return;
 		}
@@ -131,7 +135,7 @@ const configStore: ConfigStore = {
 				prevDevice.schedule[1] !== newDevice.schedule[1]
 			) {
 				newSync = false;
-        break;
+				break;
 			}
 		}
 
@@ -184,16 +188,21 @@ function validateNumber(nbr: number) {
 	return typeof nbr === 'number';
 }
 
-function validateSchedule(schedule: ScheduleRange) {
-	return validateNumber(schedule[0]) && validateNumber(schedule[1]);
+function validateSchedule(schedule: ScheduleRange | boolean) {
+	if (Array.isArray(schedule)) {
+		return validateNumber(schedule[0]) && validateNumber(schedule[1]);
+	} else {
+		return typeof schedule === 'boolean';
+	}
 }
 
 function checkDeviceIntegrity(device: Device) {
-	if (
-		!validateTruthyString(device.name) ||
-		validateTruthyString(device.ip) ||
-		validateNumber(device.button) ||
+	return (
+		validateTruthyString(device.name) &&
+		validateTruthyString(device.ip) &&
+		validateNumber(device.button) &&
 		validateSchedule(device.schedule)
-	)
-		return false;
+	);
 }
+
+export default configStore;

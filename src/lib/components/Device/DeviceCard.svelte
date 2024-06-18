@@ -4,6 +4,12 @@
 	import SmallButton from '$lib/components/Buttons/SmallButton.svelte';
 	import modalStore from '$lib/stores/modalStore.svelte';
 
+	interface Props {
+		device: Device;
+	}
+
+	const { device }: Props = $props();
+
 	const cloudIconMap = {
 		online: CloudIcon,
 		offline: NoCloudIcon
@@ -11,18 +17,18 @@
 
 	function onScheduleEdit() {
 		console.log('schedule edit');
-		modalStore.toggle('Schedule Edit', 'scheduleSetting');
+		modalStore.toggle('Schedule Edit', 'scheduleSetting', { name: device.name });
 	}
 
 	function onButtonSlotEdit() {
 		console.log('button slot edit');
-		modalStore.toggle('Button Edit', 'buttonSlotSetting');
+		modalStore.toggle('Button Edit', 'buttonSlotSetting', { name: device.name });
 	}
 </script>
 
 <div class="card-container">
 	<div class="device-name-container">
-		<span class="device-name">Filter</span>
+		<span class="device-name">{device.name}</span>
 	</div>
 	<div class="separator"></div>
 	<div class="device-status">
@@ -37,14 +43,14 @@
 		<div class="editable-row-slot">
 			<div class="row-values-slot">
 				<span class="setting-title">Button slot:</span>
-				<div class="current-value-slot"><span>1</span></div>
+				<div class="current-value-slot"><span>{device.button}</span></div>
 			</div>
 			<SmallButton onclick={onButtonSlotEdit} label="Edit" />
 		</div>
 		<div class="semi-separator"></div>
 		<div class="editable-row-schedule">
 			<span class="setting-title">Schedule:</span>
-			<div class="current-value-schedule"><span>On between 88h30 and 88h30</span></div>
+			<div class="current-value-schedule"><span>{device.schedule}</span></div>
 			<SmallButton onclick={onScheduleEdit} label="Edit" />
 		</div>
 	</div>
@@ -57,6 +63,7 @@
 		border-radius: var(--radius-XL);
 		padding: 24px;
 		width: 250px;
+    height: 400px;
 	}
 
 	.device-name-container {

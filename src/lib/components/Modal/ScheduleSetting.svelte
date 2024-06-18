@@ -3,10 +3,17 @@
 	import { minsToReadableTime } from '$lib/helpers/utils';
 	import PrimaryButton from '$lib/components/Buttons/PrimaryButton.svelte';
 	import modalStore from '$lib/stores/modalStore.svelte';
+	import configStore from '$lib/stores/configStore.svelte';
 	import scheduleRadioTypes from '$lib/data/scheduleSettings';
 	import ErrorField from './ErrorField.svelte';
 
+	interface Props {
+		name?: string;
+	}
+
+	const { name = '' }: Props = $props();
 	const { toggle } = modalStore;
+	const { updateDevice } = configStore;
 
 	const min = 0;
 	const max = 24 * 60; // 1 day in minutes
@@ -17,14 +24,19 @@
 	let scheduleType = $state('alwaysOn');
 	let minTimeString = $state('');
 	let maxTimeString = $state('');
+	let minMins = 0;
+	let maxMins = 0;
 
 	function onRangeChange({ min, max }: { min: number; max: number }) {
 		minTimeString = minsToReadableTime(min);
 		maxTimeString = minsToReadableTime(max);
+		minMins = min;
+		maxMins = max;
 	}
 
 	function onValidate() {
-		console.log('validate schedule');
+		console.log('validate schedule', name, { schedule: [minMins, maxMins] });
+		updateDevice(name, { schedule: [minMins, maxMins] });
 		toggle();
 	}
 

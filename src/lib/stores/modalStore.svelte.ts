@@ -4,16 +4,18 @@ interface ModalState {
 	isOpen: boolean;
 	title: string;
 	type: ModalTypes | null;
+  childProps?: Record<string, any>
 }
 
 interface ModalStore {
 	isOpen: boolean;
 	title: string;
 	type: ModalTypes | null;
-	toggle: (title?: string, type?: ModalTypes) => void;
+  childProps?: Record<string, any>
+	toggle: (title?: string, type?: ModalTypes, childProps?: ModalState["childProps"]) => void;
 }
 
-const defaultModalStoreValue = { isOpen: false, title: '', type: null };
+const defaultModalStoreValue: ModalState = { isOpen: false, title: '', type: null };
 
 let modalState = $state<ModalState>(defaultModalStoreValue);
 
@@ -27,7 +29,10 @@ const modalStore: ModalStore = {
 	get type() {
 		return modalState.type;
 	},
-	toggle(title?: string, type?: ModalTypes) {
+  get childProps() {
+    return modalState.childProps;
+  },
+	toggle(title?: string, type?: ModalTypes, childProps?: ModalState["childProps"]) {
 		modalState.isOpen = !modalState.isOpen;
 		if (title) {
 			modalState.title = title;
@@ -35,6 +40,9 @@ const modalStore: ModalStore = {
 		if (type) {
 			modalState.type = type;
 		}
+    if (childProps) {
+      modalState.childProps = childProps;
+    }
 	}
 };
 

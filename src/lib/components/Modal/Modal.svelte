@@ -34,7 +34,7 @@
 		</div>
 		<div>
 			{#if modalStore.type}
-				<svelte:component this={modalChildMap[modalStore.type]} />
+				<svelte:component this={modalChildMap[modalStore.type]} {...modalStore.childProps} />
 			{/if}
 		</div>
 	</div>
