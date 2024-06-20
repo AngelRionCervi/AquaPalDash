@@ -1,16 +1,26 @@
 <script lang="ts">
 	import type { Setting } from './type';
 	import Select from '$lib/components/Inputs/Select.svelte';
+	import { convertToType } from '$lib/helpers/utils';
 
 	interface Props {
 		setting: Setting;
 		index: number;
+		currentValue: unknown;
+		onSettingChange: (settingName: keyof ConfigSettings, value: unknown) => void;
 	}
 
-	const { setting, index }: Props = $props();
-	const { name, type, defaultVal, values } = setting;
+	const { setting, index, currentValue, onSettingChange }: Props = $props();
+	const { label, name, type, defaultVal, values, valueType } = setting;
 
 	const id = `${name}_${type}`;
+
+	function onChange({ target }: Event) {
+		const value = (target as HTMLInputElement).value;
+		const typedValue = convertToType(valueType, value);
+    console.log('typedValue', typedValue)
+		onSettingChange(name, typedValue);
+	}
 </script>
 
 <div class="setting-slot-container">
@@ -19,13 +29,20 @@
 	{/if}
 	<div class="inner-container">
 		<div class="left-container">
-			<label for={id}>{name}</label>
+			<label for={id}>{label}</label>
 		</div>
 		<div class="right-container">
 			{#if type === 'text'}
-				<input class="input" type="text" {id} value={defaultVal} maxlength="30" />
+				<input
+					class="input"
+					type="text"
+					{id}
+					value={currentValue ?? defaultVal}
+					maxlength="30"
+					oninput={onChange}
+				/>
 			{:else if type === 'select' && values?.length}
-				<Select {id} {name} {values} />
+				<Select {id} {name} {values} {currentValue} onchange={onChange} />
 			{/if}
 		</div>
 	</div>

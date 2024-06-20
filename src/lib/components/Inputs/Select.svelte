@@ -2,21 +2,23 @@
 	interface Props {
 		name: string;
 		id: string;
+		currentValue: unknown;
 		values: Array<{ label: string; value: number | string | boolean }>;
+    onchange: (evt: Event) => void;
 		label?: string;
 		hasBorders?: boolean;
 	}
 
-	const { name, id, values, label = '', hasBorders = false }: Props = $props();
+	const { name, id, values, currentValue, onchange, label = '', hasBorders = false }: Props = $props();
 </script>
 
 <div class="select-container">
 	{#if label}
 		<label for={id}>{label}</label>
 	{/if}
-	<select {name} {id} class="select" class:borders={hasBorders}>
+	<select {name} {id} class="select" class:borders={hasBorders} {onchange}>
 		{#each values as { label, value }}
-			<option {value}>{label}</option>
+			<option selected={currentValue === value} {value}>{label}</option>
 		{/each}
 	</select>
 </div>

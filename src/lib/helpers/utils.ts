@@ -11,3 +11,17 @@ export function minsToReadableTime(mins: number) {
 
 	return `${hours.toString().padStart(2, '0')}h${minutes.toString().padStart(2, '0')}`;
 }
+
+export function convertToType(valueType: string, value: string) {
+	let typedValue: unknown = value;
+
+	if (valueType === 'string') {
+		typedValue = value.toString();
+	} else if (valueType === 'number') {
+		typedValue = parseInt(value);
+	} else if (valueType === 'boolean') {
+		typedValue = value === 'true';
+	}
+
+	return typedValue;
+}

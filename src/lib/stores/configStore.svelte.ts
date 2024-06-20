@@ -16,8 +16,8 @@ interface ConfigStore {
 	isSync: boolean;
 	fetchAndSetConfig: () => Promise<void>;
 	updateDevice: (name: string, partialDevice: Partial<Device>) => void;
-	updateSetting: (key: keyof ConfigSettings, value: any) => void;
-	updateSecret: (key: keyof ConfigSecrets, value: any) => void;
+	updateSetting: (key: keyof ConfigSettings, value: ConfigSettings[T]) => void;
+	updateSecret: (key: keyof ConfigSecrets, value: ConfigSecrets[T]) => void;
 	checkSync: () => void;
 }
 
@@ -29,7 +29,7 @@ const callStates: ConfigState['callStates'] = $state({
 });
 const defaultConfigStoreValue: ConfigState = { config: null, isSync: false, callStates };
 
-let configState = $state<ConfigState>(defaultConfigStoreValue);
+const configState = $state<ConfigState>(defaultConfigStoreValue);
 let previousConfig: Config | null = null;
 
 const configStore: ConfigStore = {
@@ -76,9 +76,9 @@ const configStore: ConfigStore = {
 		}
 
 		configState.config.devices[corDeviceIndex] = newDevice;
-		configState.isSync = false;
+		configStore.checkSync();
 	},
-	updateSetting<T extends keyof ConfigSettings>(key: T, value: any) {
+	updateSetting<T extends keyof ConfigSettings>(key: T, value: ConfigSettings[T]) {
 		if (!configState.config) return;
 
 		if (!validateKey('settings', key)) {
@@ -89,9 +89,9 @@ const configStore: ConfigStore = {
 		}
 
 		configState.config.settings[key] = value;
-		configState.isSync = false;
+		configStore.checkSync();
 	},
-	updateSecret<T extends keyof ConfigSecrets>(key: T, value: any) {
+	updateSecret<T extends keyof ConfigSecrets>(key: T, value: ConfigSecrets[T]) {
 		if (!configState.config) return;
 
 		if (!validateKey('secrets', key)) {
@@ -102,7 +102,7 @@ const configStore: ConfigStore = {
 		}
 
 		configState.config.secrets[key] = value;
-		configState.isSync = false;
+		configStore.checkSync();
 	},
 	checkSync() {
 		if (!configState.config || !previousConfig) {

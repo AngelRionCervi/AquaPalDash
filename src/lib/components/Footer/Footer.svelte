@@ -3,6 +3,7 @@
 	import UndoIcon from '$lib/icons/undo.svg?component';
 	import modalStore from '$lib/stores/modalStore.svelte';
 	import configStore from '$lib/stores/configStore.svelte';
+	import { MAX_DEVICES } from '$lib/constants';
 
 	const { toggle } = modalStore;
 
@@ -21,9 +22,19 @@
 
 <div class="footer">
 	<div class="left-container">
-		<span>slots 4/5</span>
-		<PrimaryButton label="Add new device" icon="add" onclick={onAddDevice} />
-		<PrimaryButton label="Remove devices" icon="bin" onclick={onRemoveDevices} />
+		<span>slots {configStore.config?.devices.length || '?'}/{MAX_DEVICES}</span>
+		<PrimaryButton
+			label="Add new device"
+			icon="add"
+			disabled={(configStore.config?.devices.length || MAX_DEVICES) === MAX_DEVICES}
+			onclick={onAddDevice}
+		/>
+		<PrimaryButton
+			label="Remove devices"
+			icon="bin"
+			disabled={true}
+			onclick={onRemoveDevices}
+		/>
 	</div>
 	<div class="right-container">
 		{#if !configStore.isSync}
@@ -35,7 +46,12 @@
 				</button>
 			</div>
 		{/if}
-		<PrimaryButton type="green" label="Save and restart" onclick={onSaveAndRestart} />
+		<PrimaryButton
+			type="green"
+			label="Save and restart"
+			disabled={configStore.isSync}
+			onclick={onSaveAndRestart}
+		/>
 	</div>
 </div>
 

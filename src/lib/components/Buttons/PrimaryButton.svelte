@@ -5,24 +5,25 @@
 
 	interface Props {
 		label: string;
-    onclick: () => void;
+		onclick: () => void;
 		type?: 'default' | 'green' | 'red';
 		icon?: 'add' | 'bin';
+		disabled?: boolean;
 	}
 
 	type IconMapType = {
 		[key in Exclude<Props['icon'], undefined>]: ComponentType;
 	};
 
+	const { label, onclick, type = 'default', icon = undefined, disabled = false }: Props = $props();
+
 	const iconMap: IconMapType = {
 		add: AddIcon,
 		bin: BinIcon
 	};
-
-	const { label, onclick, type = 'default', icon = undefined }: Props = $props();
 </script>
 
-<button class="primary-button button-{type}" {onclick}>
+<button class="primary-button button-{type}" class:disabled {onclick} {disabled}>
 	{#if icon}
 		<svelte:component this={iconMap[icon]} width={24} height={24} fill="var(--secondary);" />
 	{/if}
@@ -31,10 +32,10 @@
 
 <style lang="scss">
 	.primary-button {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 8px;
 		border-radius: var(--radius-S);
 		padding: 10px 16px;
 	}
@@ -44,9 +45,9 @@
 		background-color: var(--primary);
 		color: var(--secondary);
 
-    &:hover {
-      background-color: var(--primary-darker);
-    }
+		&:hover {
+			background-color: var(--primary-darker);
+		}
 	}
 
 	.button-green {
@@ -54,18 +55,37 @@
 		background-color: var(--primary-success);
 		color: var(--primary);
 
-    &:hover {
-      background-color: var(--primary-success-darker);
-    }
+		&:hover {
+			background-color: var(--primary-success-darker);
+		}
 	}
 
-  .button-red {
+	.button-red {
 		border: 1px solid var(--secondary-error);
 		background-color: var(--primary-error);
 		color: var(--primary);
 
-    &:hover {
-      background-color: var(--primary-error-darker);
-    }
+		&:hover {
+			background-color: var(--primary-error-darker);
+		}
+	}
+
+	.disabled {
+		opacity: 0.4;
+		cursor: not-allowed;
+
+		&:hover {
+			&.button-default {
+				background-color: var(--primary);
+			}
+
+			&.button-green {
+				background-color: var(--primary-success);
+			}
+
+			&.button-red {
+				background-color: var(--primary-error);
+			}
+		}
 	}
 </style>

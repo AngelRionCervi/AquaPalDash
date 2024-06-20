@@ -4,8 +4,10 @@ export interface SettingValue {
 }
 
 export interface Setting {
-	name: string;
+	label: string;
+	name: keyof ConfigSettings;
 	defaultVal: string | number | boolean;
 	type: string;
+	valueType: string;
 	values?: Array<SettingValue>;
 }

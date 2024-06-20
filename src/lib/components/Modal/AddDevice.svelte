@@ -1,11 +1,13 @@
 <script lang="ts">
 	import PrimaryButton from '$lib/components/Buttons/PrimaryButton.svelte';
+	import { MAX_DEVICES } from '$lib/constants';
 	import modalStore from '$lib/stores/modalStore.svelte';
 
 	const { toggle } = modalStore;
 
-	let name = $state();
-	let ipAddress = $state();
+	let name: string = $state('');
+	let ipAddress: string = $state('');
+	let buttonSlot: number = $state(NaN);
 
 	function onAddDevice() {
 		console.log('name ip', name, ipAddress);
@@ -36,6 +38,18 @@
 					name="ip"
 					maxlength="40"
 					bind:value={ipAddress}
+				/>
+			</div>
+			<div class="input-row">
+				<label for="button_input">Button:</label>
+				<input
+					class="text-input"
+					type="number"
+					id="button_input"
+					name="button"
+					min="1"
+					max={MAX_DEVICES}
+					bind:value={buttonSlot}
 				/>
 			</div>
 		</fieldset>

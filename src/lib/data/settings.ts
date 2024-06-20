@@ -2,9 +2,11 @@ import type { Setting } from '$lib/components/Settings/type';
 
 const settings: Array<Setting> = [
 	{
-		name: 'Schedule auto turn on after:',
+		name: 'autoSchedulesOnAfter',
+		label: 'Schedule auto turn on after:',
 		defaultVal: 30,
 		type: 'select',
+    valueType: 'number',
 		values: [
 			{ label: '5 mins', value: 5 },
 			{ label: '10 mins', value: 10 },
@@ -15,32 +17,41 @@ const settings: Array<Setting> = [
 		]
 	},
 	{
-		name: 'Theme:',
+		name: 'theme',
+		label: 'Theme:',
 		defaultVal: 'light',
 		type: 'select',
+    valueType: 'string',
 		values: [
 			{ label: 'light', value: 'light' },
 			{ label: 'dark', value: 'dark' }
 		]
 	},
 	{
-		name: 'Temperature unit:',
+		name: 'tempUnit',
+		label: 'Temperature unit:',
 		defaultVal: 'celsius',
 		type: 'select',
+    valueType: 'string',
 		values: [
 			{ label: 'celsius', value: 'celsius' },
 			{ label: 'fahrenheit', value: 'fahrenheit' }
 		]
 	},
 	{
-		name: 'Aquarium label:',
+		name: 'aquariumLabel',
+		label: 'Aquarium label:',
 		defaultVal: 'Main aquarium',
+    valueType: 'string',
 		type: 'text'
 	},
 	{
-		name: 'Prefetch historical sensors data:',
+		name: 'prefetchHistorical',
+		label: 'Prefetch historical sensors data:',
+    valueType: 'boolean',
 		defaultVal: false,
 		type: 'select',
+    valueType: 'boolean',
 		values: [
 			{ label: 'yes', value: true },
 			{ label: 'no', value: false }
