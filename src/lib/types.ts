@@ -26,3 +26,9 @@ interface Config {
 	secrets: ConfigSecrets;
 	settings: ConfigSettings;
 }
+
+interface ApiResponse {
+	status: 'error' | 'success';
+	message?: string;
+  data?: any;
+}

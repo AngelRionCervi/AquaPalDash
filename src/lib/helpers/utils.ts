@@ -25,3 +25,7 @@ export function convertToType(valueType: string, value: string) {
 
 	return typedValue;
 }
+
+export function sleep(ms: number) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}

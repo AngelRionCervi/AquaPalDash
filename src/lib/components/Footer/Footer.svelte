@@ -15,8 +15,12 @@
 		toggle('Remove devices', 'removeDevices');
 	}
 
+  function onUndoModifications() {
+    configStore.undoModifications();
+  }
+
 	function onSaveAndRestart() {
-		console.log('save and restart');
+		configStore.uploadNewConfig();
 	}
 </script>
 
@@ -29,18 +33,13 @@
 			disabled={(configStore.config?.devices.length || MAX_DEVICES) === MAX_DEVICES}
 			onclick={onAddDevice}
 		/>
-		<PrimaryButton
-			label="Remove devices"
-			icon="bin"
-			disabled={true}
-			onclick={onRemoveDevices}
-		/>
+		<PrimaryButton label="Remove devices" icon="bin" disabled={true} onclick={onRemoveDevices} />
 	</div>
 	<div class="right-container">
 		{#if !configStore.isSync}
 			<div class="unsaved-infos">
 				<p>Some modifications are <span class="unsaved-label">unsaved</span></p>
-				<button class="button-undo">
+				<button class="button-undo" onclick={onUndoModifications}>
 					<svelte:component this={UndoIcon} width={14} height={14} fill="var(--secondary)" />
 					<span>Undo all modifications</span>
 				</button>
@@ -51,6 +50,7 @@
 			label="Save and restart"
 			disabled={configStore.isSync}
 			onclick={onSaveAndRestart}
+			isLoading={configStore.callStates.uploadNewConfig.isLoading}
 		/>
 	</div>
 </div>

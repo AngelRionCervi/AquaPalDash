@@ -1,4 +1,5 @@
 import ConfigApi from '$lib/api/configApi';
+import controllerStore from './controllerStore.svelte';
 
 interface CallState {
 	isLoading?: boolean;
@@ -8,24 +9,40 @@ interface CallState {
 interface ConfigState {
 	config: Config | null;
 	isSync: boolean;
-	callStates: Record<Exclude<keyof ConfigStore, 'config' | 'isSync' | 'checkSync'>, CallState>;
+	callStates: Record<
+		Exclude<
+			keyof ConfigStore,
+			'config' | 'isSync' | 'checkSync' | 'callStates' | 'undoModifications'
+		>,
+		CallState
+	>;
 }
 
 interface ConfigStore {
 	config: Config | null;
 	isSync: boolean;
+	callStates: ConfigState['callStates'];
+	undoModifications: () => void;
 	fetchAndSetConfig: () => Promise<void>;
 	updateDevice: (name: string, partialDevice: Partial<Device>) => void;
-	updateSetting: (key: keyof ConfigSettings, value: ConfigSettings[T]) => void;
-	updateSecret: (key: keyof ConfigSecrets, value: ConfigSecrets[T]) => void;
+	updateSetting: <T extends keyof ConfigSettings>(
+		key: keyof ConfigSettings,
+		value: ConfigSettings[T]
+	) => void;
+	updateSecret: <T extends keyof ConfigSecrets>(
+		key: keyof ConfigSecrets,
+		value: ConfigSecrets[T]
+	) => void;
 	checkSync: () => void;
+	uploadNewConfig: () => void;
 }
 
 const callStates: ConfigState['callStates'] = $state({
 	fetchAndSetConfig: {},
 	updateDevice: {},
 	updateSetting: {},
-	updateSecret: {}
+	updateSecret: {},
+	uploadNewConfig: {}
 });
 const defaultConfigStoreValue: ConfigState = { config: null, isSync: false, callStates };
 
@@ -39,18 +56,44 @@ const configStore: ConfigStore = {
 	get isSync() {
 		return configState.isSync;
 	},
+	get callStates() {
+		return configState.callStates;
+	},
 	async fetchAndSetConfig() {
 		try {
 			callStates.fetchAndSetConfig.isLoading = true;
 			const newConfig = await ConfigApi.fetchConfig();
-			configState.config = newConfig;
-			previousConfig = Object.freeze(structuredClone(newConfig));
-			configState.isSync = true;
-			console.log('config', newConfig);
+			if (newConfig?.status === 'error' || !newConfig?.data) {
+				callStates.uploadNewConfig.error = newConfig?.message || 'no data';
+			} else {
+				configState.config = newConfig.data;
+				previousConfig = Object.freeze(structuredClone(newConfig.data));
+				configState.isSync = true;
+				console.log('config', newConfig);
+			}
 		} catch (err) {
 			callStates.fetchAndSetConfig.error = err.message;
 		} finally {
 			callStates.fetchAndSetConfig.isLoading = false;
+		}
+	},
+	async uploadNewConfig() {
+		if (!configState.config) return;
+		try {
+			callStates.uploadNewConfig.isLoading = true;
+			const uploadResult = await ConfigApi.uploadConfig(configState.config);
+
+			if (uploadResult?.status === 'error') {
+				callStates.uploadNewConfig.error = uploadResult.message;
+				console.log('upload new config error', uploadResult.message);
+			} else {
+				await controllerStore.restartController();
+				await configStore.fetchAndSetConfig();
+			}
+		} catch (err) {
+			callStates.uploadNewConfig.error = err;
+		} finally {
+			callStates.uploadNewConfig.isLoading = false;
 		}
 	},
 	updateDevice(name: string, partialDevice: Partial<Device>) {
@@ -81,6 +124,8 @@ const configStore: ConfigStore = {
 	updateSetting<T extends keyof ConfigSettings>(key: T, value: ConfigSettings[T]) {
 		if (!configState.config) return;
 
+		console.log('update setting', key, value);
+
 		if (!validateKey('settings', key)) {
 			const message = 'Wrong setting.';
 			console.error(message);
@@ -89,6 +134,8 @@ const configStore: ConfigStore = {
 		}
 
 		configState.config.settings[key] = value;
+
+		console.log('configState.config.settings[key]', configState.config.settings[key]);
 		configStore.checkSync();
 	},
 	updateSecret<T extends keyof ConfigSecrets>(key: T, value: ConfigSecrets[T]) {
@@ -102,6 +149,12 @@ const configStore: ConfigStore = {
 		}
 
 		configState.config.secrets[key] = value;
+		configStore.checkSync();
+	},
+	undoModifications() {
+		if (!configState.config || !previousConfig) return;
+
+		configState.config = structuredClone(previousConfig);
 		configStore.checkSync();
 	},
 	checkSync() {

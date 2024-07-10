@@ -1,6 +1,7 @@
 <script lang="ts">
 	import AddIcon from '$lib/icons/add.svg?component';
 	import BinIcon from '$lib/icons/bin.svg?component';
+	import LoadingIcon from '$lib/icons/loading.svg?component';
 	import type { Component, ComponentType } from 'svelte';
 
 	interface Props {
@@ -9,13 +10,21 @@
 		type?: 'default' | 'green' | 'red';
 		icon?: 'add' | 'bin';
 		disabled?: boolean;
+		isLoading?: boolean;
 	}
 
 	type IconMapType = {
 		[key in Exclude<Props['icon'], undefined>]: ComponentType;
 	};
 
-	const { label, onclick, type = 'default', icon = undefined, disabled = false }: Props = $props();
+	const {
+		label,
+		onclick,
+		type = 'default',
+		icon = undefined,
+		disabled = false,
+		isLoading = false
+	}: Props = $props();
 
 	const iconMap: IconMapType = {
 		add: AddIcon,
@@ -23,11 +32,22 @@
 	};
 </script>
 
-<button class="primary-button button-{type}" class:disabled {onclick} {disabled}>
+<button
+	class="primary-button button-{type}"
+	class:disabled={disabled || isLoading}
+	{onclick}
+	disabled={disabled || isLoading}
+>
 	{#if icon}
-		<svelte:component this={iconMap[icon]} width={24} height={24} fill="var(--secondary);" />
+		<svelte:component this={iconMap[icon]} width={24} height={24} />
 	{/if}
-	<span>{label}</span>
+	{#if isLoading}
+		<div class="loading-icon-container">
+			<LoadingIcon width={24} height={24} />
+		</div>
+	{:else}
+		<span>{label}</span>
+	{/if}
 </button>
 
 <style lang="scss">
@@ -86,6 +106,21 @@
 			&.button-red {
 				background-color: var(--primary-error);
 			}
+		}
+	}
+
+	.loading-icon-container {
+    width: 24px;
+    height: 24px;
+		animation: spin 3s linear infinite;
+	}
+
+	@keyframes spin {
+		from {
+			transform: rotate(0deg);
+		}
+		to {
+			transform: rotate(360deg);
 		}
 	}
 </style>
