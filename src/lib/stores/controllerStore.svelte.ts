@@ -1,20 +1,29 @@
 import ControllerApi from '$lib/api/controllerApi';
+import { CHECK_CONNECTION_INTERVAL } from '$lib/constants';
 import { sleep } from '$lib/helpers/utils';
 
 interface ControllerState {
 	isRestarting: boolean;
 	isOn: boolean;
+	isScheduleOn: boolean;
+	checkUpdateWithInterval: number;
 }
 
 interface ControllerStore {
 	isRestarting: ControllerState['isRestarting'];
 	isOn: ControllerState['isOn'];
+	isScheduleOn: ControllerState['isScheduleOn'];
 	restartController: () => Promise<void>;
+	checkUpdateWithInterval: () => void;
+	clearCheckUpdateWithInterval: () => void;
+	checkHardwareUpdate: () => Promise<void>;
 }
 
 const defaultControllerStoreValue: ControllerState = {
 	isRestarting: false,
-	isOn: false
+	isOn: false,
+	isScheduleOn: false,
+	checkUpdateWithInterval: 0
 };
 
 const constrollerState = $state<ControllerState>(defaultControllerStoreValue);
@@ -25,6 +34,28 @@ const controllerStore: ControllerStore = {
 	},
 	get isOn() {
 		return constrollerState.isOn;
+	},
+	get isScheduleOn() {
+		return constrollerState.isScheduleOn;
+	},
+	checkUpdateWithInterval() {
+		constrollerState.checkUpdateWithInterval = setInterval(() => {
+			controllerStore.checkHardwareUpdate();
+		}, CHECK_CONNECTION_INTERVAL);
+	},
+	clearCheckUpdateWithInterval() {
+		clearInterval(constrollerState.checkUpdateWithInterval);
+		constrollerState.checkUpdateWithInterval = 0;
+	},
+	async checkHardwareUpdate() {
+		try {
+			const updateResponse = await ControllerApi.API_getHardwareToggleUpdate();
+			constrollerState.isOn = updateResponse?.status === 'success' || false;
+			constrollerState.isScheduleOn = updateResponse?.data?.isScheduleOn || false;
+			console.log('updateResponse', updateResponse);
+		} catch {
+			console.error('Failed to ping controller');
+		}
 	},
 	async restartController() {
 		constrollerState.isRestarting = true;

@@ -6,6 +6,7 @@
 	import Modal from '$lib/components/Modal/Modal.svelte';
 	import { onMount } from 'svelte';
 	import configStore from '$lib/stores/configStore.svelte';
+  import controllerStore from '$lib/stores/controllerStore.svelte';
 
 	const { children } = $props();
 
@@ -13,13 +14,15 @@
 		return menuRoutes.find(({ route }) => route === $page.url.pathname)?.label || 'Home';
 	}
 
-  onMount(() => {
-    configStore.fetchAndSetConfig();
-  })
+	onMount(() => {
+		configStore.fetchAndSetConfig();
+    controllerStore.checkHardwareUpdate();
+		controllerStore.checkUpdateWithInterval();
+	});
 </script>
 
 <div class="main-layout">
-  <Modal />
+	<Modal />
 	<Header />
 	<span class="page-title">{getCurrentPageTitle()}</span>
 	{@render children()}
@@ -40,7 +43,7 @@
 
 	.page-title {
 		margin: 42px 64px;
-    font-size: var(--font-L);
-    font-weight: bold;
+		font-size: var(--font-L);
+		font-weight: bold;
 	}
 </style>

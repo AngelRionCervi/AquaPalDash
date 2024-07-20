@@ -85,7 +85,7 @@ const configStore: ConfigStore = {
 
 			if (uploadResult?.status === 'error') {
 				callStates.uploadNewConfig.error = uploadResult.message;
-				console.log('upload new config error', uploadResult.message);
+				console.error('upload new config error', uploadResult.message);
 			} else {
 				await controllerStore.restartController();
 				await configStore.fetchAndSetConfig();

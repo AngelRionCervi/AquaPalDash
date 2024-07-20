@@ -32,6 +32,10 @@
 	.nav-link {
 		padding: 16px;
 
+    &:not(.current):hover {
+      background-color: var(--primary-darker);
+    }
+
 		&.current {
 			background-color: var(--secondary);
 			color: var(--primary);

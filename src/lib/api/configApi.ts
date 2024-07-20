@@ -17,7 +17,6 @@ async function fetchConfig() {
 	try {
 		const result = await fetch(`${API_ROUTE}/getconfig`);
 		const jsonResult = await result.json();
-		console.log('result get config', jsonResult);
 
     if (jsonResult.status === 'error') {
       throw new Error(jsonResult.message);
