@@ -6,27 +6,35 @@
 	import Modal from '$lib/components/Modal/Modal.svelte';
 	import { onMount } from 'svelte';
 	import configStore from '$lib/stores/configStore.svelte';
-  import controllerStore from '$lib/stores/controllerStore.svelte';
+	import controllerStore from '$lib/stores/controllerStore.svelte';
+	import InitLoadingBackdrop from '$lib/components/Backdrop/InitLoadingBackdrop.svelte';
 
 	const { children } = $props();
+
+	let mainLoading = $state(true);
 
 	function getCurrentPageTitle() {
 		return menuRoutes.find(({ route }) => route === $page.url.pathname)?.label || 'Home';
 	}
 
-	onMount(() => {
-		configStore.fetchAndSetConfig();
-    controllerStore.checkHardwareUpdate();
+	onMount(async () => {
+		await configStore.fetchAndSetConfig();
+		await controllerStore.checkHardwareUpdate();
 		controllerStore.checkUpdateWithInterval();
+    mainLoading = false;
 	});
 </script>
 
 <div class="main-layout">
-	<Modal />
-	<Header />
-	<span class="page-title">{getCurrentPageTitle()}</span>
-	{@render children()}
-	<Footer />
+	{#if mainLoading}
+		<InitLoadingBackdrop />
+	{:else}
+		<Modal />
+		<Header />
+		<span class="page-title">{getCurrentPageTitle()}</span>
+		{@render children()}
+		<Footer />
+	{/if}
 </div>
 
 <style lang="scss">
