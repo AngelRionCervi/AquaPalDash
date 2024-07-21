@@ -1,19 +1,14 @@
 <script lang="ts">
-	import CloudIcon from '$lib/icons/cloud.svg?component';
-	import NoCloudIcon from '$lib/icons/no-cloud.svg?component';
 	import SmallButton from '$lib/components/Buttons/SmallButton.svelte';
 	import modalStore from '$lib/stores/modalStore.svelte';
+	import devicesStatusStore from '$lib/stores/deviceStatusStore.svelte';
 
 	interface Props {
 		device: Device;
 	}
 
 	const { device }: Props = $props();
-
-	const cloudIconMap = {
-		online: CloudIcon,
-		offline: NoCloudIcon
-	};
+	const deviceStatus = $derived(devicesStatusStore.getDeviceStatus(device.name));
 
 	function onScheduleEdit() {
 		console.log('schedule edit');
@@ -23,6 +18,16 @@
 	function onButtonSlotEdit() {
 		console.log('button slot edit');
 		modalStore.toggle('Button Edit', 'buttonSlotSetting', { name: device.name });
+	}
+
+	function getPillStatusOn(status: boolean | null | undefined) {
+		if (status === null) return 'unknown';
+		return status ? 'on' : 'off';
+	}
+
+	function getPillStatusConnected(status: boolean | null | undefined) {
+		if (status === null) return 'unknown';
+		return status ? 'online' : 'offline';
 	}
 </script>
 
@@ -34,8 +39,12 @@
 	<div class="device-status">
 		<span class="setting-title">Status:</span>
 		<div class="status-pills">
-			<span class="pill is-on">connected</span>
-			<span class="pill is-on">on</span>
+			<span class="pill is-{deviceStatus?.isConnected ? 'on' : 'off'}"
+				>{getPillStatusConnected(deviceStatus?.isConnected)}</span
+			>
+			<span class="pill is-{deviceStatus?.isOn ? 'on' : 'off'}"
+				>{getPillStatusOn(deviceStatus?.isOn)}</span
+			>
 		</div>
 	</div>
 	<div class="semi-separator"></div>
@@ -63,7 +72,7 @@
 		border-radius: var(--radius-XL);
 		padding: 24px;
 		width: 250px;
-    height: 400px;
+		height: 400px;
 	}
 
 	.device-name-container {

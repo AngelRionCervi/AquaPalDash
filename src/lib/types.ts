@@ -1,4 +1,11 @@
 type ScheduleRange = [number, number];
+type Schedule = ScheduleRange | boolean;
+
+interface RawDeviceStatus {
+	name: string;
+	state: boolean;
+	isOnline: boolean;
+}
 
 interface Device {
 	name: string;
@@ -30,5 +37,5 @@ interface Config {
 interface ApiResponse {
 	status: 'error' | 'success';
 	message?: string;
-  data?: any;
+	data?: any;
 }

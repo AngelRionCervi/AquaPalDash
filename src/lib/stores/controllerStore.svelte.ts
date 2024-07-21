@@ -1,6 +1,8 @@
 import ControllerApi from '$lib/api/controllerApi';
+import devicesStatusStore from './deviceStatusStore.svelte';
 import { CHECK_CONNECTION_INTERVAL } from '$lib/constants';
 import { sleep } from '$lib/helpers/utils';
+import { dev } from '$app/environment';
 
 interface ControllerState {
 	isRestarting: boolean;
@@ -52,6 +54,9 @@ const controllerStore: ControllerStore = {
 			const updateResponse = await ControllerApi.API_getHardwareToggleUpdate();
 			constrollerState.isOn = updateResponse?.status === 'success' || false;
 			constrollerState.isScheduleOn = updateResponse?.data?.isScheduleOn || false;
+			if (updateResponse?.data?.devices?.length) {
+				devicesStatusStore.updateDevicesStatus(updateResponse.data.devices);
+			}
 			console.log('updateResponse', updateResponse);
 		} catch {
 			console.error('Failed to ping controller');
