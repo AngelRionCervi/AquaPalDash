@@ -2,6 +2,7 @@
 	import SmallButton from '$lib/components/Buttons/SmallButton.svelte';
 	import modalStore from '$lib/stores/modalStore.svelte';
 	import devicesStatusStore from '$lib/stores/deviceStatusStore.svelte';
+	import { getScheduleLabel } from '$lib/helpers/utils';
 
 	interface Props {
 		device: Device;
@@ -9,7 +10,7 @@
 
 	const { device }: Props = $props();
 	const deviceStatus = $derived(devicesStatusStore.getDeviceStatus(device.name));
-  const deviceDisabled = $derived(device.isUnsaved || device.toBeRemoved);
+	const deviceDisabled = $derived(device.isUnsaved || device.toBeRemoved);
 
 	function onScheduleEdit() {
 		console.log('schedule edit');
@@ -60,7 +61,7 @@
 		<div class="semi-separator"></div>
 		<div class="editable-row-schedule">
 			<span class="setting-title">Schedule:</span>
-			<div class="current-value-schedule"><span>{device.schedule}</span></div>
+			<div class="current-value-schedule"><span>{@html getScheduleLabel(device.schedule)}</span></div>
 			<SmallButton onclick={onScheduleEdit} disabled={deviceDisabled} label="Edit" />
 		</div>
 	</div>
@@ -73,13 +74,13 @@
 		border-radius: var(--radius-XL);
 		padding: 24px;
 		width: 250px;
-		height: 400px;
+		height: fit-content;
 	}
 
-  .card-device-unsaved {
-    opacity: 0.35;
-    cursor: not-allowed;
-  }
+	.card-device-unsaved {
+		opacity: 0.35;
+		cursor: not-allowed;
+	}
 
 	.device-name-container {
 		display: flex;
@@ -171,5 +172,6 @@
 
 	.current-value-schedule {
 		font-size: var(--font-S);
+    font-weight: bold;
 	}
 </style>

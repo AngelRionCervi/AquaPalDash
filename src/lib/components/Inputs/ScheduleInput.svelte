@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { minsToReadableTime } from '$lib/helpers/utils';
+	import { getScheduleLabel } from '$lib/helpers/utils';
 	import DoubleRangeSlider from '$lib/components/Inputs/DoubleRangeSlider.svelte';
 	import scheduleRadioTypes from '$lib/data/scheduleSettings';
 
@@ -25,14 +25,10 @@
 					: 'alwaysOff'
 				: null
 	);
-	let minTimeString = $state('');
-	let maxTimeString = $state('');
-	let minMins = 0;
-	let maxMins = 0;
+	let minMins = $state(0);
+	let maxMins = $state(0);
 
 	function onRangeChange({ min, max }: { min: number; max: number }) {
-		minTimeString = minsToReadableTime(min);
-		maxTimeString = minsToReadableTime(max);
 		minMins = min;
 		maxMins = max;
 		sendChange();
@@ -84,7 +80,7 @@
 				onchange={onRangeChange}
 			/>
 			<div class="new-schedule">
-				<p>On between <b>{minTimeString}</b> and <b>{maxTimeString}</b>.</p>
+				<p>{@html getScheduleLabel([minMins, maxMins])}</p>
 			</div>
 		</div>
 	{/if}

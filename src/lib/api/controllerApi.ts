@@ -4,7 +4,7 @@ async function API_restartController() {
 	try {
 		const response = await fetch(`${API_ROUTE}/restart`);
 		if (!response.ok) {
-			throw new Error('Failed to restart controller');
+			throw new Error(`Failed to restart controller code ${response.status}`);
 		}
 	} catch (error) {
 		console.error('An error occurred while restarting the controller:', error);
@@ -16,7 +16,7 @@ async function API_pingController() {
 		const pingResponse = await fetch(`${API_ROUTE}/ping`);
 
 		if (!pingResponse.ok) {
-			throw new Error('Failed to ping controller');
+			throw new Error(`Failed to ping controller code ${pingResponse.status}`);
 		}
 
 		return pingResponse;
@@ -29,7 +29,7 @@ async function API_getHardwareToggleUpdate() {
 	try {
 		const response = await fetch(`${API_ROUTE}/gethardwaretoggleupdate`);
 		if (!response.ok) {
-			throw new Error('Failed to get hardware toggle updates');
+			throw new Error(`Failed to get hardware toggle updates code ${response.status}`);
 		}
 
 		const jsonResult = await response.json();
@@ -43,10 +43,48 @@ async function API_getHardwareToggleUpdate() {
 	}
 }
 
+async function API_toggleSchedule() {
+	try {
+		const response = await fetch(`${API_ROUTE}/toggleschedule`);
+		if (!response.ok) {
+			throw new Error(`Failed to toggle schedule code ${response.status}`);
+		}
+
+		const jsonResult = await response.json();
+		if (jsonResult.status === 'error') {
+			throw new Error(jsonResult.message);
+		}
+
+		return jsonResult;
+	} catch (error) {
+		console.error('An error occurred while toggling controller schedule:', error);
+	}
+}
+
+async function API_toggleDeviceSchedule(name: string) {
+	try {
+		const response = await fetch(`${API_ROUTE}/toggledevice?name=${name}`);
+		if (!response.ok) {
+			throw new Error(`Failed to toggle device ${name}, code ${response.status}`);
+		}
+
+		const jsonResult = await response.json();
+		if (jsonResult.status === 'error') {
+			throw new Error(jsonResult.message);
+		}
+
+		return jsonResult;
+	} catch (error) {
+		console.error(`An error occurred while toggling ${name} schedule:`, error);
+	}
+}
+
 const controllerApi = {
 	API_restartController,
 	API_pingController,
-	API_getHardwareToggleUpdate
+	API_getHardwareToggleUpdate,
+	API_toggleSchedule,
+	API_toggleDeviceSchedule
 };
 
 export default controllerApi;

@@ -6,17 +6,18 @@ interface DeviceStatus {
 
 interface DevicesStatusState {
 	devices: DeviceStatus[];
-	lastUpdate: number | null;
+	lastGlobalUpdate: number | null;
 }
 
 interface DevicesStatusStore {
 	getDeviceStatus: (name: string) => DeviceStatus | undefined;
-	updateDevicesStatus: (devicesStatus: RawDeviceStatus[]) => void;
+	updateAllDevicesStatus: (devicesStatus: RawDeviceStatus[]) => void;
+  updateDeviceState: (name: string, state: boolean) => void;
 }
 
 const defaultDeviceStoreValue: DevicesStatusState = Object.freeze({
 	devices: [],
-	lastUpdate: null
+	lastGlobalUpdate: null
 });
 
 const deviceStatusState = $state<DevicesStatusState>(structuredClone(defaultDeviceStoreValue));
@@ -25,14 +26,20 @@ const devicesStatusStore: DevicesStatusStore = {
 	getDeviceStatus(name: string) {
 		return deviceStatusState.devices.find((device) => device.name === name);
 	},
-	updateDevicesStatus(devicesStatus: RawDeviceStatus[]) {
+	updateAllDevicesStatus(devicesStatus: RawDeviceStatus[]) {
 		deviceStatusState.devices = devicesStatus.map(({ name, isOnline, state }) => ({
 			name,
 			isOn: state,
 			isConnected: isOnline
 		}));
-		deviceStatusState.lastUpdate = Date.now();
-	}
+		deviceStatusState.lastGlobalUpdate = Date.now();
+	},
+  updateDeviceState(name: string, state: boolean) {
+    const deviceStatus = devicesStatusStore.getDeviceStatus(name);
+    if (deviceStatus) {
+      deviceStatus.isOn = state;
+    }
+  }
 };
 
 export default devicesStatusStore;

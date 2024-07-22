@@ -11,7 +11,6 @@
 
 	const { name = '' }: Props = $props();
 	const { toggle } = modalStore;
-	const { updateDevice } = configStore;
 	const device = configStore.config?.devices.find((device) => device.name === name);
 
 	let newSchedule = $state<Schedule | undefined>(device?.schedule);
@@ -20,7 +19,7 @@
 	function onValidate() {
 		if (!isOldSchedule && newSchedule) {
 			console.log('validate schedule', name, { schedule: newSchedule });
-			updateDevice(name, { schedule: newSchedule });
+			configStore.updateDevice(name, { schedule: newSchedule });
 		}
 		toggle();
 	}

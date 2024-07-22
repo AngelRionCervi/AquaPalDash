@@ -1,12 +1,18 @@
 <script lang="ts">
 	import DeviceCard from '$lib/components/Device/DeviceCard.svelte';
 	import configStore from '$lib/stores/configStore.svelte';
+
+  let devicesInOrder = $state(configStore.config?.devices);
+
+  $effect(() => {
+    devicesInOrder = configStore.config?.devices.sort((a, b) => a.button - b.button)
+  });
 </script>
 
 <div class="devices-main-container">
 	<div class="devices-cards">
-		{#if configStore.config}
-			{#each configStore.config.devices as device (device.name)}
+		{#if devicesInOrder?.length}
+			{#each devicesInOrder as device (device.name)}
 				<DeviceCard {device} />
 			{/each}
 		{:else}

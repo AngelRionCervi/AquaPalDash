@@ -27,5 +27,15 @@ export function convertToType(valueType: string, value: string) {
 }
 
 export function sleep(ms: number) {
-  return new Promise(resolve => setTimeout(resolve, ms));
+	return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+export function getScheduleLabel(schedule: Schedule) {
+	if (Array.isArray(schedule)) {
+		return `On between <b>${minsToReadableTime(schedule[0])}</b> and <b>${minsToReadableTime(schedule[1])}</b>.`;
+	} else if (typeof schedule === 'boolean') {
+		return schedule ? 'Always on.' : 'Always off.';
+	}
+
+	return 'unknown';
 }

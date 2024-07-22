@@ -136,7 +136,7 @@ const configStore: ConfigStore = {
 		if (!configState.config) return;
 
 		const devices = configState.config.devices;
-		const corDeviceIndex = devices.findIndex((device) => (device.name = name));
+		const corDeviceIndex = devices.findIndex((device) => (device.name === name));
 
 		if (corDeviceIndex === -1) {
 			const message = 'No device to update found.';
@@ -188,14 +188,18 @@ const configStore: ConfigStore = {
 		const devices = configState.config.devices;
 
 		nameList.forEach((name) => {
-			const corDevice = devices.find((device) => (device.name === name));
+			const corDevice = devices.find((device) => device.name === name);
 
 			if (corDevice) {
-				corDevice.toBeRemoved = true;
+				if (corDevice.isUnsaved && configState.config) {
+					configState.config.devices = devices.filter((device) => device.name !== name);
+				} else {
+					corDevice.toBeRemoved = true;
+				}
 			}
-		})
+		});
 
-    configStore.checkSync();
+		configStore.checkSync();
 	},
 	updateSetting<T extends keyof ConfigSettings>(key: T, value: ConfigSettings[T]) {
 		if (!configState.config) return;
@@ -257,10 +261,10 @@ const configStore: ConfigStore = {
 				break;
 			}
 
-      if (newDevice.toBeRemoved || newDevice.isUnsaved) {
-        newSync = false;
+			if (newDevice.toBeRemoved || newDevice.isUnsaved) {
+				newSync = false;
 				break;
-      }
+			}
 
 			if (prevDevice.schedule.toString() !== newDevice.schedule.toString()) {
 				newSync = false;

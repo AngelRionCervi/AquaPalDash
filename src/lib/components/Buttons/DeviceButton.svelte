@@ -1,14 +1,28 @@
 <script lang="ts">
+	import Loader from '../Loaders/Loader.svelte';
+
 	interface Props {
-		label: string;
+		onClick: () => void;
+		name: string;
+    disabled: boolean;
+		isLoading: boolean;
+		state: boolean;
 	}
 
-	const { label }: Props = $props();
+	const { onClick, name, state, isLoading, disabled }: Props = $props();
 </script>
 
 <div class="container">
-	<span class="button-label">{label}</span>
-	<button class="green-button"></button>
+	<span class="button-label">{name}</span>
+	<button
+		class="device-button device-{state ? 'on' : 'off'}"
+		class:is-loading={isLoading}
+    class:is-disabled={disabled}
+		onclick={onClick}
+		>{#if isLoading}
+			<Loader size="medium" theme="light" />
+		{/if}</button
+	>
 </div>
 
 <style lang="scss">
@@ -17,28 +31,57 @@
 		flex-direction: column;
 		gap: 20px;
 		justify-content: center;
-    align-items: center;
+		align-items: center;
 		border: 1px solid var(--secondary);
 		border-bottom-left-radius: 999px;
-    border-bottom-right-radius: 999px;
-    width: 92px;
+		border-bottom-right-radius: 999px;
+		width: 92px;
 	}
 
-	.green-button {
+	.device-button {
 		width: 88px;
-    height: 88px;
+		height: 88px;
 		border-radius: 999px;
-    background-color: var(--primary-success);
-		border: 2px solid var(--secondary-success);
-    margin-bottom: 2px;
+		margin-bottom: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+	}
 
-    &:hover {
-      background-color: var(--primary-success-darker);
-    }
+	.device-on {
+		background-color: var(--primary-success);
+		border: 2px solid var(--secondary-success);
+
+		&:not(.is-disabled):hover {
+			background-color: var(--primary-success-darker);
+		}
+	}
+
+	.device-off {
+		background-color: var(--primary-error);
+		border: 2px solid var(--secondary-error);
+
+		&:not(.is-disabled):hover {
+			background-color: var(--primary-error-darker);
+		}
 	}
 
 	.button-label {
-    margin-top: 12px;
+		margin-top: 12px;
 		font-size: var(--font-M);
 	}
+
+	.is-loading {
+		&.device-on {
+			background-color: var(--primary-success-darker);
+		}
+		&.device-off {
+			background-color: var(--primary-error-darker);
+		}
+	}
+
+  .is-disabled {
+    cursor: not-allowed;
+    opacity: 0.35;
+  }
 </style>
