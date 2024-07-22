@@ -11,7 +11,9 @@ interface Device {
 	name: string;
 	ip: string;
 	button: number;
-	schedule: ScheduleRange;
+	schedule: Schedule;
+  isUnsaved?: boolean;
+  toBeRemoved?: boolean;
 }
 
 interface ConfigSecrets {

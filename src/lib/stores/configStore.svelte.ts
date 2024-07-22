@@ -12,7 +12,12 @@ interface ConfigState {
 	callStates: Record<
 		Exclude<
 			keyof ConfigStore,
-			'config' | 'isSync' | 'checkSync' | 'callStates' | 'undoModifications'
+			| 'config'
+			| 'isSync'
+			| 'checkSync'
+			| 'callStates'
+			| 'undoModifications'
+			| 'prepareConfigForUpload'
 		>,
 		CallState
 	>;
@@ -35,6 +40,9 @@ interface ConfigStore {
 	) => void;
 	checkSync: () => void;
 	uploadNewConfig: () => void;
+	addDevice: (newDevice: Device) => void;
+	removeDevices: (name: string | Array<string>) => void;
+	prepareConfigForUpload: () => Config | undefined;
 }
 
 const callStates: ConfigState['callStates'] = $state({
@@ -42,7 +50,9 @@ const callStates: ConfigState['callStates'] = $state({
 	updateDevice: {},
 	updateSetting: {},
 	updateSecret: {},
-	uploadNewConfig: {}
+	uploadNewConfig: {},
+	addDevice: {},
+	removeDevices: {}
 });
 const defaultConfigStoreValue: ConfigState = { config: null, isSync: false, callStates };
 
@@ -64,37 +74,63 @@ const configStore: ConfigStore = {
 			callStates.fetchAndSetConfig.isLoading = true;
 			const newConfig = await ConfigApi.fetchConfig();
 			if (newConfig?.status === 'error' || !newConfig?.data) {
-				callStates.uploadNewConfig.error = newConfig?.message || 'no data';
+				const message = newConfig?.message || 'no data';
+				callStates.uploadNewConfig.error = message;
+				throw new Error(message);
 			} else {
 				configState.config = newConfig.data;
+				console.log('newConfig.data', newConfig.data);
 				previousConfig = Object.freeze(structuredClone(newConfig.data));
 				configState.isSync = true;
 				console.log('config', newConfig);
 			}
 		} catch (err) {
 			callStates.fetchAndSetConfig.error = err.message;
+			console.error('fetch and set config error', err);
 		} finally {
 			callStates.fetchAndSetConfig.isLoading = false;
 		}
 	},
 	async uploadNewConfig() {
 		if (!configState.config) return;
+
 		try {
 			callStates.uploadNewConfig.isLoading = true;
-			const uploadResult = await ConfigApi.uploadConfig(configState.config);
+			const cleanConfig = configStore.prepareConfigForUpload();
+			if (!cleanConfig) {
+				throw new Error('Could not clean config.');
+			}
+			const uploadResult = await ConfigApi.uploadConfig(cleanConfig);
 
 			if (uploadResult?.status === 'error') {
 				callStates.uploadNewConfig.error = uploadResult.message;
-				console.error('upload new config error', uploadResult.message);
+				throw new Error(uploadResult.message);
 			} else {
 				await controllerStore.restartController();
 				await configStore.fetchAndSetConfig();
 			}
 		} catch (err) {
 			callStates.uploadNewConfig.error = err;
+			console.error('upload new config error', err);
 		} finally {
 			callStates.uploadNewConfig.isLoading = false;
 		}
+	},
+	prepareConfigForUpload() {
+		if (!configState.config) return;
+
+		const config = JSON.parse(JSON.stringify(configState.config));
+		console.log('prepareConfigForUpload', config);
+
+		for (let i = config?.devices.length - 1; i >= 0; i--) {
+			const device = config?.devices[i];
+			if (device?.toBeRemoved) {
+				config?.devices.splice(i, 1);
+			}
+			delete device?.isUnsaved;
+		}
+
+		return config;
 	},
 	updateDevice(name: string, partialDevice: Partial<Device>) {
 		if (!configState.config) return;
@@ -120,6 +156,46 @@ const configStore: ConfigStore = {
 
 		configState.config.devices[corDeviceIndex] = newDevice;
 		configStore.checkSync();
+	},
+	addDevice(newDevice: Device) {
+		if (!configState.config) return;
+
+		const devices = configState.config.devices;
+
+		if (devices.length >= 5) {
+			const message = 'Maximum number of devices reached.';
+			console.error(message);
+			callStates.addDevice.error = message;
+			return;
+		}
+
+		if (!checkDeviceIntegrity(newDevice)) {
+			const message = 'Wrong device payload.';
+			console.error(message, newDevice);
+			callStates.addDevice.error = message;
+			return;
+		}
+
+		newDevice.isUnsaved = true;
+
+		configState.config.devices = [...devices, newDevice];
+		configStore.checkSync();
+	},
+	removeDevices(names: string | Array<string>) {
+		if (!configState.config) return;
+
+		const nameList = [names].flat();
+		const devices = configState.config.devices;
+
+		nameList.forEach((name) => {
+			const corDevice = devices.find((device) => (device.name === name));
+
+			if (corDevice) {
+				corDevice.toBeRemoved = true;
+			}
+		})
+
+    configStore.checkSync();
 	},
 	updateSetting<T extends keyof ConfigSettings>(key: T, value: ConfigSettings[T]) {
 		if (!configState.config) return;
@@ -172,7 +248,7 @@ const configStore: ConfigStore = {
 
 		let newSync = true;
 
-		for (let i = 0; i < newConfig.devices.length - 1; i++) {
+		for (let i = 0; i < newConfig.devices.length; i++) {
 			const newDevice = newConfig.devices[i];
 			const prevDevice = previousConfig.devices.find(({ name }) => name === newDevice.name);
 
@@ -181,12 +257,17 @@ const configStore: ConfigStore = {
 				break;
 			}
 
-			if (
-				prevDevice.ip !== newDevice.ip ||
-				prevDevice.button !== newDevice.button ||
-				prevDevice.schedule[0] !== newDevice.schedule[0] ||
-				prevDevice.schedule[1] !== newDevice.schedule[1]
-			) {
+      if (newDevice.toBeRemoved || newDevice.isUnsaved) {
+        newSync = false;
+				break;
+      }
+
+			if (prevDevice.schedule.toString() !== newDevice.schedule.toString()) {
+				newSync = false;
+				break;
+			}
+
+			if (prevDevice.ip !== newDevice.ip || prevDevice.button !== newDevice.button) {
 				newSync = false;
 				break;
 			}

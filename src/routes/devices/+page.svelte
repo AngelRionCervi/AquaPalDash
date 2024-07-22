@@ -6,7 +6,7 @@
 <div class="devices-main-container">
 	<div class="devices-cards">
 		{#if configStore.config}
-			{#each configStore.config.devices as device}
+			{#each configStore.config.devices as device (device.name)}
 				<DeviceCard {device} />
 			{/each}
 		{:else}

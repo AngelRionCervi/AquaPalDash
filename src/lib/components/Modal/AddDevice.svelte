@@ -2,16 +2,42 @@
 	import PrimaryButton from '$lib/components/Buttons/PrimaryButton.svelte';
 	import { MAX_DEVICES } from '$lib/constants';
 	import modalStore from '$lib/stores/modalStore.svelte';
+	import configStore from '$lib/stores/configStore.svelte';
+	import ScheduleInput from '../Inputs/ScheduleInput.svelte';
 
 	const { toggle } = modalStore;
 
 	let name: string = $state('');
 	let ipAddress: string = $state('');
-	let buttonSlot: number = $state(NaN);
+	let buttonSlot: number | null = $state(null);
+	let newSchedule = $state<Schedule | null>(null);
+	let isValidateDisabled = $derived(
+		!name || !ipAddress || typeof buttonSlot !== 'number' || newSchedule === null
+	);
 
 	function onAddDevice() {
 		console.log('name ip', name, ipAddress);
+		if (!isValidateDisabled && buttonSlot && ipAddress && name && newSchedule !== null) {
+			configStore.addDevice({ name, ip: ipAddress, button: buttonSlot, schedule: newSchedule });
+		}
+
 		toggle();
+	}
+
+	function onButtonBindChange(value: number) {
+		if (typeof value !== 'number') return;
+
+		if (buttonSlot === value) {
+			buttonSlot = null;
+			return;
+		}
+
+		buttonSlot = value;
+		console.log('button bind', value);
+	}
+
+	function onChange(schedule: Schedule) {
+		newSchedule = schedule;
 	}
 </script>
 
@@ -40,22 +66,38 @@
 					bind:value={ipAddress}
 				/>
 			</div>
-			<div class="input-row">
+			<div class="button-input-row">
 				<label for="button_input">Button:</label>
-				<input
-					class="text-input"
-					type="number"
-					id="button_input"
-					name="button"
-					min="1"
-					max={MAX_DEVICES}
-					bind:value={buttonSlot}
-				/>
+				<div class="box-graph">
+					{#each { length: MAX_DEVICES } as _, index}
+						<div class="button-label-radio">
+							<input
+								class="radio-input"
+								class:radio-input-disabled={configStore.config?.devices.some(
+									(device) => device.button === index
+								)}
+								type="radio"
+								id="button_slot_{index}"
+								name="button-slot-{index}"
+								value={index}
+								disabled={configStore.config?.devices.some((device) => device.button === index)}
+								onclick={() => onButtonBindChange(index)}
+								checked={buttonSlot === index}
+							/>
+							<label for="button_slot_{index}">{index + 1}</label>
+						</div>
+					{/each}
+				</div>
 			</div>
 		</fieldset>
 	</div>
+	<div class="schedule-field">
+		<div class="inner-schedule-field">
+			<ScheduleInput {onChange} />
+		</div>
+	</div>
 	<div class="bottom">
-		<PrimaryButton label="Add device" onclick={onAddDevice} />
+		<PrimaryButton label="Add device" onclick={onAddDevice} disabled={isValidateDisabled} />
 	</div>
 </div>
 
@@ -63,6 +105,8 @@
 	.add-device-container {
 		display: flex;
 		flex-direction: column;
+		justify-content: center;
+		align-items: c;
 		gap: 36px;
 	}
 
@@ -74,7 +118,7 @@
 	.input-fields {
 		display: flex;
 		flex-direction: column;
-		gap: 8px;
+		gap: 16px;
 	}
 
 	.input-row {
@@ -90,5 +134,52 @@
 
 	.text-input {
 		width: 250px;
+	}
+
+	.button-input-row {
+		display: flex;
+		align-items: center;
+		gap: 16px;
+	}
+
+	.button-label-radio {
+		display: flex;
+		align-items: center;
+		flex-direction: column;
+		gap: 4px;
+
+		label {
+			font-size: var(--font-S);
+		}
+	}
+
+	.radio-input {
+		&:checked {
+			border: 6px solid var(--primary-success);
+		}
+
+		&.radio-input-disabled {
+			cursor: not-allowed;
+			border: 2px solid var(--primary-darker);
+		}
+	}
+
+	.box-graph {
+		display: flex;
+		gap: 20px;
+		padding: 16px;
+		border-radius: var(--radius-S);
+		border: 1px solid var(--secondary);
+	}
+
+	.schedule-field {
+		width: 100%;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+	}
+
+	.inner-schedule-field {
+		width: 80%;
 	}
 </style>

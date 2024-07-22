@@ -1,19 +1,18 @@
 <script lang="ts">
 	import PrimaryButton from '$lib/components/Buttons/PrimaryButton.svelte';
 	import modalStore from '$lib/stores/modalStore.svelte';
+  import configStore from '$lib/stores/configStore.svelte';
 
 	const { toggle } = modalStore;
 
-	let devicesList = $state([
-		{ name: 'filter', checked: false },
-		{ name: 'light', checked: false },
-		{ name: 'co2', checked: false }
-	]);
-
+	let devicesList = $state(configStore.config?.devices.map(({ name }) => ({ name, checked: false })) || []);
 	let numbersToRemove = $derived(devicesList.filter(({ checked }) => checked).length);
 
 	function onRemoveDevices() {
 		console.log('remove devices', numbersToRemove);
+    const devicesTopRemove = devicesList.filter(({ checked }) => checked).map(({ name }) => name);
+    console.log('devicesTo remove', devicesTopRemove)
+    configStore.removeDevices(devicesTopRemove);
 		toggle();
 	}
 

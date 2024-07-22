@@ -33,7 +33,7 @@
 			disabled={(configStore.config?.devices.length || MAX_DEVICES) === MAX_DEVICES}
 			onclick={onAddDevice}
 		/>
-		<PrimaryButton label="Remove devices" icon="bin" disabled={true} onclick={onRemoveDevices} />
+		<PrimaryButton label="Remove devices" icon="bin" disabled={configStore.config?.devices.length === 0} onclick={onRemoveDevices} />
 	</div>
 	<div class="right-container">
 		{#if !configStore.isSync}

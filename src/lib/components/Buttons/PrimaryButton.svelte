@@ -2,7 +2,7 @@
 	import AddIcon from '$lib/icons/add.svg?component';
 	import BinIcon from '$lib/icons/bin.svg?component';
 	import LoadingIcon from '$lib/icons/loading.svg?component';
-	import type { Component, ComponentType } from 'svelte';
+	import type { ComponentType } from 'svelte';
 
 	interface Props {
 		label: string;

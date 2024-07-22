@@ -9,6 +9,7 @@
 
 	const { device }: Props = $props();
 	const deviceStatus = $derived(devicesStatusStore.getDeviceStatus(device.name));
+  const deviceDisabled = $derived(device.isUnsaved || device.toBeRemoved);
 
 	function onScheduleEdit() {
 		console.log('schedule edit');
@@ -31,7 +32,7 @@
 	}
 </script>
 
-<div class="card-container">
+<div class="card-container" class:card-device-unsaved={deviceDisabled}>
 	<div class="device-name-container">
 		<span class="device-name">{device.name}</span>
 	</div>
@@ -52,15 +53,15 @@
 		<div class="editable-row-slot">
 			<div class="row-values-slot">
 				<span class="setting-title">Button slot:</span>
-				<div class="current-value-slot"><span>{device.button}</span></div>
+				<div class="current-value-slot"><span>{device.button + 1}</span></div>
 			</div>
-			<SmallButton onclick={onButtonSlotEdit} label="Edit" />
+			<SmallButton onclick={onButtonSlotEdit} disabled={deviceDisabled} label="Edit" />
 		</div>
 		<div class="semi-separator"></div>
 		<div class="editable-row-schedule">
 			<span class="setting-title">Schedule:</span>
 			<div class="current-value-schedule"><span>{device.schedule}</span></div>
-			<SmallButton onclick={onScheduleEdit} label="Edit" />
+			<SmallButton onclick={onScheduleEdit} disabled={deviceDisabled} label="Edit" />
 		</div>
 	</div>
 </div>
@@ -74,6 +75,11 @@
 		width: 250px;
 		height: 400px;
 	}
+
+  .card-device-unsaved {
+    opacity: 0.35;
+    cursor: not-allowed;
+  }
 
 	.device-name-container {
 		display: flex;

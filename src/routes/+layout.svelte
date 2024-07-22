@@ -1,10 +1,10 @@
 <script lang="ts">
+  import { onMount } from 'svelte';
 	import { page } from '$app/stores';
 	import menuRoutes from '$lib/data/navMenu';
 	import Footer from '$lib/components/Footer/Footer.svelte';
 	import Header from '$lib/components/Header/Header.svelte';
 	import Modal from '$lib/components/Modal/Modal.svelte';
-	import { onMount } from 'svelte';
 	import configStore from '$lib/stores/configStore.svelte';
 	import controllerStore from '$lib/stores/controllerStore.svelte';
 	import InitLoadingBackdrop from '$lib/components/Backdrop/InitLoadingBackdrop.svelte';
