@@ -7,6 +7,7 @@
 	import ButtonSlotSetting from './ButtonSlotSetting.svelte';
 	import RemoveDevices from './RemoveDevices.svelte';
 	import AddDevice from './AddDevice.svelte';
+	import ModifyNameDevice from './ModifyNameDevice.svelte';
 
 	type ModalChildMap = {
 		[key in ModalTypes]: Component;
@@ -19,6 +20,7 @@
 		buttonSlotSetting: ButtonSlotSetting,
 		removeDevices: RemoveDevices,
 		addDevice: AddDevice,
+    modifyNameDevice: ModifyNameDevice,
 	};
 
 	$effect(() => {

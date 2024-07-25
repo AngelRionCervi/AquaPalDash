@@ -17,7 +17,7 @@ interface ModalStore {
 
 const defaultModalStoreValue: ModalState = { isOpen: false, title: '', type: null };
 
-let modalState = $state<ModalState>(defaultModalStoreValue);
+const modalState = $state<ModalState>(defaultModalStoreValue);
 
 const modalStore: ModalStore = {
 	get isOpen() {

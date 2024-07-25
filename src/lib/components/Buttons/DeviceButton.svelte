@@ -4,7 +4,7 @@
 	interface Props {
 		onClick: () => void;
 		name: string;
-    disabled: boolean;
+		disabled: boolean;
 		isLoading: boolean;
 		state: boolean;
 	}
@@ -17,12 +17,13 @@
 	<button
 		class="device-button device-{state ? 'on' : 'off'}"
 		class:is-loading={isLoading}
-    class:is-disabled={disabled}
+		class:is-disabled={disabled}
 		onclick={onClick}
-		>{#if isLoading}
-			<Loader size="medium" theme="light" />
-		{/if}</button
 	>
+		{#if isLoading}
+			<Loader size="medium" theme="light" />
+		{/if}
+	</button>
 </div>
 
 <style lang="scss">
@@ -43,9 +44,9 @@
 		height: 88px;
 		border-radius: 999px;
 		margin-bottom: 2px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+		display: flex;
+		align-items: center;
+		justify-content: center;
 	}
 
 	.device-on {
@@ -80,8 +81,8 @@
 		}
 	}
 
-  .is-disabled {
-    cursor: not-allowed;
-    opacity: 0.35;
-  }
+	.is-disabled {
+		cursor: not-allowed;
+		opacity: 0.35;
+	}
 </style>

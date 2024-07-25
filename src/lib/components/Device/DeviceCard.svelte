@@ -3,6 +3,7 @@
 	import modalStore from '$lib/stores/modalStore.svelte';
 	import devicesStatusStore from '$lib/stores/deviceStatusStore.svelte';
 	import { getScheduleLabel } from '$lib/helpers/utils';
+	import EditIcon from '$lib/icons/edit.svg?component';
 
 	interface Props {
 		device: Device;
@@ -22,6 +23,11 @@
 		modalStore.toggle('Button Edit', 'buttonSlotSetting', { name: device.name });
 	}
 
+  function onModifyName() {
+    console.log('modify name');
+    modalStore.toggle('Modify Name', 'modifyNameDevice', { name: device.name });
+  }
+
 	function getPillStatusOn(status: boolean | null | undefined) {
 		if (status === null) return 'unknown';
 		return status ? 'on' : 'off';
@@ -35,7 +41,11 @@
 
 <div class="card-container" class:card-device-unsaved={deviceDisabled}>
 	<div class="device-name-container">
-		<span class="device-name">{device.name}</span>
+		<div class="device-name">
+			<span>{device.name}</span><button onclick={onModifyName} class="name-edit-button" aria-label="edit"
+				><EditIcon width={20} height={20} /></button
+			>
+		</div>
 	</div>
 	<div class="separator"></div>
 	<div class="device-status">
@@ -61,7 +71,9 @@
 		<div class="semi-separator"></div>
 		<div class="editable-row-schedule">
 			<span class="setting-title">Schedule:</span>
-			<div class="current-value-schedule"><span>{@html getScheduleLabel(device.schedule)}</span></div>
+			<div class="current-value-schedule">
+				<span>{@html getScheduleLabel(device.schedule)}</span>
+			</div>
 			<SmallButton onclick={onScheduleEdit} disabled={deviceDisabled} label="Edit" />
 		</div>
 	</div>
@@ -91,6 +103,9 @@
 
 	.device-name {
 		font-size: var(--font-L);
+		display: flex;
+		gap: 8px;
+		margin-left: 25px;
 	}
 
 	.separator {
@@ -172,6 +187,22 @@
 
 	.current-value-schedule {
 		font-size: var(--font-S);
-    font-weight: bold;
+		font-weight: bold;
+	}
+
+	.name-edit-button {
+		background-color: transparent;
+		cursor: pointer;
+		padding: 0;
+		border-radius: var(--radius-S);
+		height: fit-content;
+		padding: 2px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+
+		&:hover {
+			background-color: var(--primary-darker);
+		}
 	}
 </style>

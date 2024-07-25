@@ -1,3 +1,6 @@
+import ShortUniqueId from 'short-unique-id';
+const uuid = new ShortUniqueId({ length: 10 });
+
 export function minutesToHours(mins: number) {
 	const hours = mins / 60;
 	const int = Math.floor(hours);
@@ -38,4 +41,8 @@ export function getScheduleLabel(schedule: Schedule) {
 	}
 
 	return 'unknown';
+}
+
+export function generateUniqueId() {
+	return uuid.randomUUID();
 }

@@ -1,8 +1,8 @@
 <script lang="ts">
+	import type { ComponentType } from 'svelte';
 	import AddIcon from '$lib/icons/add.svg?component';
 	import BinIcon from '$lib/icons/bin.svg?component';
-	import LoadingIcon from '$lib/icons/loading.svg?component';
-	import type { ComponentType } from 'svelte';
+	import Loader from '$lib/components/Loaders/Loader.svelte';
 
 	interface Props {
 		label: string;
@@ -42,9 +42,7 @@
 		<svelte:component this={iconMap[icon]} width={24} height={24} />
 	{/if}
 	{#if isLoading}
-		<div class="loading-icon-container">
-			<LoadingIcon width={24} height={24} />
-		</div>
+		<Loader size="small" theme="light" />
 	{:else}
 		<span>{label}</span>
 	{/if}
@@ -106,21 +104,6 @@
 			&.button-red {
 				background-color: var(--primary-error);
 			}
-		}
-	}
-
-	.loading-icon-container {
-    width: 24px;
-    height: 24px;
-		animation: spin 3s linear infinite;
-	}
-
-	@keyframes spin {
-		from {
-			transform: rotate(0deg);
-		}
-		to {
-			transform: rotate(360deg);
 		}
 	}
 </style>
