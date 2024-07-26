@@ -12,7 +12,7 @@
 <div class="devices-main-container">
 	<div class="devices-cards">
 		{#if devicesInOrder?.length}
-			{#each devicesInOrder as device (device.name)}
+			{#each devicesInOrder as device (device.id)}
 				<DeviceCard {device} />
 			{/each}
 		{:else}

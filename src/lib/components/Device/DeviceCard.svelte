@@ -10,22 +10,22 @@
 	}
 
 	const { device }: Props = $props();
-	const deviceStatus = $derived(devicesStatusStore.getDeviceStatus(device.name));
+	const deviceStatus = $derived(devicesStatusStore.getDeviceStatus(device.id));
 	const deviceDisabled = $derived(device.isUnsaved || device.toBeRemoved);
 
 	function onScheduleEdit() {
 		console.log('schedule edit');
-		modalStore.toggle('Schedule Edit', 'scheduleSetting', { name: device.name });
+		modalStore.toggle('Schedule Edit', 'scheduleSetting', { id: device.id });
 	}
 
 	function onButtonSlotEdit() {
 		console.log('button slot edit');
-		modalStore.toggle('Button Edit', 'buttonSlotSetting', { name: device.name });
+		modalStore.toggle('Button Edit', 'buttonSlotSetting', { id: device.id });
 	}
 
   function onModifyName() {
     console.log('modify name');
-    modalStore.toggle('Modify Name', 'modifyNameDevice', { name: device.name });
+    modalStore.toggle('Modify Name', 'modifyNameDevice', { id: device.id });
   }
 
 	function getPillStatusOn(status: boolean | null | undefined) {

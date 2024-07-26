@@ -1,4 +1,5 @@
 import ConfigApi from '$lib/api/configApi';
+import { MAX_DEVICES } from '$lib/constants';
 import controllerStore from './controllerStore.svelte';
 
 interface CallState {
@@ -29,7 +30,7 @@ interface ConfigStore {
 	callStates: ConfigState['callStates'];
 	undoModifications: () => void;
 	fetchAndSetConfig: () => Promise<void>;
-	updateDevice: (name: string, partialDevice: Partial<Device>) => void;
+	updateDevice: (id: string, partialDevice: Partial<Device>) => void;
 	updateSetting: <T extends keyof ConfigSettings>(
 		key: keyof ConfigSettings,
 		value: ConfigSettings[T]
@@ -41,7 +42,7 @@ interface ConfigStore {
 	checkSync: () => void;
 	uploadNewConfig: () => void;
 	addDevice: (newDevice: Device) => void;
-	removeDevices: (name: string | Array<string>) => void;
+	removeDevices: (id: string | Array<string>) => void;
 	prepareConfigForUpload: () => Config | undefined;
 }
 
@@ -132,11 +133,11 @@ const configStore: ConfigStore = {
 
 		return config;
 	},
-	updateDevice(name: string, partialDevice: Partial<Device>) {
+	updateDevice(id: string, partialDevice: Partial<Device>) {
 		if (!configState.config) return;
 
 		const devices = configState.config.devices;
-		const corDeviceIndex = devices.findIndex((device) => (device.name === name));
+		const corDeviceIndex = devices.findIndex((device) => device.id === id);
 
 		if (corDeviceIndex === -1) {
 			const message = 'No device to update found.';
@@ -162,7 +163,7 @@ const configStore: ConfigStore = {
 
 		const devices = configState.config.devices;
 
-		if (devices.length >= 5) {
+		if (devices.length >= MAX_DEVICES) {
 			const message = 'Maximum number of devices reached.';
 			console.error(message);
 			callStates.addDevice.error = message;
@@ -181,18 +182,18 @@ const configStore: ConfigStore = {
 		configState.config.devices = [...devices, newDevice];
 		configStore.checkSync();
 	},
-	removeDevices(names: string | Array<string>) {
+	removeDevices(ids: string | Array<string>) {
 		if (!configState.config) return;
 
-		const nameList = [names].flat();
+		const idList = [ids].flat();
 		const devices = configState.config.devices;
 
-		nameList.forEach((name) => {
-			const corDevice = devices.find((device) => device.name === name);
+		idList.forEach((id) => {
+			const corDevice = devices.find((device) => device.id === id);
 
 			if (corDevice) {
 				if (corDevice.isUnsaved && configState.config) {
-					configState.config.devices = devices.filter((device) => device.name !== name);
+					configState.config.devices = devices.filter((device) => device.id !== id);
 				} else {
 					corDevice.toBeRemoved = true;
 				}
@@ -254,7 +255,7 @@ const configStore: ConfigStore = {
 
 		for (let i = 0; i < newConfig.devices.length; i++) {
 			const newDevice = newConfig.devices[i];
-			const prevDevice = previousConfig.devices.find(({ name }) => name === newDevice.name);
+			const prevDevice = previousConfig.devices.find(({ id }) => id === newDevice.id);
 
 			if (!prevDevice) {
 				newSync = false;
@@ -336,6 +337,7 @@ function validateSchedule(schedule: ScheduleRange | boolean) {
 
 function checkDeviceIntegrity(device: Device) {
 	return (
+    validateTruthyString(device.id) &&
 		validateTruthyString(device.name) &&
 		validateTruthyString(device.ip) &&
 		validateNumber(device.button) &&

@@ -3,7 +3,8 @@
 	import { MAX_DEVICES } from '$lib/constants';
 	import modalStore from '$lib/stores/modalStore.svelte';
 	import configStore from '$lib/stores/configStore.svelte';
-	import ScheduleInput from '../Inputs/ScheduleInput.svelte';
+	import ScheduleInput from '$lib/components/Inputs/ScheduleInput.svelte';
+	import { generateUniqueId } from '$lib/helpers/utils';
 
 	const { toggle } = modalStore;
 
@@ -17,8 +18,9 @@
 
 	function onAddDevice() {
 		console.log('name ip', name, ipAddress);
+    const id = generateUniqueId();
 		if (!isValidateDisabled && buttonSlot && ipAddress && name && newSchedule !== null) {
-			configStore.addDevice({ name, ip: ipAddress, button: buttonSlot, schedule: newSchedule });
+			configStore.addDevice({ id, name, ip: ipAddress, button: buttonSlot, schedule: newSchedule });
 		}
 
 		toggle();

@@ -44,7 +44,7 @@ interface ControllerStore {
 	clearCheckUpdateWithInterval: () => void;
 	checkHardwareUpdate: () => Promise<void>;
 	toggleSchedule: () => Promise<void>;
-	toggleDeviceSchedule: (name: string) => Promise<void>;
+	toggleDeviceSchedule: (id: string) => Promise<void>;
 }
 
 const callStates: ControllerState['callStates'] = $state({
@@ -97,16 +97,16 @@ const controllerStore: ControllerStore = {
 		constrollerState.isScheduleOn = !result.newState;
 		callStates.toggleSchedule.isLoading = false;
 	},
-	async toggleDeviceSchedule(name: string) {
+	async toggleDeviceSchedule(id: string) {
     if (constrollerState.isScheduleOn) return;
 
-    if (!deviceCallStates[name]) {
-      deviceCallStates[name] = {};
+    if (!deviceCallStates[id]) {
+      deviceCallStates[id] = {};
     }
-		deviceCallStates[name].isLoading = true;
-		const result = await ControllerApi.API_toggleDeviceSchedule(name);
-    devicesStatusStore.updateDeviceState(name, result.newState);
-		deviceCallStates[name].isLoading = false;
+		deviceCallStates[id].isLoading = true;
+		const result = await ControllerApi.API_toggleDeviceSchedule(id);
+    devicesStatusStore.updateDeviceState(id, result.newState);
+		deviceCallStates[id].isLoading = false;
 	},
 	async checkHardwareUpdate() {
 		try {

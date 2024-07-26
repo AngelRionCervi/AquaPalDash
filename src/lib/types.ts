@@ -2,12 +2,14 @@ type ScheduleRange = [number, number];
 type Schedule = ScheduleRange | boolean;
 
 interface RawDeviceStatus {
+  id: string;
 	name: string;
 	state: boolean;
 	isOnline: boolean;
 }
 
 interface Device {
+  id: string;
 	name: string;
 	ip: string;
 	button: number;

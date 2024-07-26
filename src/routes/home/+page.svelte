@@ -18,10 +18,10 @@
 		controllerStore.toggleSchedule();
 	}
 
-	function onDeviceButtonClick(name: string) {
-		console.log('device button clicked', name);
+	function onDeviceButtonClick(id: string) {
+		console.log('device button clicked', id);
 		if (controllerStore.isScheduleOn) return;
-		controllerStore.toggleDeviceSchedule(name);
+		controllerStore.toggleDeviceSchedule(id);
 	}
 
 	$effect(() => {
@@ -55,13 +55,13 @@
 		</div>
 		<div class="device-buttons-container">
 			{#if configStore.config?.devices}
-				{#each devicesInOrder as { name } (name)}
+				{#each devicesInOrder as { id, name } (id)}
 					<DeviceButton
-						onClick={() => onDeviceButtonClick(name)}
+						onClick={() => onDeviceButtonClick(id)}
 						{name}
 						disabled={controllerStore.isScheduleOn}
-						isLoading={!!controllerStore.deviceCallStates[name]?.isLoading}
-						state={!!deviceStatusStore.getDeviceStatus(name)?.isOn}
+						isLoading={!!controllerStore.deviceCallStates[id]?.isLoading}
+						state={!!deviceStatusStore.getDeviceStatus(id)?.isOn}
 					/>
 				{/each}
 			{/if}

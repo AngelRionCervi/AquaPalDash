@@ -61,11 +61,11 @@ async function API_toggleSchedule() {
 	}
 }
 
-async function API_toggleDeviceSchedule(name: string) {
+async function API_toggleDeviceSchedule(id: string) {
 	try {
-		const response = await fetch(`${API_ROUTE}/toggledevice?name=${name}`);
+		const response = await fetch(`${API_ROUTE}/toggledevice?id=${id}`);
 		if (!response.ok) {
-			throw new Error(`Failed to toggle device ${name}, code ${response.status}`);
+			throw new Error(`Failed to toggle device ${id}, code ${response.status}`);
 		}
 
 		const jsonResult = await response.json();
@@ -75,7 +75,7 @@ async function API_toggleDeviceSchedule(name: string) {
 
 		return jsonResult;
 	} catch (error) {
-		console.error(`An error occurred while toggling ${name} schedule:`, error);
+		console.error(`An error occurred while toggling ${id} schedule:`, error);
 	}
 }
 

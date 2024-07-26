@@ -1,5 +1,5 @@
 <script lang="ts">
-	import Loader from '../Loaders/Loader.svelte';
+	import Loader from '$lib/components/Loaders/Loader.svelte';
 
 	interface Props {
 		onClick: () => void;

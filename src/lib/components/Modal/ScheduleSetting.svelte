@@ -6,20 +6,20 @@
 	import ScheduleInput from '$lib/components/Inputs/ScheduleInput.svelte';
 
 	interface Props {
-		name?: string;
+		id?: string;
 	}
 
-	const { name = '' }: Props = $props();
+	const { id = '' }: Props = $props();
 	const { toggle } = modalStore;
-	const device = configStore.config?.devices.find((device) => device.name === name);
+	const device = configStore.config?.devices.find((device) => device.id === id);
 
 	let newSchedule = $state<Schedule | undefined>(device?.schedule);
 	let isOldSchedule = $derived(device?.schedule.toString() === newSchedule?.toString());
 
 	function onValidate() {
 		if (!isOldSchedule && newSchedule) {
-			console.log('validate schedule', name, { schedule: newSchedule });
-			configStore.updateDevice(name, { schedule: newSchedule });
+			console.log('validate schedule', id, { schedule: newSchedule });
+			configStore.updateDevice(id, { schedule: newSchedule });
 		}
 		toggle();
 	}
