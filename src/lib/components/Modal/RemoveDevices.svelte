@@ -5,13 +5,11 @@
 
 	const { toggle } = modalStore;
 
-	let devicesList = $state(configStore.config?.devices.map(({ name }) => ({ name, checked: false })) || []);
+	let devicesList = $state(configStore.config?.devices.map(({ id, name }) => ({ id, name, checked: false })) || []);
 	let numbersToRemove = $derived(devicesList.filter(({ checked }) => checked).length);
 
 	function onRemoveDevices() {
-		console.log('remove devices', numbersToRemove);
-    const devicesTopRemove = devicesList.filter(({ checked }) => checked).map(({ name }) => name);
-    console.log('devicesTo remove', devicesTopRemove)
+    const devicesTopRemove = devicesList.filter(({ checked }) => checked).map(({ id }) => id);
     configStore.removeDevices(devicesTopRemove);
 		toggle();
 	}
@@ -27,18 +25,18 @@
 <div class="remove-device-container">
 	<div class="top">
 		<fieldset class="remove-devices-fields">
-			{#each devicesList as { name, checked }, index (name)}
+			{#each devicesList as { name, id, checked }, index (id)}
 				<div class="device-row">
 					<input
 						class="checkbox-input"
 						type="checkbox"
-						id="{name}_id"
-						value={name}
-						{name}
+						id="{id}_id"
+						value={id}
+						name={id}
 						{checked}
 						oninput={(evt) => onCheckboxChange(evt, index)}
 					/>
-					<label for="{name}_id">{name}</label>
+					<label for="{id}_id">{name}</label>
 				</div>
 			{/each}
 		</fieldset>

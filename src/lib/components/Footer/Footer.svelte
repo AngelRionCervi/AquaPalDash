@@ -36,7 +36,7 @@
 		<PrimaryButton label="Remove devices" icon="bin" disabled={configStore.config?.devices.length === 0} onclick={onRemoveDevices} />
 	</div>
 	<div class="right-container">
-		{#if !configStore.isSync}
+		{#if !configStore.isSync && !configStore.callStates.uploadNewConfig.isLoading}
 			<div class="unsaved-infos">
 				<p>Some modifications are <span class="unsaved-label">unsaved</span></p>
 				<button class="button-undo" onclick={onUndoModifications}>
@@ -44,7 +44,11 @@
 					<span>Undo all modifications</span>
 				</button>
 			</div>
-		{/if}
+		{:else if configStore.callStates.uploadNewConfig.isLoading}
+      <p>Uploading new configuration...</p>
+    {:else}
+      <p>Configuration is up to date</p>
+    {/if}
 		<PrimaryButton
 			type="green"
 			label="Save and restart"
