@@ -20,7 +20,7 @@
 		buttonSlotSetting: ButtonSlotSetting,
 		removeDevices: RemoveDevices,
 		addDevice: AddDevice,
-    modifyNameDevice: ModifyNameDevice,
+		modifyNameDevice: ModifyNameDevice
 	};
 
 	$effect(() => {
@@ -31,7 +31,10 @@
 {#if modalStore.isOpen}
 	<div class="modal-container">
 		<div class="modal-header">
-			<span class="modal-title">{modalStore.title}</span>
+			<div class="modal-top-left">
+				<span class="modal-title">{modalStore.title}</span>
+				<span class="modal-subtitle">{modalStore?.subtitle || ''}</span>
+			</div>
 			<button onclick={() => toggle()}><CloseIcon width={32} height={32} /></button>
 		</div>
 		<div>
@@ -55,10 +58,21 @@
 		z-index: 10;
 	}
 
-	.modal-title {
+	.modal-top-left {
+    display: flex;
+    align-items: flex-end;
+    gap: 16px;
+	}
+
+  .modal-title {
 		font-size: var(--font-L);
 		font-weight: bold;
-	}
+  }
+
+  .modal-subtitle {
+    font-size: var(--font-M);
+    margin-bottom: 4px;
+  }
 
 	.modal-header {
 		display: flex;

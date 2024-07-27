@@ -272,6 +272,11 @@ const configStore: ConfigStore = {
 				break;
 			}
 
+      if (prevDevice.name !== newDevice.name) {
+				newSync = false;
+				break;
+			}
+
 			if (prevDevice.ip !== newDevice.ip || prevDevice.button !== newDevice.button) {
 				newSync = false;
 				break;

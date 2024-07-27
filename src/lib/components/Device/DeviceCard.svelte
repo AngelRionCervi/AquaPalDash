@@ -15,17 +15,17 @@
 
 	function onScheduleEdit() {
 		console.log('schedule edit');
-		modalStore.toggle('Schedule Edit', 'scheduleSetting', { id: device.id });
+		modalStore.toggle('Schedule Edit', 'scheduleSetting', { id: device.id }, device.name);
 	}
 
 	function onButtonSlotEdit() {
 		console.log('button slot edit');
-		modalStore.toggle('Button Edit', 'buttonSlotSetting', { id: device.id });
+		modalStore.toggle('Button Edit', 'buttonSlotSetting', { id: device.id }, device.name);
 	}
 
   function onModifyName() {
     console.log('modify name');
-    modalStore.toggle('Modify Name', 'modifyNameDevice', { id: device.id });
+    modalStore.toggle('Modify Name', 'modifyNameDevice', { id: device.id }, device.name);
   }
 
 	function getPillStatusOn(status: boolean | null | undefined) {

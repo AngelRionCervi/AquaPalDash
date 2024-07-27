@@ -2,67 +2,107 @@
 	import Select from '$lib/components/Inputs/Select.svelte';
 	import PrimaryButton from '$lib/components/Buttons/PrimaryButton.svelte';
 	import modalStore from '$lib/stores/modalStore.svelte';
+	import configStore from '$lib/stores/configStore.svelte';
+	import { MAX_DEVICES } from '$lib/constants';
+	import ErrorField from './ErrorField.svelte';
 
-	const { toggle } = modalStore;
+	const { toggle, childProps } = modalStore;
 
-	const id = `select_button_slot`;
+	const selectId = `select_button_slot`;
+	const availableButtons = getAvailableButtons();
+
+	let newButtonSlot = $state<number | null>(availableButtons[0]?.value || null);
+	let errorMessage = $state<string | null>(null);
 
 	function onValidate() {
-		console.log('validate button slot');
+		checkForError();
+		if (typeof newButtonSlot !== 'number') return;
+
+		configStore.updateDevice(childProps?.id, { button: newButtonSlot });
 		toggle();
+	}
+
+	function getAvailableButtons() {
+		const devicesButtonArray = [
+			...new Array(MAX_DEVICES).fill(0).map((val, index) => (val += index))
+		];
+
+		const availableButtons = devicesButtonArray
+			.filter(
+				(button) =>
+					!(configStore.config?.devices || []).map((device) => device.button).includes(button)
+			)
+			.map((button) => ({ label: button + 1, value: button }));
+
+		return availableButtons;
+	}
+
+	function onButtonChange(evt: Event) {
+		const target = evt.target as HTMLSelectElement;
+		const button = Number(target.value);
+
+		newButtonSlot = button;
+
+		checkForError();
+	}
+
+	function checkForError() {
+		const currentDevice = configStore.config?.devices.find(
+			(device) => device.id === childProps?.id
+		);
+
+		if (typeof newButtonSlot !== 'number') {
+			errorMessage = 'Button needs to be a number';
+		} else if (currentDevice?.button === newButtonSlot) {
+			errorMessage = 'This button is already bound to this device';
+		} else {
+			errorMessage = null;
+		}
 	}
 </script>
 
 <div class="button-slot-setting-container">
 	<div class="top">
 		<div class="inner-container left">
-			<table class="buttons-table">
-				<tbody>
-					<tr class="table-row">
-						<th>button 1:</th>
-						<td>light</td>
-					</tr>
-					<tr class="table-row">
-						<th>button 2:</th>
-						<td>co2</td>
-					</tr>
-					<tr class="table-row">
-						<th>button 3:</th>
-						<td>filter</td>
-					</tr>
-					<tr class="table-row">
-						<th>button 4:</th>
-						<td class="id-free">free</td>
-					</tr>
-					<tr class="table-row">
-						<th>button 5:</th>
-						<td class="id-free">free</td>
-					</tr>
-				</tbody>
-			</table>
+			<div class="buttons-info-container">
+				<span>Used buttons:</span>
+				<table class="buttons-table">
+					<tbody>
+						{#each configStore.config?.devices || [] as { button, id, name } (id)}
+							<tr class="table-row">
+								<th>button {button + 1}:</th>
+								<td>{name}</td>
+							</tr>
+						{/each}
+					</tbody>
+				</table>
+			</div>
+			<div class="buttons-info-container">
+				<span>Free buttons:</span>
+				<div class="available-labels">
+					{availableButtons.map(({ label }) => label).join(', ')}
+				</div>
+			</div>
 		</div>
 		<div class="separator"></div>
 		<div class="inner-container right">
-			<Select
-				{id}
-				name={id}
-				label="New button:"
-				values={[
-					{ label: '1', value: 1 },
-					{ label: '2', value: 2 },
-					{ label: '3', value: 3 },
-					{ label: '4', value: 4 },
-					{ label: '5', value: 5 }
-				]}
-				hasBorders
-			/>
+			{#if !availableButtons.length}
+				<p class="all-buttons-bound">All buttons are already bound</p>
+			{:else}
+				<Select
+					id={selectId}
+					name="select_{selectId}"
+					label="New button:"
+					values={availableButtons}
+					hasBorders
+					onchange={onButtonChange}
+				/>
+			{/if}
 		</div>
 	</div>
-  <div class="change-recap">
-  -->display change recap if binding on already bound button
-  </div>
 	<div class="bottom">
-		<PrimaryButton onclick={onValidate} label="OK" />
+		<ErrorField messages={errorMessage} />
+		<PrimaryButton disabled={!!errorMessage} onclick={onValidate} label="OK" />
 	</div>
 </div>
 
@@ -70,7 +110,7 @@
 	.button-slot-setting-container {
 		display: flex;
 		flex-direction: column;
-		gap: 36px;
+		gap: 24px;
 		justify-content: space-between;
 	}
 
@@ -82,6 +122,8 @@
 	.bottom {
 		display: flex;
 		justify-content: center;
+		align-items: center;
+		flex-direction: column;
 	}
 
 	.separator {
@@ -99,7 +141,7 @@
 		align-items: center;
 
 		&.left {
-			gap: 4px;
+			gap: 16px;
 
 			p {
 				width: 150px;
@@ -119,13 +161,32 @@
 		color: var(--primary-success);
 	}
 
-  .table-row {
-    display: flex;
-    justify-content: flex-start;
-    gap: 8px;
+	.table-row {
+		display: flex;
+		justify-content: flex-start;
+		gap: 8px;
 
-    th, td {
-      width: 90px;
-    }
-  }
+		th,
+		td {
+			width: 90px;
+		}
+	}
+
+	.all-buttons-bound {
+		text-align: center;
+		font-weight: bold;
+	}
+
+	.buttons-info-container {
+		width: 100%;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 4px;
+	}
+
+	.available-labels {
+		color: var(--primary-success);
+		font-weight: bold;
+	}
 </style>

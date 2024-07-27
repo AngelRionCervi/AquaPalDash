@@ -42,7 +42,7 @@
 					oninput={onChange}
 				/>
 			{:else if type === 'select' && values?.length}
-				<Select {id} {name} {values} {currentValue} onchange={onChange} />
+				<Select {id} {name} {values} {currentValue} onchange={onChange} hasBorders />
 			{/if}
 		</div>
 	</div>

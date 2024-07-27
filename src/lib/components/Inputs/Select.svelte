@@ -2,7 +2,7 @@
 	interface Props {
 		name: string;
 		id: string;
-		currentValue: unknown;
+		currentValue?: unknown;
 		values: Array<{ label: string; value: number | string | boolean }>;
     onchange: (evt: Event) => void;
 		label?: string;
@@ -43,6 +43,7 @@
 		-webkit-appearance: none;
 		appearance: none;
 		padding-right: 2rem;
+    background-color: var(--primary-lighter);
 
 		&.borders {
 			border: 1px solid var(--secondary);

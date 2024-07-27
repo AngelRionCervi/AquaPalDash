@@ -15,17 +15,21 @@
 
 	let newSchedule = $state<Schedule | undefined>(device?.schedule);
 	let isOldSchedule = $derived(device?.schedule.toString() === newSchedule?.toString());
+	let errorMessage = $state<string | null>(null);
 
 	function onValidate() {
 		if (!isOldSchedule && newSchedule) {
 			console.log('validate schedule', id, { schedule: newSchedule });
 			configStore.updateDevice(id, { schedule: newSchedule });
+			errorMessage = null;
+		} else {
+			errorMessage = 'The new schedule is the same as the current one';
 		}
 		toggle();
 	}
 
 	function onChange(schedule: Schedule) {
-    newSchedule = schedule;
+		newSchedule = schedule;
 	}
 </script>
 
@@ -42,10 +46,8 @@
 		<ScheduleInput {onChange} previousSetting={device?.schedule} />
 	</div>
 	<div class="bottom">
-		<ErrorField
-			messages={['error example', "yet another error but this time it's veven longer lolol"]}
-		/>
-		<PrimaryButton onclick={onValidate} disabled={isOldSchedule} label="OK" />
+		<ErrorField messages={errorMessage} />
+		<PrimaryButton onclick={onValidate} disabled={isOldSchedule || !!errorMessage} label="OK" />
 	</div>
 </div>
 
@@ -54,13 +56,21 @@
 		display: flex;
 		align-items: center;
 		flex-direction: column;
-		gap: 16px;
+		gap: 24px;
 	}
 
 	.top {
 		width: 100%;
 		display: flex;
 		justify-content: space-between;
+		flex-direction: column;
+		align-items: center;
+		gap: 16px;
+	}
+
+	.device-name {
+		font-size: var(--font-M);
+		font-weight: bold;
 	}
 
 	.current-schedule {
