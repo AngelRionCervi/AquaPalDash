@@ -1,14 +1,20 @@
 <script lang="ts">
+	import monitoringStore, { type MonitoringValueParam } from '$lib/stores/monitoringStore.svelte';
+
 	interface Props {
-		stat: 'ph' | 'temp';
+		stat: MonitoringValueParam;
 	}
 
 	const { stat }: Props = $props();
 
-  const statLabelMap = {
-    ph: 'PH:',
-    temp: "Temp:"
-  }
+	const statLabelMap = {
+		ph: 'PH:',
+		temp: 'Temp:'
+	};
+
+  $effect(() => {
+    console.log(monitoringStore.last)
+  })
 </script>
 
 <div class="container">
@@ -16,22 +22,22 @@
 		<span>{statLabelMap[stat]}</span>
 	</div>
 	<div class="value value-ok">
-		<span>6.4</span>
+		<span>{monitoringStore.last[stat]}</span>
 	</div>
 </div>
 
 <style lang="scss">
 	.container {
 		display: flex;
-    gap: 8px;
+		gap: 8px;
 	}
 
-  .value {
-    font-size: var(--font-XL);
-    font-weight: bold;
+	.value {
+		font-size: var(--font-XL);
+		font-weight: bold;
 
-    &.value-ok {
-      color: var(--primary-success);
-    }
-  }
+		&.value-ok {
+			color: var(--primary-success);
+		}
+	}
 </style>

@@ -33,6 +33,7 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"apexcharts": "^3.51.0",
 		"short-unique-id": "^5.2.0"
 	}
 }

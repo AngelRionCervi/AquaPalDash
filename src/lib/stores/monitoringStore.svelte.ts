@@ -3,6 +3,12 @@ import { GET_MONITORING_UPDATE_INTERVAL, DEFAULT_HISTORICAL_DAYS } from '$lib/co
 
 export type MonitoringValueParam = 'ph' | 'temp';
 
+export interface MonitoringPayload {
+	temp: number;
+	ph: number;
+	timestamp: number;
+}
+
 interface MonitoringLast {
 	ph: number;
 	temp: number;
@@ -12,12 +18,6 @@ interface RawMonitoringPayload {
 	t: number;
 	p: number;
 	d: number;
-}
-
-interface MonitoringPayload {
-	temp: number;
-	ph: number;
-	timestamp: number;
 }
 
 type ValueError = null | string;
@@ -105,7 +105,9 @@ const monitoringStore: MonitoringStore = {
 
 		const isError = monitoringStore.checkError(lastUpdate);
 
-		if (isError) return;
+    console.log('LAST UPDTAE',lastUpdate, isError)
+
+		//if (isError) return;
 
 		monitoringState.last = { ph: lastUpdate.ph, temp: lastUpdate.temp };
 		monitoringState.lastUpdate = lastUpdate.timestamp;

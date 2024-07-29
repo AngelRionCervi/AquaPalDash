@@ -22,7 +22,7 @@ async function API_getLastMonitoringData() {
 
 async function API_getHistoricalMonitoringData(pastDays: string) {
 	try {
-		const response = await fetch(`${API_ROUTE}/historical?r=${pastDays}`);
+		const response = await fetch(`${API_ROUTE}/historical?r=${"19_5"}`);
 		if (!response.ok) {
 			throw new Error(`Failed to get historical monitoring data code ${response.status}`);
 		}

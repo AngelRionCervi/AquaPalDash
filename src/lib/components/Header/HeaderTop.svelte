@@ -1,11 +1,12 @@
 <script lang="ts">
 	import controllerStore from '$lib/stores/controllerStore.svelte';
+	import configStore from '$lib/stores/configStore.svelte';
 	import TopRightStat from './TopRightStat.svelte';
 </script>
 
 <div class="main-container">
 	<div class="left-container">
-		<div class="aquarium-name">60x40 Living Room</div>
+		<div class="aquarium-name">{configStore.config?.settings.aquariumLabel || ''}</div>
 		<div class="aquarium-stat">
 			<span>status:</span>
 			<span class="status-{controllerStore.isOn ? 'on' : 'off'}"
