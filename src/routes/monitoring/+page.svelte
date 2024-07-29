@@ -3,7 +3,7 @@
 	import monitoringStore from '$lib/stores/monitoringStore.svelte';
 	import LineChart from '$lib/components/Charts/LineChart.svelte';
 
-	const chartData = $state(getChartData(monitoringStore.historicals));
+	const chartData = structuredClone(getChartData(monitoringStore.historicals));
 </script>
 
 <div class="monitoring-main-container">

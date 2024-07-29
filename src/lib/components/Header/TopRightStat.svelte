@@ -12,17 +12,15 @@
 		temp: 'Temp:'
 	};
 
-  $effect(() => {
-    console.log(monitoringStore.last)
-  })
+  const isError = $derived(monitoringStore.errors[stat]);
 </script>
 
 <div class="container">
 	<div class="label">
 		<span>{statLabelMap[stat]}</span>
 	</div>
-	<div class="value value-ok">
-		<span>{monitoringStore.last[stat]}</span>
+	<div class="value value-{isError ? "ko" : "ok"}">
+		<span>{isError ? "Error" : monitoringStore.last[stat]}</span>
 	</div>
 </div>
 
@@ -38,6 +36,10 @@
 
 		&.value-ok {
 			color: var(--primary-success);
+		}
+
+    &.value-ko {
+			color: var(--primary-error);
 		}
 	}
 </style>
