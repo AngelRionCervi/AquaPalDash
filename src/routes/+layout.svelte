@@ -8,6 +8,7 @@
 	import configStore from '$lib/stores/configStore.svelte';
 	import controllerStore from '$lib/stores/controllerStore.svelte';
 	import InitLoadingBackdrop from '$lib/components/Backdrop/InitLoadingBackdrop.svelte';
+	import monitoringStore from '$lib/stores/monitoringStore.svelte';
 
 	const { children } = $props();
 
@@ -18,9 +19,14 @@
 	}
 
 	onMount(async () => {
-		await configStore.fetchAndSetConfig();
-		await controllerStore.checkHardwareUpdate();
+    await configStore.fetchAndSetConfig();
+    await Promise.all([
+      controllerStore.checkHardwareUpdate(),
+      monitoringStore.updateLast(),
+      monitoringStore.fetchHistoricals(),
+    ]);
 		controllerStore.checkUpdateWithInterval();
+    monitoringStore.updateLastWithInterval();
     mainLoading = false;
 	});
 </script>
