@@ -20,7 +20,7 @@
 		<span>{statLabelMap[stat]}</span>
 	</div>
 	<div class="value value-{isError ? "ko" : "ok"}">
-		<span>{isError ? "Error" : monitoringStore.last[stat]}</span>
+		<span>{isError ? "-" : monitoringStore.last[stat]}</span>
 	</div>
 </div>
 
@@ -39,7 +39,7 @@
 		}
 
     &.value-ko {
-			color: var(--primary-error);
+			color: var(--secondary);
 		}
 	}
 </style>

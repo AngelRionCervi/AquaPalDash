@@ -7,7 +7,7 @@
 		setting: Setting;
 		index: number;
 		currentValue: unknown;
-		onSettingChange: (settingName: keyof ConfigSettings, value: unknown) => void;
+		onSettingChange: (settingName: keyof ConfigSettings, value: string | number | boolean) => void;
 	}
 
 	const { setting, index, currentValue, onSettingChange }: Props = $props();

@@ -51,7 +51,17 @@ const settings: Array<Setting> = [
     valueType: 'boolean',
 		defaultVal: false,
 		type: 'select',
+		values: [
+			{ label: 'yes', value: true },
+			{ label: 'no', value: false }
+		]
+	},
+  {
+		name: 'enableMonitoring',
+		label: 'Enable monitoring:',
     valueType: 'boolean',
+		defaultVal: true,
+		type: 'select',
 		values: [
 			{ label: 'yes', value: true },
 			{ label: 'no', value: false }

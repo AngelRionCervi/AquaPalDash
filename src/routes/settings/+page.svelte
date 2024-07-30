@@ -2,11 +2,20 @@
 	import settings from '$lib/data/settings';
 	import SettingSlot from '$lib/components/Settings/SettingSlot.svelte';
 	import configStore from '$lib/stores/configStore.svelte';
+  import monitoringStore from '$lib/stores/monitoringStore.svelte';
 
-	function onSettingChange(settingName: keyof ConfigSettings, value: unknown) {
+	async function onSettingChange(settingName: keyof ConfigSettings, value: string | number | boolean) {
 		if (configStore.config) {
 			configStore.updateSetting(settingName, value);
 		}
+    if (settingName === "enableMonitoring") {
+      if (value) {
+        await monitoringStore.fetchHistoricals();
+        monitoringStore.updateLastWithInterval();
+      } else {
+        monitoringStore.clearUpdateInterval();
+      }
+    }
 	}
 </script>
 

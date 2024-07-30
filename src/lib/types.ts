@@ -30,6 +30,7 @@ interface ConfigSettings {
 	theme: 'light' | 'dark';
 	tempUnit: 'celsius' | 'fahrenheit';
 	aquariumLabel: string;
+  enableMonitoring: boolean;
 }
 
 interface Config {

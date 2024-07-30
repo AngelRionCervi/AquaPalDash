@@ -46,3 +46,12 @@ export function getScheduleLabel(schedule: Schedule) {
 export function generateUniqueId() {
 	return uuid.randomUUID();
 }
+
+export function roundTo(num: number, decimals: number) {
+	const scale = Math.pow(10, decimals);
+	return Math.round((num + Number.EPSILON) * scale) / scale;
+}
+
+export function getCSSvar(varName: string) {
+	return window.getComputedStyle(document.documentElement).getPropertyValue(varName);
+}

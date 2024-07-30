@@ -40,6 +40,7 @@ interface MonitoringStore {
 	historicals: MonitoringPayload[];
 	errors: MonitoringError;
 	lastUpdate: number;
+  updateInterval: number;
 	updateLastWithInterval: () => void;
 	clearUpdateInterval: () => void;
 	setError: (param: MonitoringValueParam, error: null | string) => void;
@@ -71,12 +72,17 @@ const monitoringStore: MonitoringStore = {
 	get historicals() {
 		return monitoringState.historicals;
 	},
+  get updateInterval() {
+		return monitoringState.updateInterval;
+	},
 	updateLastWithInterval() {
+    monitoringStore.clearUpdateInterval();
 		monitoringState.updateInterval = setInterval(() => {
 			monitoringStore.updateLast();
 		}, GET_MONITORING_UPDATE_INTERVAL);
 	},
 	clearUpdateInterval() {
+    if (!monitoringState.updateInterval) return;
 		clearInterval(monitoringState.updateInterval);
 		monitoringState.updateInterval = 0;
 	},
@@ -107,18 +113,20 @@ const monitoringStore: MonitoringStore = {
 
     console.log('LAST UPDTAE',lastUpdate, isError)
 
-		//if (isError) return;
+		if (isError) return;
 
 		monitoringState.last = { ph: lastUpdate.ph, temp: lastUpdate.temp };
 		monitoringState.lastUpdate = lastUpdate.timestamp;
 
-		monitoringState.historicals.push(lastUpdate);
+		monitoringState.historicals = [lastUpdate, ...monitoringState.historicals];
 	},
 	async fetchHistoricals(pastDaysCount = DEFAULT_HISTORICAL_DAYS) {
 		const historicalArg = getHistoricalDaysArg(pastDaysCount);
 		const historicals = await monitoringApi.API_getHistoricalMonitoringData(historicalArg);
 
 		monitoringState.historicals = historicals.map(getReadableMonitoring);
+
+    console.log('monitoringState.historicals', monitoringState.historicals)
 	}
 };
 

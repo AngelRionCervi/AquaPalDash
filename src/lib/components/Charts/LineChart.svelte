@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { getCSSvar } from '$lib/helpers/utils';
 	import { onMount } from 'svelte';
 
 	interface Props {
@@ -7,6 +8,7 @@
 
 	const { data }: Props = $props();
 
+	let chart = $state<null | ApexCharts>(null);
 	let chartEl: HTMLDivElement;
 
 	const options = {
@@ -23,14 +25,39 @@
 				autoScaleYaxis: true
 			},
 			toolbar: {
-				autoSelected: 'zoom'
+				autoSelected: 'zoom',
+				tools: {
+					download: false,
+					selection: true,
+					zoom: true,
+					zoomin: true,
+					zoomout: true,
+					pan: true,
+					reset: true,
+					customIcons: []
+				}
 			}
+		},
+		stroke: {
+			show: true,
+			curve: 'straight',
+			lineCap: 'butt',
+			colors: [],
+			width: 4,
+			dashArray: 0
 		}
 	};
 
+	$effect(() => {
+		if (!chart) return;
+		chart.updateSeries(data.series);
+	});
+
 	onMount(async () => {
 		const ApexCharts = (await import('apexcharts')).default;
-		const chart = new ApexCharts(chartEl, { ...data, ...options });
+		(options.stroke.colors as any) = [getCSSvar('--primary-success')];
+    console.log('getCSSvar', getCSSvar('--primary-success'))
+		chart = new ApexCharts(chartEl, { ...data, ...options });
 		console.log('chart data', { ...data, ...options });
 		chart.render();
 	});

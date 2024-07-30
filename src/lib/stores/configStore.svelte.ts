@@ -315,7 +315,8 @@ function validateKey(
 		'prefetchHistorical',
 		'theme',
 		'tempUnit',
-		'aquariumLabel'
+		'aquariumLabel',
+    'enableMonitoring'
 	];
 
 	const secretsKeys: Array<keyof ConfigSecrets> = ['wifiSSID', 'wifiPass', 'serverPass'];

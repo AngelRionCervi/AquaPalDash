@@ -113,3 +113,11 @@ input[type='radio'] {
 input[type='radio']:checked {
 	border: 6px solid var(--secondary);
 }
+
+.apexcharts-pan-icon.apexcharts-selected svg {
+  stroke: var(--primary-success) !important;
+}
+
+.apexcharts-zoom-icon.apexcharts-selected svg {
+  fill: var(--primary-success) !important;
+}

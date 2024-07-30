@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
+	import { onMount } from 'svelte';
 	import { page } from '$app/stores';
 	import menuRoutes from '$lib/data/navMenu';
 	import Footer from '$lib/components/Footer/Footer.svelte';
@@ -19,15 +19,19 @@
 	}
 
 	onMount(async () => {
-    await configStore.fetchAndSetConfig();
-    await Promise.all([
-      controllerStore.checkHardwareUpdate(),
-      monitoringStore.updateLast(),
-      monitoringStore.fetchHistoricals(),
-    ]);
+		await configStore.fetchAndSetConfig();
+    await controllerStore.checkHardwareUpdate();
+
+    const { enableMonitoring, prefetchHistorical } = configStore.config?.settings || {};
+		if (enableMonitoring && prefetchHistorical) {
+			await monitoringStore.updateLast();
+			await monitoringStore.fetchHistoricals();
+			monitoringStore.updateLastWithInterval();
+		}
+    
 		controllerStore.checkUpdateWithInterval();
-    monitoringStore.updateLastWithInterval();
-    mainLoading = false;
+
+		mainLoading = false;
 	});
 </script>
 

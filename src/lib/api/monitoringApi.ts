@@ -36,8 +36,6 @@ async function API_getHistoricalMonitoringData(pastDays: string) {
     const parseModif = `[${textResult.split('\n').join(',').slice(0, -1)}]`;
     const jsonResult = JSON.parse(parseModif);
 
-    console.log('jsonResult hsitoricals', jsonResult);
-
 		return jsonResult;
 	} catch (error) {
 		console.error('An error occurred while getting historical monitoring data:', error);
