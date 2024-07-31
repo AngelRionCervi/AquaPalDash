@@ -39,13 +39,15 @@
 <div class="main-layout">
 	{#if mainLoading}
 		<InitLoadingBackdrop />
-	{:else}
+	{:else if configStore.config}
 		<Modal />
 		<Header />
 		<span class="page-title">{getCurrentPageTitle()}</span>
 		{@render children()}
 		<Footer />
-	{/if}
+	{:else}
+    <span>Could not fetch config...</span>
+  {/if}
 </div>
 
 <style lang="scss">
