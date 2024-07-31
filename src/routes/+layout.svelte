@@ -21,6 +21,12 @@
 
 	onMount(async () => {
 		await configStore.fetchAndSetConfig();
+
+    if (!configStore.config) {
+      mainLoading = false;
+      return;
+    };
+
     await controllerStore.checkHardwareUpdate();
 
     const { enableMonitoring, prefetchHistorical } = configStore.config?.settings || {};

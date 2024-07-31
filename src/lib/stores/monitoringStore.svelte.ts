@@ -111,8 +111,6 @@ const monitoringStore: MonitoringStore = {
 
 		const isError = monitoringStore.checkError(lastUpdate);
 
-    console.log('LAST UPDTAE',lastUpdate, isError)
-
 		if (isError) return;
 
 		monitoringState.last = { ph: lastUpdate.ph, temp: lastUpdate.temp };
@@ -125,8 +123,6 @@ const monitoringStore: MonitoringStore = {
 		const historicals = await monitoringApi.API_getHistoricalMonitoringData(historicalArg);
 
 		monitoringState.historicals = historicals.map(getReadableMonitoring);
-
-    console.log('monitoringState.historicals', monitoringState.historicals)
 	}
 };
 
