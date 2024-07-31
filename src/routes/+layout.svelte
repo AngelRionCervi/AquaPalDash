@@ -1,4 +1,5 @@
 <script lang="ts">
+  import '../resets.css';
 	import { onMount } from 'svelte';
 	import { page } from '$app/stores';
 	import menuRoutes from '$lib/data/navMenu';
