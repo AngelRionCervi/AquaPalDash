@@ -33,6 +33,7 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"@sveltejs/adapter-vercel": "^5.4.1",
 		"apexcharts": "^3.51.0",
 		"short-unique-id": "^5.2.0"
 	}
