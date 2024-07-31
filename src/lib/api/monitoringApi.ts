@@ -1,8 +1,8 @@
-import { API_ROUTE } from '$lib/constants';
+import authStore from '$lib/stores/authStore.svelte';
 
 async function API_getLastMonitoringData() {
 	try {
-		const response = await fetch(`${API_ROUTE}/last`);
+		const response = await fetch(`${authStore.fullApiRoute}/last`);
 		if (!response.ok) {
 			throw new Error(`Failed to get monitoring data code ${response.status}`);
 		}
@@ -12,7 +12,7 @@ async function API_getLastMonitoringData() {
 			throw new Error(jsonResult.message);
 		}
 
-    console.log('jsonResult last', jsonResult);
+		console.log('jsonResult last', jsonResult);
 
 		return jsonResult.data;
 	} catch (error) {
@@ -22,19 +22,19 @@ async function API_getLastMonitoringData() {
 
 async function API_getHistoricalMonitoringData(pastDays: string) {
 	try {
-		const response = await fetch(`${API_ROUTE}/historical?r=${"19_5"}`);
+		const response = await fetch(`${authStore.fullApiRoute}/historical?r=${pastDays}`);
 		if (!response.ok) {
 			throw new Error(`Failed to get historical monitoring data code ${response.status}`);
 		}
 
 		const textResult = await response.text();
 
-    if (!textResult.length) {
-      throw new Error('No historical data');
-    }
-    
-    const parseModif = `[${textResult.split('\n').join(',').slice(0, -1)}]`;
-    const jsonResult = JSON.parse(parseModif);
+		if (!textResult.length) {
+			throw new Error('No historical data');
+		}
+
+		const parseModif = `[${textResult.split('\n').join(',').slice(0, -1)}]`;
+		const jsonResult = JSON.parse(parseModif);
 
 		return jsonResult;
 	} catch (error) {

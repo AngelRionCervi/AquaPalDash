@@ -1,11 +1,11 @@
-import { API_ROUTE } from '$lib/constants';
+import authStore from '$lib/stores/authStore.svelte';
 
 async function login(pass: string) {
 	const body = JSON.stringify({ pass });
 
 	try {
-		const result = await fetch(`${API_ROUTE}/login`, { method: 'post', body });
-		const jsonResult = await result.json() as ApiResponse;
+		const result = await fetch(`${authStore.fullApiRoute}/login`, { method: 'post', body });
+		const jsonResult = (await result.json()) as ApiResponse;
 		console.log('result login', jsonResult);
 		return jsonResult;
 	} catch (err) {
@@ -15,12 +15,13 @@ async function login(pass: string) {
 
 async function fetchConfig() {
 	try {
-		const result = await fetch(`${API_ROUTE}/getconfig`);
+    console.log('authStore.fullApiRoute', authStore.fullApiRoute)
+		const result = await fetch(`${authStore.fullApiRoute}/getconfig`);
 		const jsonResult = await result.json();
 
-    if (jsonResult.status === 'error') {
-      throw new Error(jsonResult.message);
-    }
+		if (jsonResult.status === 'error') {
+			throw new Error(jsonResult.message);
+		}
 
 		return jsonResult as ApiResponse;
 	} catch (err) {
@@ -32,11 +33,11 @@ async function fetchConfig() {
 
 async function uploadConfig(config: Config) {
 	try {
-		const result = await fetch(`${API_ROUTE}/updateconfig`, {
+		const result = await fetch(`${authStore.fullApiRoute}/updateconfig`, {
 			method: 'post',
 			body: JSON.stringify(config)
 		});
-		const jsonResult = await result.json() as ApiResponse;
+		const jsonResult = (await result.json()) as ApiResponse;
 		return jsonResult;
 	} catch (err) {
 		console.error(err);

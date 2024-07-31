@@ -1,8 +1,8 @@
-import { API_ROUTE } from '$lib/constants';
+import authStore from '$lib/stores/authStore.svelte';
 
 async function API_restartController() {
 	try {
-		const response = await fetch(`${API_ROUTE}/restart`);
+		const response = await fetch(`${authStore.fullApiRoute}/restart`);
 		if (!response.ok) {
 			throw new Error(`Failed to restart controller code ${response.status}`);
 		}
@@ -13,7 +13,7 @@ async function API_restartController() {
 
 async function API_pingController() {
 	try {
-		const pingResponse = await fetch(`${API_ROUTE}/ping`);
+		const pingResponse = await fetch(`${authStore.fullApiRoute}/ping`);
 
 		if (!pingResponse.ok) {
 			throw new Error(`Failed to ping controller code ${pingResponse.status}`);
@@ -27,7 +27,7 @@ async function API_pingController() {
 
 async function API_getHardwareToggleUpdate() {
 	try {
-		const response = await fetch(`${API_ROUTE}/gethardwaretoggleupdate`);
+		const response = await fetch(`${authStore.fullApiRoute}/gethardwaretoggleupdate`);
 		if (!response.ok) {
 			throw new Error(`Failed to get hardware toggle updates code ${response.status}`);
 		}
@@ -45,7 +45,7 @@ async function API_getHardwareToggleUpdate() {
 
 async function API_toggleSchedule() {
 	try {
-		const response = await fetch(`${API_ROUTE}/toggleschedule`);
+		const response = await fetch(`${authStore.fullApiRoute}/toggleschedule`);
 		if (!response.ok) {
 			throw new Error(`Failed to toggle schedule code ${response.status}`);
 		}
@@ -63,7 +63,7 @@ async function API_toggleSchedule() {
 
 async function API_toggleDeviceSchedule(id: string) {
 	try {
-		const response = await fetch(`${API_ROUTE}/toggledevice?id=${id}`);
+		const response = await fetch(`${authStore.fullApiRoute}/toggledevice?id=${id}`);
 		if (!response.ok) {
 			throw new Error(`Failed to toggle device ${id}, code ${response.status}`);
 		}

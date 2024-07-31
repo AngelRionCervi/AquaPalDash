@@ -10,8 +10,9 @@
 	import controllerStore from '$lib/stores/controllerStore.svelte';
 	import InitLoadingBackdrop from '$lib/components/Backdrop/InitLoadingBackdrop.svelte';
 	import monitoringStore from '$lib/stores/monitoringStore.svelte';
+  import authStore from '$lib/stores/authStore.svelte';
 
-	const { children } = $props();
+	const { children, data } = $props();
 
 	let mainLoading = $state(true);
 
@@ -19,7 +20,17 @@
 		return menuRoutes.find(({ route }) => route === $page.url.pathname)?.label || 'Home';
 	}
 
+  function promptPass() {
+    const pass = prompt('Enter password');
+    if (pass) {
+      authStore.setPass(pass);
+    }
+  }
+
 	onMount(async () => {
+    if (data.isProd) {
+      promptPass();
+    }
 		await configStore.fetchAndSetConfig();
 
     if (!configStore.config) {
