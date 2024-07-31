@@ -1,4 +1,4 @@
-export const API_ROUTE = 'http://192.168.1.22';
+export const API_ROUTE = import.meta.env.VITE_CONTROLLER_URL;
 export const MAX_DEVICES = 5;
 export const CHECK_CONNECTION_INTERVAL = 3000;
 export const GET_MONITORING_UPDATE_INTERVAL = 10*60*1000 // 10 mins;
