@@ -104,12 +104,18 @@
 </div>
 
 <style lang="scss">
+  @import '$lib/variables.scss';
+
 	.add-device-container {
 		display: flex;
 		flex-direction: column;
 		justify-content: center;
-		align-items: c;
-		gap: 36px;
+		align-items: center;
+		gap: 32px;
+
+    @media screen and (max-width: $mobile-bp) {
+      gap: 24px;
+    }
 	}
 
 	.top {

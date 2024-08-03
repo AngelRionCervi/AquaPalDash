@@ -64,6 +64,7 @@ input {
 
 fieldset {
 	border: none;
+  padding: 0;
 }
 
 input[type='text'], input[type='number'] {

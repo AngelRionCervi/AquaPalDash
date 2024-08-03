@@ -7,11 +7,10 @@
 		setting: Setting;
 		index: number;
 		currentValue: unknown;
-		isLast: boolean;
 		onSettingChange: (settingName: keyof ConfigSettings, value: string | number | boolean) => void;
 	}
 
-	const { setting, index, currentValue, onSettingChange, isLast }: Props = $props();
+	const { setting, index, currentValue, onSettingChange }: Props = $props();
 	const { label, name, type, defaultVal, values, valueType } = setting;
 
 	const id = `${name}_${type}`;
@@ -47,7 +46,7 @@
 			{/if}
 		</div>
 	</div>
-	<div class="separator" class:separator-last={isLast}></div>
+	<div class="separator"></div>
 </div>
 
 <style lang="scss">
@@ -85,12 +84,6 @@
 		width: 100%;
 		height: 1px;
 		background-color: var(--secondary);
-	}
-
-	.separator-last {
-		@media screen and (max-width: $mobile-bp) {
-			display: none;
-		}
 	}
 
 	.select,

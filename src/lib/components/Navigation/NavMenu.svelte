@@ -30,7 +30,7 @@
 			padding: 8px 0;
 		}
 
-		@media screen and (max-width: 400px) {
+		@media screen and (max-width: $small-mobile-bp) {
 			padding: 3px;
 		}
 	}
@@ -60,7 +60,7 @@
 			padding: 8px;
 		}
 
-		@media screen and (max-width: 400px) {
+		@media screen and (max-width: $small-mobile-bp) {
 			font-size: var(--font-S);
 			padding: 6px;
 		}

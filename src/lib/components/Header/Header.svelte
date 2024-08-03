@@ -1,5 +1,5 @@
 <script lang="ts">
-	import DesktopNavMenu from '$lib/components/Navigation/DesktopNavMenu.svelte';
+	import NavMenu from '$lib/components/Navigation/NavMenu.svelte';
 	import HeaderTop from './HeaderTop.svelte';
 </script>
 
@@ -8,7 +8,7 @@
 		<HeaderTop />
 	</div>
 	<div class="bottom-header">
-		<DesktopNavMenu />
+		<NavMenu />
 	</div>
 </div>
 

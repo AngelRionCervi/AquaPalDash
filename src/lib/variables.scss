@@ -1,6 +1,7 @@
 @import "$lib/themes/light.scss";
 
-$mobile-bp: 768px;
+$mobile-bp: 820px;
+$small-mobile-bp: 400px;
 
 :root {
   --primary: #{$primary-light};

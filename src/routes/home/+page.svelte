@@ -21,17 +21,9 @@
 	}
 
 	function onDeviceButtonClick(id: string) {
-		console.log('device button clicked', id);
 		if (controllerStore.isScheduleOn) return;
 		controllerStore.toggleDeviceSchedule(id);
 	}
-
-	$effect(() => {
-		console.log(
-			'controllerStore.callStates.toggleSchedule.isLoading',
-			controllerStore.callStates.toggleSchedule.isLoading
-		);
-	});
 
 	$effect(() => {
 		devicesInOrder = configStore.config?.devices.sort((a, b) => a.button - b.button) || [];
@@ -57,7 +49,7 @@
 		</div>
 		<div class="device-buttons-container">
 			{#if configStore.config?.devices}
-				{#each configStore.config?.devices as { id, name } (id)}
+				{#each devicesInOrder as { id, name } (id)}
 					<DeviceButton
 						onClick={() => onDeviceButtonClick(id)}
 						{name}
@@ -87,7 +79,7 @@
 
 	.home-inner {
 		display: flex;
-		gap: 128px;
+		gap: 8vw;
 		justify-content: center;
 		align-items: center;
 

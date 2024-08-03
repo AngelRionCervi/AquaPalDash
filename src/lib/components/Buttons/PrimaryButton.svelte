@@ -3,6 +3,8 @@
 	import AddIcon from '$lib/icons/add.svg?component';
 	import BinIcon from '$lib/icons/bin.svg?component';
 	import Loader from '$lib/components/Loaders/Loader.svelte';
+	import windowStore from '$lib/stores/windowStore.svelte';
+	import { MOBILE_BP } from '$lib/constants';
 
 	interface Props {
 		label: string;
@@ -39,7 +41,11 @@
 	disabled={disabled || isLoading}
 >
 	{#if icon}
-		<svelte:component this={iconMap[icon]} width={24} height={24} />
+		<svelte:component
+			this={iconMap[icon]}
+			width={windowStore.width < MOBILE_BP ? 24 : 32}
+			height={windowStore.width < MOBILE_BP ? 24 : 32}
+		/>
 	{/if}
 	{#if isLoading}
 		<Loader size="small" theme="light" />
@@ -49,20 +55,24 @@
 </button>
 
 <style lang="scss">
-  @import '$lib/variables.scss';
+	@import '$lib/variables.scss';
 
 	.primary-button {
 		display: flex;
 		align-items: center;
-		justify-content: center;
+		justify-content: space-between;
 		gap: 8px;
 		border-radius: var(--radius-S);
 		padding: 10px 16px;
+		font-size: var(--font-M);
 
-    @media screen and (max-width: $mobile-bp) {
-      padding: 8px 12px;
-      font-size: var(--font-S);
-    }
+		@media screen and (max-width: $mobile-bp) {
+			padding: 8px 12px;
+		}
+
+		@media screen and (max-width: $small-mobile-bp) {
+			font-size: var(--font-S);
+		}
 	}
 
 	.button-default {

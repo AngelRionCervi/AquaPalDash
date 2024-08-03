@@ -78,7 +78,7 @@
 				</table>
 			</div>
 			<div class="buttons-info-container">
-				<span>Free buttons:</span>
+				<span>Free button{availableButtons.length > 1 ? 's' : ''}:</span>
 				<div class="available-labels">
 					{availableButtons.map(({ label }) => label).join(', ')}
 				</div>
@@ -107,6 +107,8 @@
 </div>
 
 <style lang="scss">
+	@import '$lib/variables.scss';
+
 	.button-slot-setting-container {
 		display: flex;
 		flex-direction: column;
@@ -117,6 +119,11 @@
 	.top {
 		display: flex;
 		justify-content: space-between;
+
+		@media screen and (max-width: $mobile-bp) {
+			flex-direction: column;
+			align-items: center;
+		}
 	}
 
 	.bottom {
@@ -124,12 +131,22 @@
 		justify-content: center;
 		align-items: center;
 		flex-direction: column;
+		gap: 16px;
+
+		@media screen and (max-width: $mobile-bp) {
+			margin-top: 8px;
+		}
 	}
 
 	.separator {
 		width: 1px;
 		height: auto;
 		background-color: var(--secondary);
+
+		@media screen and (max-width: $mobile-bp) {
+			width: 80%;
+			height: 1px;
+		}
 	}
 
 	.inner-container {
@@ -150,11 +167,20 @@
 
 		&.right {
 			margin-top: -32px;
+
+			@media screen and (max-width: $mobile-bp) {
+				margin-top: 0;
+        ext-align: center;
+			}
 		}
 	}
 
 	.buttons-table {
 		text-align: left;
+
+		@media screen and (max-width: $mobile-bp) {
+			text-align: center;
+		}
 	}
 
 	.id-free {
@@ -169,6 +195,10 @@
 		th,
 		td {
 			width: 90px;
+		}
+
+		@media screen and (max-width: $mobile-bp) {
+			justify-content: center;
 		}
 	}
 

@@ -5,6 +5,7 @@
 	import configStore from '$lib/stores/configStore.svelte';
 	import { MAX_DEVICES } from '$lib/constants';
 	import { page } from '$app/stores';
+	import controllerStore from '$lib/stores/controllerStore.svelte';
 
 	const { toggle } = modalStore;
 
@@ -55,6 +56,8 @@
 			</div>
 		{:else if configStore.callStates.uploadNewConfig.isLoading}
 			<p>Uploading new configuration...</p>
+		{:else if controllerStore.isRestarting}
+			<p>Controller restarting...</p>
 		{:else}
 			<p>Configuration is up to date</p>
 		{/if}
@@ -63,7 +66,7 @@
 			label="Save and restart"
 			disabled={configStore.isSync}
 			onclick={onSaveAndRestart}
-			isLoading={configStore.callStates.uploadNewConfig.isLoading}
+			isLoading={configStore.callStates.uploadNewConfig.isLoading || controllerStore.isRestarting}
 		/>
 	</div>
 </div>
@@ -80,13 +83,15 @@
 		margin-left: -64px;
 		padding: 32px 64px;
 		gap: 32px;
-		font-size: var(--font-S);
+		font-size: var(--font-M);
+		background-color: var(--primary);
 
 		@media (max-width: $mobile-bp) {
 			padding: 16px 32px;
 			margin-left: -8px;
 			gap: 20px;
 			flex-direction: column;
+			font-size: var(--font-S);
 		}
 	}
 
@@ -96,7 +101,7 @@
 		gap: 32px;
 
 		@media (max-width: $mobile-bp) {
-			gap: 20px;
+			gap: 24px;
 		}
 	}
 

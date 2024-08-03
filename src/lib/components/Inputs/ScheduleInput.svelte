@@ -106,13 +106,13 @@
 
 	.slider-container {
 		width: 100%;
-		margin-top: 16px;
+    margin-top: 24px;
 	}
 
 	.new-schedule {
 		display: flex;
 		justify-content: center;
-		margin-top: 16px;
+		margin-top: 20px;
 	}
 
 	.input-row {

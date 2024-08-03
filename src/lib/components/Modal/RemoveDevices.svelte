@@ -46,6 +46,7 @@
 			label="Remove {numbersToRemove} device{numbersToRemove > 1 ? 's' : ''}"
 			type="red"
 			onclick={onRemoveDevices}
+      disabled={!numbersToRemove}
 		/>
 	</div>
 </div>
@@ -76,7 +77,7 @@
 	.remove-devices-fields {
 		display: flex;
 		flex-direction: column;
-		gap: 8px;
+		gap: 16px;
 	}
 
 	.checkbox-input {

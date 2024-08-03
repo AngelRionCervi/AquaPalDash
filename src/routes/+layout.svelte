@@ -74,16 +74,16 @@
 
 	.main-layout {
 		width: calc(100vw - 128px);
-		height: calc(100vh - 128px);
+		height: calc(100vh - 64px);
 		display: flex;
 		flex-direction: column;
 		justify-content: space-between;
-		margin: 64px;
-    
+		margin: 32px 64px;
+
     @media screen and (max-width: $mobile-bp) {
       margin: 8px;
       width: calc(100vw - 16px);
-      height: auto;
+      height: calc(100vh - 16px);
     }
 	}
 
@@ -94,6 +94,10 @@
 
     @media screen and (max-width: $mobile-bp) {
       margin: 32px;
+    }
+
+    @media screen and (max-width: $small-mobile-bp) {
+      margin: 24px;
     }
 	}
 </style>

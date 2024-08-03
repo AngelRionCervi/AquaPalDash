@@ -49,6 +49,8 @@
 {/if}
 
 <style lang="scss">
+  @import '$lib/variables.scss';
+
 	.backdrop {
 		background-color: rgba(0, 0, 0, 0.5);
 		width: 100vw;
@@ -57,6 +59,29 @@
 		top: 0;
 		left: 0;
 		z-index: 10;
+	}
+
+  .modal-container {
+		min-width: 600px;
+		z-index: 11;
+		border: 1px solid var(--secondary);
+		border-radius: var(--radius-XL);
+		padding: 24px;
+		background-color: var(--primary);
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+
+    @media screen and (max-width: $mobile-bp) {
+      min-width: unset;
+      width: 95vw;
+      padding: 16px;
+    }
+
+    @media screen and (max-width: $small-mobile-bp) {
+      font-size: var(--font-S);
+    }
 	}
 
 	.modal-top-left {
@@ -68,11 +93,20 @@
   .modal-title {
 		font-size: var(--font-L);
 		font-weight: bold;
+
+    @media screen and (max-width: $small-mobile-bp) {
+      font-size: var(--font-M);
+    }
   }
 
   .modal-subtitle {
     font-size: var(--font-M);
     margin-bottom: 4px;
+
+    @media screen and (max-width: $small-mobile-bp) {
+      font-size: var(--font-S);
+      margin-bottom: 0;
+    }
   }
 
 	.modal-header {
@@ -80,18 +114,5 @@
 		justify-content: space-between;
 		align-items: center;
 		margin-bottom: 32px;
-	}
-
-	.modal-container {
-		min-width: 600px;
-		z-index: 11;
-		border: 1px solid var(--secondary);
-		border-radius: var(--radius-XL);
-		padding: 24px;
-		background-color: var(--primary);
-		position: absolute;
-		top: 50%;
-		left: 50%;
-		transform: translate(-50%, -50%);
 	}
 </style>

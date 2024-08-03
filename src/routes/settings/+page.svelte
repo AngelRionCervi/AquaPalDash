@@ -3,6 +3,8 @@
 	import SettingSlot from '$lib/components/Settings/SettingSlot.svelte';
 	import configStore from '$lib/stores/configStore.svelte';
   import monitoringStore from '$lib/stores/monitoringStore.svelte';
+  import PrimaryButton from '$lib/components/Buttons/PrimaryButton.svelte';
+  import controllerStore from '$lib/stores/controllerStore.svelte';
 
 	async function onSettingChange(settingName: keyof ConfigSettings, value: string | number | boolean) {
 		if (configStore.config) {
@@ -17,6 +19,10 @@
       }
     }
 	}
+
+  function onRestartController() {
+    controllerStore.restartController();
+  }
 </script>
 
 <div class="settings-main-container">
@@ -25,12 +31,19 @@
 			<SettingSlot
 				{setting}
 				{index}
-        isLast={index === settings.length - 1}
 				currentValue={configStore.config?.settings[(setting.name as keyof ConfigSettings)] ?? ''}
 				{onSettingChange}
 			/>
 		{/each}
 	</div>
+  <div class="special-control-row">
+    <PrimaryButton
+      label="Restart controller"
+      type="red"
+      onclick={onRestartController}
+      disabled={controllerStore.isRestarting}
+    />
+  </div>
 </div>
 
 <style lang="scss">
@@ -43,12 +56,21 @@
 		height: 100%;
 
     @media screen and (max-width: $mobile-bp) {
+      flex-direction: column;
+      gap: 32px;
       margin: 0;
       overflow: auto;
     }
 	}
 
 	.settings-container {
+    overflow: auto;
 		width: 100%;
 	}
+
+  .special-control-row {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 32px;
+  }
 </style>
