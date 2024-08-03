@@ -54,9 +54,10 @@
 		display: flex;
 		margin: 0 64px 64px 64px;
 		height: 100%;
+    flex-direction: column;
+    gap: 64px;
 
     @media screen and (max-width: $mobile-bp) {
-      flex-direction: column;
       gap: 32px;
       margin: 0;
       overflow: auto;
