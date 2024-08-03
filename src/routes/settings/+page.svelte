@@ -25,6 +25,7 @@
 			<SettingSlot
 				{setting}
 				{index}
+        isLast={index === settings.length - 1}
 				currentValue={configStore.config?.settings[(setting.name as keyof ConfigSettings)] ?? ''}
 				{onSettingChange}
 			/>
@@ -33,11 +34,18 @@
 </div>
 
 <style lang="scss">
+  @import '$lib/variables.scss';
+
 	.settings-main-container {
 		justify-content: center;
 		display: flex;
-		margin: 0 64px;
+		margin: 0 64px 64px 64px;
 		height: 100%;
+
+    @media screen and (max-width: $mobile-bp) {
+      margin: 0;
+      overflow: auto;
+    }
 	}
 
 	.settings-container {

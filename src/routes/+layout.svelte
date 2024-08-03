@@ -11,6 +11,7 @@
 	import InitLoadingBackdrop from '$lib/components/Backdrop/InitLoadingBackdrop.svelte';
 	import monitoringStore from '$lib/stores/monitoringStore.svelte';
   import authStore from '$lib/stores/authStore.svelte';
+	import windowStore from '$lib/stores/windowStore.svelte';
 
 	const { children, data } = $props();
 
@@ -31,6 +32,7 @@
     if (data.isProd) {
       promptPass();
     }
+    windowStore.init();
 		await configStore.fetchAndSetConfig();
 
     if (!configStore.config) {
@@ -77,11 +79,21 @@
 		flex-direction: column;
 		justify-content: space-between;
 		margin: 64px;
+    
+    @media screen and (max-width: $mobile-bp) {
+      margin: 8px;
+      width: calc(100vw - 16px);
+      height: auto;
+    }
 	}
 
 	.page-title {
 		margin: 42px 64px;
 		font-size: var(--font-L);
 		font-weight: bold;
+
+    @media screen and (max-width: $mobile-bp) {
+      margin: 32px;
+    }
 	}
 </style>

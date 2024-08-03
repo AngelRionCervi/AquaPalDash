@@ -51,6 +51,12 @@ const modalStore: ModalStore = {
     if (subtitle) {
       modalState.subtitle = subtitle;
     }
+
+    if (modalState.isOpen) {
+      document.body.classList.add('no-scroll');
+    } else {
+      document.body.classList.remove('no-scroll');
+    }
 	}
 };
 

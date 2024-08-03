@@ -1,5 +1,7 @@
 @import "$lib/themes/light.scss";
 
+$mobile-bp: 768px;
+
 :root {
   --primary: #{$primary-light};
   --primary-darker: #{$primary-darker-light};

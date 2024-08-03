@@ -6,6 +6,8 @@
 	import configStore from '$lib/stores/configStore.svelte';
 	import controllerStore from '$lib/stores/controllerStore.svelte';
 	import deviceStatusStore from '$lib/stores/deviceStatusStore.svelte';
+	import { MOBILE_BP } from '$lib/constants';
+	import windowStore from '$lib/stores/windowStore.svelte';
 
 	let devicesInOrder = $state(configStore.config?.devices || []);
 
@@ -48,14 +50,14 @@
 		<div class="lock-container">
 			<svelte:component
 				this={lockIconMap[controllerStore.isScheduleOn ? 'lock' : 'unlock']}
-				width={96}
-				height={96}
+				width={windowStore.width < MOBILE_BP ? 48 : 96}
+				height={windowStore.width < MOBILE_BP ? 48 : 96}
 				fill="var(--secondary)"
 			/>
 		</div>
 		<div class="device-buttons-container">
 			{#if configStore.config?.devices}
-				{#each devicesInOrder as { id, name } (id)}
+				{#each configStore.config?.devices as { id, name } (id)}
 					<DeviceButton
 						onClick={() => onDeviceButtonClick(id)}
 						{name}
@@ -70,11 +72,17 @@
 </div>
 
 <style lang="scss">
+	@import '$lib/variables.scss';
+
 	.home-main-container {
 		display: flex;
 		height: 100%;
 		margin: 0 64px;
 		justify-content: center;
+
+		@media screen and (max-width: $mobile-bp) {
+			margin: 0 32px 32px 32px;
+		}
 	}
 
 	.home-inner {
@@ -82,10 +90,17 @@
 		gap: 128px;
 		justify-content: center;
 		align-items: center;
+
+		@media screen and (max-width: $mobile-bp) {
+			flex-direction: column;
+			gap: 32px;
+		}
 	}
 
 	.device-buttons-container {
 		display: flex;
 		gap: 32px;
+		flex-wrap: wrap;
+		justify-content: center;
 	}
 </style>

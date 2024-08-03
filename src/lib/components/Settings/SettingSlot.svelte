@@ -7,18 +7,19 @@
 		setting: Setting;
 		index: number;
 		currentValue: unknown;
+		isLast: boolean;
 		onSettingChange: (settingName: keyof ConfigSettings, value: string | number | boolean) => void;
 	}
 
-	const { setting, index, currentValue, onSettingChange }: Props = $props();
+	const { setting, index, currentValue, onSettingChange, isLast }: Props = $props();
 	const { label, name, type, defaultVal, values, valueType } = setting;
 
 	const id = `${name}_${type}`;
 
 	function onChange({ target }: Event) {
 		const value = (target as HTMLInputElement).value;
-		const typedValue = convertToType(valueType, value);
-    console.log('typedValue', typedValue)
+		const typedValue = convertToType(valueType, value) as string | number | boolean;
+		console.log('typedValue', typedValue);
 		onSettingChange(name, typedValue);
 	}
 </script>
@@ -46,20 +47,32 @@
 			{/if}
 		</div>
 	</div>
-	<div class="separator"></div>
+	<div class="separator" class:separator-last={isLast}></div>
 </div>
 
 <style lang="scss">
+	@import '$lib/variables.scss';
+
 	.setting-slot-container {
 		display: flex;
 		flex-direction: column;
 		justify-content: center;
+
+    @media screen and (max-width: $mobile-bp) {
+			margin: 0 16px;
+		}
 	}
 
 	.inner-container {
 		display: flex;
 		justify-content: space-between;
 		padding: 16px 0;
+
+		@media screen and (max-width: $mobile-bp) {
+			flex-direction: column;
+      gap: 8px;
+      align-items: flex-end;
+		}
 	}
 
 	.left-container {
@@ -72,6 +85,12 @@
 		width: 100%;
 		height: 1px;
 		background-color: var(--secondary);
+	}
+
+	.separator-last {
+		@media screen and (max-width: $mobile-bp) {
+			display: none;
+		}
 	}
 
 	.select,

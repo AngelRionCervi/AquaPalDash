@@ -22,10 +22,17 @@
 </div>
 
 <style lang="scss">
+  @import '$lib/variables.scss';
+
 	.devices-main-container {
-		margin: 0 64px;
+		margin: 0 64px 32px 64px;
 		height: 100%;
 		display: flex;
+
+    @media screen and (max-width: $mobile-bp) {
+      margin: 0 0 32px 0;
+      overflow: auto;
+    }
 	}
 
   .devices-cards {

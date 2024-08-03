@@ -121,3 +121,8 @@ input[type='radio']:checked {
 .apexcharts-zoom-icon.apexcharts-selected svg {
   fill: var(--primary-success) !important;
 }
+
+.no-scroll {
+  overflow: hidden;
+  position: fixed;
+}

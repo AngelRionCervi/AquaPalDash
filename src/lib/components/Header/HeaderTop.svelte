@@ -7,16 +7,18 @@
 <div class="main-container">
 	<div class="left-container">
 		<div class="aquarium-name">{configStore.config?.settings.aquariumLabel || ''}</div>
-		<div class="aquarium-stat">
-			<span>status:</span>
-			<span class="status-{controllerStore.isOn ? 'on' : 'off'}"
-				>{controllerStore.isOn ? 'online' : 'offline'}</span
-			>
-		</div>
-		<div class="aquarium-stat">
-			<span>schedules:</span><span class="status-{controllerStore.isScheduleOn ? 'on' : 'off'}"
-				>{controllerStore.isScheduleOn ? 'on' : 'off'}</span
-			>
+		<div class="controller-status">
+			<div class="aquarium-stat">
+				<span>status:</span>
+				<span class="status-{controllerStore.isOn ? 'on' : 'off'}"
+					>{controllerStore.isOn ? 'online' : 'offline'}</span
+				>
+			</div>
+			<div class="aquarium-stat">
+				<span>schedules:</span><span class="status-{controllerStore.isScheduleOn ? 'on' : 'off'}"
+					>{controllerStore.isScheduleOn ? 'on' : 'off'}</span
+				>
+			</div>
 		</div>
 	</div>
 	<div class="right-container">
@@ -30,6 +32,8 @@
 </div>
 
 <style lang="scss">
+	@import '$lib/variables.scss';
+
 	.main-container {
 		display: flex;
 		justify-content: space-between;
@@ -39,6 +43,16 @@
 		display: flex;
 		justify-content: space-between;
 		align-items: flex-end;
+		gap: 16px;
+
+		@media screen and (max-width: $mobile-bp) {
+			flex-direction: column;
+			align-items: flex-start;
+		}
+	}
+
+	.controller-status {
+		display: flex;
 		gap: 16px;
 	}
 
@@ -64,9 +78,15 @@
 	.right-container {
 		display: flex;
 		gap: 36px;
+
+		@media screen and (max-width: $mobile-bp) {
+			display: none;
+		}
 	}
 
 	.stat-container {
 		margin-top: 7px;
+		display: flex;
+		align-items: center;
 	}
 </style>

@@ -24,6 +24,8 @@
 </div>
 
 <style lang="scss">
+  @import '$lib/variables.scss';
+
 	.container {
 		display: flex;
 		flex-direction: column;
@@ -33,6 +35,10 @@
 		border: 1px solid var(--secondary);
 		border-radius: var(--radius-XL);
 		padding: 56px 26px;
+
+    @media screen and (max-width: $mobile-bp) {
+      padding: 40px 20px;
+    }
 	}
 
 	.big-button {
@@ -42,6 +48,11 @@
 		display: flex;
 		align-items: center;
 		justify-content: center;
+
+    @media screen and (max-width: $mobile-bp) {
+      width: 120px;
+      height: 120px;
+    }
 	}
 
 	.schedule-on {

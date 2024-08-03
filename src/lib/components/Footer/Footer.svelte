@@ -4,6 +4,7 @@
 	import modalStore from '$lib/stores/modalStore.svelte';
 	import configStore from '$lib/stores/configStore.svelte';
 	import { MAX_DEVICES } from '$lib/constants';
+	import { page } from '$app/stores';
 
 	const { toggle } = modalStore;
 
@@ -15,9 +16,9 @@
 		toggle('Remove devices', 'removeDevices');
 	}
 
-  function onUndoModifications() {
-    configStore.undoModifications();
-  }
+	function onUndoModifications() {
+		configStore.undoModifications();
+	}
 
 	function onSaveAndRestart() {
 		configStore.uploadNewConfig();
@@ -25,16 +26,24 @@
 </script>
 
 <div class="footer">
-	<div class="left-container">
-		<span>slots {configStore.config?.devices.length || '?'}/{MAX_DEVICES}</span>
-		<PrimaryButton
-			label="Add new device"
-			icon="add"
-			disabled={(configStore.config?.devices.length || MAX_DEVICES) === MAX_DEVICES}
-			onclick={onAddDevice}
-		/>
-		<PrimaryButton label="Remove devices" icon="bin" disabled={configStore.config?.devices.length === 0} onclick={onRemoveDevices} />
-	</div>
+	{#if $page.url.pathname === '/devices'}
+		<div class="left-container">
+			<span>slots used <b>{configStore.config?.devices.length || '?'}/{MAX_DEVICES}</b></span>
+			<PrimaryButton
+				label="Add device"
+				icon="add"
+				disabled={(configStore.config?.devices.length || MAX_DEVICES) === MAX_DEVICES}
+				onclick={onAddDevice}
+			/>
+			<PrimaryButton
+				label="Remove devices"
+				icon="bin"
+				disabled={configStore.config?.devices.length === 0}
+				onclick={onRemoveDevices}
+			/>
+		</div>
+	{/if}
+
 	<div class="right-container">
 		{#if !configStore.isSync && !configStore.callStates.uploadNewConfig.isLoading}
 			<div class="unsaved-infos">
@@ -45,10 +54,10 @@
 				</button>
 			</div>
 		{:else if configStore.callStates.uploadNewConfig.isLoading}
-      <p>Uploading new configuration...</p>
-    {:else}
-      <p>Configuration is up to date</p>
-    {/if}
+			<p>Uploading new configuration...</p>
+		{:else}
+			<p>Configuration is up to date</p>
+		{/if}
 		<PrimaryButton
 			type="green"
 			label="Save and restart"
@@ -60,6 +69,8 @@
 </div>
 
 <style lang="scss">
+	@import '$lib/variables.scss';
+
 	.footer {
 		display: flex;
 		justify-content: space-between;
@@ -69,18 +80,34 @@
 		margin-left: -64px;
 		padding: 32px 64px;
 		gap: 32px;
+		font-size: var(--font-S);
+
+		@media (max-width: $mobile-bp) {
+			padding: 16px 32px;
+			margin-left: -8px;
+			gap: 20px;
+			flex-direction: column;
+		}
 	}
 
 	.left-container {
 		display: flex;
 		align-items: center;
 		gap: 32px;
+
+		@media (max-width: $mobile-bp) {
+			gap: 20px;
+		}
 	}
 
 	.right-container {
 		display: flex;
 		align-items: center;
 		gap: 32px;
+
+		@media (max-width: $mobile-bp) {
+			gap: 20px;
+		}
 	}
 
 	.unsaved-infos {

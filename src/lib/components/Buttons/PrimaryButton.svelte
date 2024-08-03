@@ -49,6 +49,8 @@
 </button>
 
 <style lang="scss">
+  @import '$lib/variables.scss';
+
 	.primary-button {
 		display: flex;
 		align-items: center;
@@ -56,6 +58,11 @@
 		gap: 8px;
 		border-radius: var(--radius-S);
 		padding: 10px 16px;
+
+    @media screen and (max-width: $mobile-bp) {
+      padding: 8px 12px;
+      font-size: var(--font-S);
+    }
 	}
 
 	.button-default {
