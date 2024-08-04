@@ -13,20 +13,21 @@ const settings: Array<Setting> = [
 			{ label: '15 mins', value: 15 },
 			{ label: '30 mins', value: 30 },
 			{ label: '1 hour', value: 60 },
-			{ label: '2 hours', value: 120 }
+			{ label: '2 hours', value: 120 },
+      { label: 'never', value: 0 }
 		]
 	},
-	{
-		name: 'theme',
-		label: 'Theme:',
-		defaultVal: 'light',
-		type: 'select',
-    valueType: 'string',
-		values: [
-			{ label: 'light', value: 'light' },
-			{ label: 'dark', value: 'dark' }
-		]
-	},
+	// {
+	// 	name: 'theme',
+	// 	label: 'Theme:',
+	// 	defaultVal: 'light',
+	// 	type: 'select',
+  //   valueType: 'string',
+	// 	values: [
+	// 		{ label: 'light', value: 'light' },
+	// 		{ label: 'dark', value: 'dark' }
+	// 	]
+	// },
 	{
 		name: 'tempUnit',
 		label: 'Temperature unit:',

@@ -93,7 +93,7 @@ const controllerStore: ControllerStore = {
 	async toggleSchedule() {
 		callStates.toggleSchedule.isLoading = true;
 		const result = await ControllerApi.API_toggleSchedule();
-		constrollerState.isScheduleOn = !result.newState;
+		constrollerState.isScheduleOn = result.newState;
 		callStates.toggleSchedule.isLoading = false;
 	},
 	async toggleDeviceSchedule(id: string) {

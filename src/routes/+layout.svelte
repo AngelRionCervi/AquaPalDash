@@ -83,7 +83,8 @@
     @media screen and (max-width: $mobile-bp) {
       margin: 8px;
       width: calc(100vw - 16px);
-      height: calc(100vh - 16px);
+      min-height: calc(100vh - 16px);
+      height: auto;
     }
 	}
 
