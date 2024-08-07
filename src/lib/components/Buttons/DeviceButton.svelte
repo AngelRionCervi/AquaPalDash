@@ -12,7 +12,7 @@
 	const { onClick, name, state, isLoading, disabled }: Props = $props();
 </script>
 
-<div class="container">
+<div class="container" class:container-disabled={disabled}>
 	<span class="button-label">{name}</span>
 	<button
 		class="device-button device-{state ? 'on' : 'off'}"
@@ -37,6 +37,10 @@
 		border-bottom-left-radius: 999px;
 		border-bottom-right-radius: 999px;
 		width: 92px;
+
+    &:not(.container-disabled) {
+      box-shadow: 0px 4px 4px -2px var(--secondary-lighter);
+    }
 	}
 
 	.device-button {

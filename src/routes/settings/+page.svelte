@@ -51,6 +51,7 @@
 
 	.settings-main-container {
 		justify-content: center;
+    align-items: center;
 		display: flex;
 		margin: 0 64px 64px 64px;
 		height: 100%;
@@ -67,6 +68,7 @@
 	.settings-container {
     overflow: auto;
 		width: 100%;
+    max-width: 1000px;
 	}
 
   .special-control-row {

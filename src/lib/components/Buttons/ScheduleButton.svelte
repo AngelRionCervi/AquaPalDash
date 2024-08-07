@@ -32,9 +32,10 @@
 		gap: 16px;
 		justify-content: center;
 		align-items: center;
-		border: 1px solid var(--secondary);
+		border: 2px solid var(--secondary);
 		border-radius: var(--radius-XL);
 		padding: 56px 26px;
+    box-shadow: 0px 4px 4px -2px var(--secondary-lighter);
 
     @media screen and (max-width: $mobile-bp) {
       padding: 40px 20px;

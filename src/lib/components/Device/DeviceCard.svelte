@@ -87,6 +87,7 @@
 		padding: 24px;
 		width: 250px;
 		height: fit-content;
+    box-shadow: 0px 4px 4px -2px var(--secondary-lighter);
 	}
 
 	.card-device-unsaved {

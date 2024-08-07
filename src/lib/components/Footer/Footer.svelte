@@ -10,11 +10,11 @@
 	const { toggle } = modalStore;
 
 	function onAddDevice() {
-		toggle('Add new device', 'addDevice');
+		toggle('Add new device', 'addDevice', {}, '');
 	}
 
 	function onRemoveDevices() {
-		toggle('Remove devices', 'removeDevices');
+		toggle('Remove devices', 'removeDevices', {}, '');
 	}
 
 	function onUndoModifications() {
