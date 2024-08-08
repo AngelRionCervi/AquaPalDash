@@ -38,6 +38,9 @@ export function configureServer(server: ViteDevServer) {
       // smth like that
       // externalize the logic
       const [message, rawData] = data.toString().split('_');
+      if (!message || !rawData) {
+        return;
+      }
       const parsedData = JSON.parse(rawData);
       if (message.startsWith('initDash_')) {
         socket.source = 'dash';
