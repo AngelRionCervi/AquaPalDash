@@ -50,7 +50,7 @@
 	</div>
 	<div class="bottom">
 		<ErrorField messages={errorMessage} />
-		<PrimaryButton label="Login" type="green" disabled={!!errorMessage} onclick={onLoginClick} />
+		<PrimaryButton label="Login" type="green" disabled={!password && !demoMode} onclick={onLoginClick} />
 	</div>
 </div>
 
