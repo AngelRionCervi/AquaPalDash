@@ -13,7 +13,7 @@
 	import authStore from '$lib/stores/authStore.svelte';
 	import windowStore from '$lib/stores/windowStore.svelte';
 	import modalStore from '$lib/stores/modalStore.svelte';
-  import deviceStatusStore from '$lib/stores/deviceStatusStore.svelte';
+	import deviceStatusStore from '$lib/stores/deviceStatusStore.svelte';
 
 	const { children, data } = $props();
 	const { toggle } = modalStore;
@@ -27,15 +27,15 @@
 
 	function onNewLogin(port: string, rememberMe: boolean, demoMode: boolean) {
 		authStore.setPort(port);
-    authStore.setDemoMode(demoMode);
+		authStore.setDemoMode(demoMode);
 
 		if (rememberMe) {
 			authStore.saveSession({ port, demoMode });
 		}
 
-    needsLogin = false;
-    startUp();
-    toggle();
+		needsLogin = false;
+		startUp();
+		toggle();
 	}
 
 	async function startUp() {
@@ -44,11 +44,11 @@
 		windowStore.init();
 
 		if (authStore.isDemoMode) {
-      configStore.loadMockConfig();
-      deviceStatusStore.loadDeviceStatusMock();
-      controllerStore.loadMockData();
-      mainLoading = false;
-      needsLogin = false;
+			configStore.loadMockConfig();
+			deviceStatusStore.loadDeviceStatusMock();
+			controllerStore.loadMockData();
+			mainLoading = false;
+			needsLogin = false;
 			return;
 		}
 
@@ -74,30 +74,31 @@
 	}
 
 	onMount(() => {
+		// test
+
+		const ping = () => {
+			fetch('/ping')
+				.then((res) => res.json())
+				.then((data) => console.log('ping', data))
+				.catch((err) => console.error(err));
+		};
+
+		ping();
+
 		if (data.isProd) {
-      authStore.init();
+			authStore.init();
 			if (authStore.port) {
 				startUp();
 			} else {
 				needsLogin = true;
 				toggle('Login', 'login', {
-					onLogin: (password: string, rememberMe: boolean, demoMode: boolean) => onNewLogin(password, rememberMe, demoMode)
+					onLogin: (password: string, rememberMe: boolean, demoMode: boolean) =>
+						onNewLogin(password, rememberMe, demoMode)
 				});
 			}
 		} else {
 			startUp();
 		}
-
-    // test
-
-    const ping = () => {
-      fetch('/ping')
-        .then((res) => res.json())
-        .then((data) => console.log("ping", data))
-        .catch((err) => console.error(err));
-    };
-
-    ping();
 	});
 </script>
 
