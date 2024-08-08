@@ -58,7 +58,7 @@ export function configureServer(server: ViteDevServer) {
 				// send config to client
 				// socket is either the dashboard or the box, we need to link both (not for the moment lol)
 				// format message like this:
-				// {function}_{data}
+				// {source}_{function}_{data}
         return
 			}
 		});
