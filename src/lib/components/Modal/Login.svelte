@@ -2,6 +2,7 @@
 	import PrimaryButton from '$lib/components/Buttons/PrimaryButton.svelte';
 	import ErrorField from './ErrorField.svelte';
 	import modalStore from '$lib/stores/modalStore.svelte';
+	import ConfigApi from '$lib/api/configApi';
 
 	const { childProps } = modalStore;
 
@@ -10,16 +11,31 @@
 	let demoMode = $state(false);
 	let rememberMe = $state(false);
 
-	function onLoginClick() {
+	async function onLoginClick() {
 		console.log('login');
+
 		if (!password && !demoMode) {
 			errorMessage = 'Please enter a valid password';
 			return;
 		} else {
 			errorMessage = null;
+      if (demoMode) {
+        childProps?.onLogin('demo', rememberMe, demoMode);
+        return;
+      }
+			try {
+				const result = await ConfigApi.login(password);
+				if (result.status === 'error') {
+					errorMessage = result.data;
+					return;
+				} else {
+					childProps?.onLogin(result.data, rememberMe, demoMode);
+				}
+			} catch (err) {
+				errorMessage = err.message;
+				return;
+			}
 		}
-
-    childProps?.onLogin(password, rememberMe, demoMode);
 	}
 
 	function onDemoCheckBoxClick() {
@@ -32,11 +48,22 @@
 	<div class="top">
 		<div class="input-row">
 			<label for="login_pass">Password:</label>
-			<input type="text" id="login_pass" bind:value={password} disabled={demoMode} maxlength="60" />
+			<input
+				type="password"
+				id="login_pass"
+				bind:value={password}
+				disabled={demoMode}
+				maxlength="60"
+			/>
 		</div>
 		<div class="input-row-flat">
 			<label for="remember_me_checkbox">Remember me:</label>
-			<input type="checkbox" id="remember_me_checkbox" disabled={demoMode} bind:checked={rememberMe} />
+			<input
+				type="checkbox"
+				id="remember_me_checkbox"
+				disabled={demoMode}
+				bind:checked={rememberMe}
+			/>
 		</div>
 		<div class="input-row-flat">
 			<label for="demo_mode_checkbox">Demo mode:</label>
@@ -50,7 +77,12 @@
 	</div>
 	<div class="bottom">
 		<ErrorField messages={errorMessage} />
-		<PrimaryButton label="Login" type="green" disabled={!password && !demoMode} onclick={onLoginClick} />
+		<PrimaryButton
+			label="Login"
+			type="green"
+			disabled={!password && !demoMode}
+			onclick={onLoginClick}
+		/>
 	</div>
 </div>
 
@@ -66,6 +98,13 @@
 	.top {
 		display: flex;
 		flex-direction: column;
+		gap: 16px;
+	}
+
+	.bottom {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
 		gap: 16px;
 	}
 

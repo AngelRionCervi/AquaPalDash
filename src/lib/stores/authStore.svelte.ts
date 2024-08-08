@@ -3,16 +3,16 @@ import SessionLS, { type Session } from "$lib/localStorage/session";
 
 interface AuthState {
 	isAuth: boolean;
-	pass: string;
+	port: string;
   isDemoMode: boolean;
 }
 
 interface AuthStore {
 	isAuth: boolean;
-	pass: string;
+	port: string;
   fullApiRoute: string;
   isDemoMode: boolean;
-	setPass: (pass: string) => void;
+	setPort: (port: string) => void;
   setDemoMode: (demoMode: boolean) => void;
   saveSession: (session: Session) => void;
   getSession: () => Session | null;
@@ -20,7 +20,7 @@ interface AuthStore {
   init: () => void;
 }
 
-const defaultAuthStoreValue: AuthState = { isAuth: false, pass: '', isDemoMode: false };
+const defaultAuthStoreValue: AuthState = { isAuth: false, port: '', isDemoMode: false };
 
 const authState = $state<AuthState>(defaultAuthStoreValue);
 
@@ -28,11 +28,11 @@ const authStore: AuthStore = {
 	get isAuth() {
 		return authState.isAuth;
 	},
-	get pass() {
-		return authState.pass;
+	get port() {
+		return authState.port;
 	},
   get fullApiRoute() {
-    return `${API_ROUTE}${authStore.pass}`;
+    return `${API_ROUTE}${authStore.port}`;
   },
   get isDemoMode() {
     return authState.isDemoMode;
@@ -40,12 +40,12 @@ const authStore: AuthStore = {
   init() {
     const session = SessionLS.getLoginSession();
     if (session) {
-      authStore.setPass(session.password);
+      authStore.setPort(session.port);
       authStore.setDemoMode(!!session.demoMode);
     }
   },
-	setPass(pass: string) {
-		authState.pass = pass;
+	setPort(port: string) {
+		authState.port = port;
 	},
   setDemoMode(demoMode: boolean) {
     authState.isDemoMode = demoMode

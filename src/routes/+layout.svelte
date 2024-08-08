@@ -25,12 +25,12 @@
 		return menuRoutes.find(({ route }) => route === $page.url.pathname)?.label || 'Home';
 	}
 
-	function onNewLogin(password: string, rememberMe: boolean, demoMode: boolean) {
-		authStore.setPass(password);
+	function onNewLogin(port: string, rememberMe: boolean, demoMode: boolean) {
+		authStore.setPort(port);
     authStore.setDemoMode(demoMode);
 
 		if (rememberMe) {
-			authStore.saveSession({ password, demoMode });
+			authStore.saveSession({ port, demoMode });
 		}
 
     needsLogin = false;
@@ -74,9 +74,9 @@
 	}
 
 	onMount(() => {
-		authStore.init();
 		if (data.isProd) {
-			if (authStore.pass) {
+      authStore.init();
+			if (authStore.port) {
 				startUp();
 			} else {
 				needsLogin = true;

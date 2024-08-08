@@ -67,14 +67,14 @@ fieldset {
   padding: 0;
 }
 
-input[type='text'], input[type='number'] {
+input[type='text'], input[type='number'], input[type='password'] {
 	border: 1px solid var(--secondary);
 	padding: 2px;
 	border-radius: var(--radius-S);
 	background-color: var(--primary-lighter);
 }
 
-input[type='text']:disabled, input[type='number']:disabled, input[type='checkbox']:disabled {
+input[type='text']:disabled, input[type='number']:disabled, input[type='checkbox']:disabled, input[type='password']:disabled {
 	background-color: var(--primary-darker);
   cursor: not-allowed;
 }
