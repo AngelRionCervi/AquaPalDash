@@ -50,7 +50,7 @@
       disabled={controllerStore.isRestarting}
     />
     <PrimaryButton
-      label="Forget Session"
+      label="Forget session"
       type="red"
       onclick={onForgetSession}
     />
