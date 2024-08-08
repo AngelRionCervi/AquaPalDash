@@ -4,3 +4,4 @@ export const CHECK_CONNECTION_INTERVAL = 3000;
 export const GET_MONITORING_UPDATE_INTERVAL = 10*60*1000 // 10 mins;
 export const DEFAULT_HISTORICAL_DAYS = 30;
 export const MOBILE_BP = 768;
+export const WS_SERVER_PORT = 3334;
