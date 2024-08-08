@@ -1,5 +1,5 @@
 <script lang="ts">
-  import '../resets.css';
+	import '../resets.css';
 	import { onMount } from 'svelte';
 	import { page } from '$app/stores';
 	import menuRoutes from '$lib/data/navMenu';
@@ -10,53 +10,90 @@
 	import controllerStore from '$lib/stores/controllerStore.svelte';
 	import InitLoadingBackdrop from '$lib/components/Backdrop/InitLoadingBackdrop.svelte';
 	import monitoringStore from '$lib/stores/monitoringStore.svelte';
-  import authStore from '$lib/stores/authStore.svelte';
+	import authStore from '$lib/stores/authStore.svelte';
 	import windowStore from '$lib/stores/windowStore.svelte';
+	import modalStore from '$lib/stores/modalStore.svelte';
+  import deviceStatusStore from '$lib/stores/deviceStatusStore.svelte';
 
 	const { children, data } = $props();
+	const { toggle } = modalStore;
 
-	let mainLoading = $state(true);
+	let mainLoading = $state(false);
+	let needsLogin = $state(false);
 
 	function getCurrentPageTitle() {
 		return menuRoutes.find(({ route }) => route === $page.url.pathname)?.label || 'Home';
 	}
 
-  function promptPass() {
-    const pass = prompt('Enter password');
-    if (pass) {
-      authStore.setPass(pass);
-    }
-  }
+	function onNewLogin(password: string, rememberMe: boolean, demoMode: boolean) {
+		authStore.setPass(password);
+    authStore.setDemoMode(demoMode);
 
-	onMount(async () => {
-    if (data.isProd) {
-      promptPass();
-    }
-    windowStore.init();
+		if (rememberMe) {
+			authStore.saveSession({ password, demoMode });
+		}
+
+    needsLogin = false;
+    startUp();
+	}
+
+	async function startUp() {
+		mainLoading = true;
+
+		windowStore.init();
+
+		if (authStore.isDemoMode) {
+      configStore.loadMockConfig();
+      deviceStatusStore.loadDeviceStatusMock();
+      controllerStore.loadMockData();
+      mainLoading = false;
+      needsLogin = false;
+      toggle();
+			return;
+		}
+
 		await configStore.fetchAndSetConfig();
 
-    if (!configStore.config) {
-      mainLoading = false;
-      return;
-    };
+		if (!configStore.config) {
+			mainLoading = false;
+			return;
+		}
 
-    await controllerStore.checkHardwareUpdate();
+		await controllerStore.checkHardwareUpdate();
 
-    const { enableMonitoring, prefetchHistorical } = configStore.config?.settings || {};
+		const { enableMonitoring, prefetchHistorical } = configStore.config?.settings || {};
 		if (enableMonitoring && prefetchHistorical) {
 			await monitoringStore.updateLast();
 			await monitoringStore.fetchHistoricals();
 			monitoringStore.updateLastWithInterval();
 		}
-    
+
 		controllerStore.checkUpdateWithInterval();
 
 		mainLoading = false;
+	}
+
+	onMount(() => {
+		authStore.init();
+		if (data.isProd) {
+			if (authStore.pass) {
+				startUp();
+			} else {
+				needsLogin = true;
+				toggle('Login', 'login', {
+					onLogin: (password: string, rememberMe: boolean, demoMode: boolean) => onNewLogin(password, rememberMe, demoMode)
+				});
+			}
+		} else {
+			startUp();
+		}
 	});
 </script>
 
 <div class="main-layout">
-	{#if mainLoading}
+	{#if needsLogin}
+		<Modal />
+	{:else if mainLoading}
 		<InitLoadingBackdrop />
 	{:else if configStore.config}
 		<Modal />
@@ -65,8 +102,8 @@
 		{@render children()}
 		<Footer />
 	{:else}
-    <span>Could not fetch config...</span>
-  {/if}
+		<span>Could not fetch config...</span>
+	{/if}
 </div>
 
 <style lang="scss">
@@ -80,12 +117,12 @@
 		justify-content: space-between;
 		margin: 32px 64px;
 
-    @media screen and (max-width: $mobile-bp) {
-      margin: 8px;
-      width: calc(100vw - 16px);
-      min-height: calc(100vh - 16px);
-      height: auto;
-    }
+		@media screen and (max-width: $mobile-bp) {
+			margin: 8px;
+			width: calc(100vw - 16px);
+			min-height: calc(100vh - 16px);
+			height: auto;
+		}
 	}
 
 	.page-title {
@@ -93,12 +130,12 @@
 		font-size: var(--font-L);
 		font-weight: bold;
 
-    @media screen and (max-width: $mobile-bp) {
-      margin: 32px;
-    }
+		@media screen and (max-width: $mobile-bp) {
+			margin: 32px;
+		}
 
-    @media screen and (max-width: $small-mobile-bp) {
-      margin: 24px;
-    }
+		@media screen and (max-width: $small-mobile-bp) {
+			margin: 24px;
+		}
 	}
 </style>

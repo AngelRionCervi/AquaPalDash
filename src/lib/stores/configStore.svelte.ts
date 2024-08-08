@@ -1,6 +1,7 @@
 import ConfigApi from '$lib/api/configApi';
 import { MAX_DEVICES } from '$lib/constants';
 import controllerStore from './controllerStore.svelte';
+import configMock from '$lib/mock/configMock.json';
 
 interface CallState {
 	isLoading?: boolean;
@@ -19,6 +20,8 @@ interface ConfigState {
 			| 'callStates'
 			| 'undoModifications'
 			| 'prepareConfigForUpload'
+      | 'loadMockConfig'
+      | 'updateMockConfig'
 		>,
 		CallState
 	>;
@@ -44,6 +47,8 @@ interface ConfigStore {
 	addDevice: (newDevice: Device) => void;
 	removeDevices: (id: string | Array<string>) => void;
 	prepareConfigForUpload: () => Config | undefined;
+  loadMockConfig: () => void;
+  updateMockConfig: () => void;
 }
 
 const callStates: ConfigState['callStates'] = $state({
@@ -303,7 +308,19 @@ const configStore: ConfigStore = {
 		}
 
 		configState.isSync = newSync;
-	}
+	},
+  loadMockConfig() {
+    console.log('loadMockConfig', configMock);
+    configState.config = structuredClone(configMock);
+    previousConfig = Object.freeze(structuredClone(configMock));
+    configState.isSync = true;
+  },
+  updateMockConfig() {
+    const cleanConfig = configStore.prepareConfigForUpload();
+    configState.config = structuredClone(cleanConfig);
+    previousConfig = Object.freeze(structuredClone(cleanConfig));
+    configState.isSync = true;
+  },
 };
 
 function validateKey(

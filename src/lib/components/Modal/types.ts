@@ -3,4 +3,5 @@ export type ModalTypes =
 	| 'buttonSlotSetting'
 	| 'removeDevices'
 	| 'addDevice'
-	| 'modifyNameDevice';
+	| 'modifyNameDevice'
+	| 'login';

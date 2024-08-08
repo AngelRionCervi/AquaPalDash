@@ -23,10 +23,10 @@
 		modalStore.toggle('Button Edit', 'buttonSlotSetting', { id: device.id }, device.name);
 	}
 
-  function onModifyName() {
-    console.log('modify name');
-    modalStore.toggle('Modify Name', 'modifyNameDevice', { id: device.id }, device.name);
-  }
+	function onModifyName() {
+		console.log('modify name');
+		modalStore.toggle('Modify Name', 'modifyNameDevice', { id: device.id }, device.name);
+	}
 
 	function getPillStatusOn(status: boolean | null | undefined) {
 		if (status === null) return 'unknown';
@@ -42,8 +42,10 @@
 <div class="card-container" class:card-device-unsaved={deviceDisabled}>
 	<div class="device-name-container">
 		<div class="device-name">
-			<span>{device.name}</span><button onclick={onModifyName} class="name-edit-button" aria-label="edit"
-				><EditIcon width={20} height={20} /></button
+			<span>{device.name}</span><button
+				onclick={onModifyName}
+				class="name-edit-button"
+				aria-label="edit"><EditIcon width={20} height={20} /></button
 			>
 		</div>
 	</div>
@@ -87,7 +89,7 @@
 		padding: 24px;
 		width: 250px;
 		height: fit-content;
-    box-shadow: 0px 4px 4px -2px var(--secondary-lighter);
+		box-shadow: 0px 4px 4px -2px var(--secondary-lighter);
 	}
 
 	.card-device-unsaved {
@@ -107,6 +109,13 @@
 		display: flex;
 		gap: 8px;
 		margin-left: 25px;
+
+		span {
+			white-space: nowrap;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			max-width: 200px;
+		}
 	}
 
 	.separator {

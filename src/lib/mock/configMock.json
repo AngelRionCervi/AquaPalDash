@@ -1,40 +1,44 @@
 {
 	"devices": [
 		{
+			"id": "CYPUxM7SMX",
 			"name": "light",
 			"ip": "192.168.1.14",
 			"button": 0,
 			"schedule": [720, 1140]
 		},
 		{
+			"id": "amdZTXpcbN",
 			"name": "co2",
 			"ip": "192.168.1.15",
 			"button": 1,
 			"schedule": [690, 1110]
 		},
 		{
-			"name": "skimmer",
-			"ip": "192.168.1.13",
-			"button": 3,
-			"schedule": false
-		},
-		{
+			"id": "yDnsvsv6H2",
 			"name": "filter",
 			"ip": "192.168.1.16",
 			"button": 2,
 			"schedule": true
+		},
+    {
+			"id": "qldqwXAcSm",
+			"name": "skimmer",
+			"ip": "192.168.1.13",
+			"button": 3,
+			"schedule": true
 		}
 	],
 	"secrets": {
-		"wifiSSID": "LA6EC",
-		"wifiPass": "getRektm8",
+		"wifiSSID": "MyWifiSSID",
+		"wifiPass": "MyWifiPassword",
 		"serverPass": "1234"
 	},
 	"settings": {
-		"autoSchedulesOnAfter": 30,
+		"autoSchedulesOnAfter": 60,
 		"prefetchHistorical": false,
-		"theme": "light",
 		"tempUnit": "celsius",
-		"aquariumLabel": "Main aquarium"
+		"aquariumLabel": "Main aquarium",
+		"enableMonitoring": true
 	}
 }

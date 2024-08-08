@@ -2,6 +2,7 @@ import ControllerApi from '$lib/api/controllerApi';
 import devicesStatusStore from './deviceStatusStore.svelte';
 import { CHECK_CONNECTION_INTERVAL } from '$lib/constants';
 import { sleep } from '$lib/helpers/utils';
+import authStore from './authStore.svelte';
 
 interface CallState {
 	isLoading?: boolean;
@@ -20,6 +21,7 @@ type BasicCallStates = Record<
 		| 'restartController'
 		| 'toggleDeviceSchedule'
 		| 'deviceCallStates'
+		| 'loadMockData'
 	>,
 	CallState
 >;
@@ -45,6 +47,7 @@ interface ControllerStore {
 	checkHardwareUpdate: () => Promise<void>;
 	toggleSchedule: () => Promise<void>;
 	toggleDeviceSchedule: (id: string) => Promise<void>;
+	loadMockData: () => void;
 }
 
 const callStates: ControllerState['callStates'] = $state({
@@ -90,21 +93,35 @@ const controllerStore: ControllerStore = {
 		clearInterval(constrollerState.checkUpdateWithInterval);
 		constrollerState.checkUpdateWithInterval = 0;
 	},
+	loadMockData() {
+		constrollerState.isOn = true;
+		constrollerState.isScheduleOn = true;
+	},
 	async toggleSchedule() {
+    if (authStore.isDemoMode) {
+      constrollerState.isScheduleOn = !constrollerState.isScheduleOn;
+      return;
+    }
 		callStates.toggleSchedule.isLoading = true;
 		const result = await ControllerApi.API_toggleSchedule();
 		constrollerState.isScheduleOn = result.newState;
 		callStates.toggleSchedule.isLoading = false;
 	},
 	async toggleDeviceSchedule(id: string) {
-    if (constrollerState.isScheduleOn) return;
+		if (constrollerState.isScheduleOn) return;
 
-    if (!deviceCallStates[id]) {
-      deviceCallStates[id] = {};
+		if (!deviceCallStates[id]) {
+			deviceCallStates[id] = {};
+		}
+
+    if (authStore.isDemoMode) {
+      devicesStatusStore.updateDeviceState(id, !devicesStatusStore.getDeviceStatus(id)?.isOn);
+      return;
     }
+
 		deviceCallStates[id].isLoading = true;
 		const result = await ControllerApi.API_toggleDeviceSchedule(id);
-    devicesStatusStore.updateDeviceState(id, result.newState);
+		devicesStatusStore.updateDeviceState(id, result.newState);
 		deviceCallStates[id].isLoading = false;
 	},
 	async checkHardwareUpdate() {
@@ -123,6 +140,8 @@ const controllerStore: ControllerStore = {
 		}
 	},
 	async restartController() {
+    if (authStore.isDemoMode) return;
+    
 		constrollerState.isRestarting = true;
 		await ControllerApi.API_restartController();
 

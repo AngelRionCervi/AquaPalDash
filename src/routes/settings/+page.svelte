@@ -5,6 +5,7 @@
   import monitoringStore from '$lib/stores/monitoringStore.svelte';
   import PrimaryButton from '$lib/components/Buttons/PrimaryButton.svelte';
   import controllerStore from '$lib/stores/controllerStore.svelte';
+  import authStore from '$lib/stores/authStore.svelte';
 
 	async function onSettingChange(settingName: keyof ConfigSettings, value: string | number | boolean) {
 		if (configStore.config) {
@@ -22,6 +23,11 @@
 
   function onRestartController() {
     controllerStore.restartController();
+  }
+
+  function onForgetSession() {
+    authStore.removeSession();
+    window.location.reload();
   }
 </script>
 
@@ -42,6 +48,11 @@
       type="red"
       onclick={onRestartController}
       disabled={controllerStore.isRestarting}
+    />
+    <PrimaryButton
+      label="Forget Session"
+      type="red"
+      onclick={onForgetSession}
     />
   </div>
 </div>
@@ -75,5 +86,6 @@
     display: flex;
     justify-content: center;
     margin-bottom: 32px;
+    gap: 32px;
   }
 </style>

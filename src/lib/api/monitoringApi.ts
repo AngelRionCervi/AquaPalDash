@@ -1,6 +1,8 @@
 import authStore from '$lib/stores/authStore.svelte';
 
 async function API_getLastMonitoringData() {
+  if (authStore.isDemoMode) return;
+
 	try {
 		const response = await fetch(`${authStore.fullApiRoute}/last`);
 		if (!response.ok) {
@@ -21,6 +23,8 @@ async function API_getLastMonitoringData() {
 }
 
 async function API_getHistoricalMonitoringData(pastDays: string) {
+  if (authStore.isDemoMode) return;
+  
 	try {
 		const response = await fetch(`${authStore.fullApiRoute}/historical?r=${pastDays}`);
 		if (!response.ok) {

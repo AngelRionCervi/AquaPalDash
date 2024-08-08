@@ -43,8 +43,8 @@
 	{#if icon}
 		<svelte:component
 			this={iconMap[icon]}
-			width={windowStore.width < MOBILE_BP ? 24 : 32}
-			height={windowStore.width < MOBILE_BP ? 24 : 32}
+			width={windowStore.width < MOBILE_BP ? 24 : 28}
+			height={windowStore.width < MOBILE_BP ? 24 : 28}
 		/>
 	{/if}
 	{#if isLoading}

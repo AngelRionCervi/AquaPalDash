@@ -1,5 +1,6 @@
 import monitoringApi from '$lib/api/monitoringApi';
 import { GET_MONITORING_UPDATE_INTERVAL, DEFAULT_HISTORICAL_DAYS } from '$lib/constants';
+import { generateMockData } from '$lib/helpers/charts';
 
 export type MonitoringValueParam = 'ph' | 'temp';
 
@@ -47,6 +48,7 @@ interface MonitoringStore {
 	checkError: (payload: MonitoringPayload) => boolean;
 	updateLast: () => Promise<void>;
 	fetchHistoricals: (pastDaysCount?: number) => Promise<void>;
+  loadMockData: () => void;
 }
 
 const defaultMonitoringStoreValue: MonitoringState = {
@@ -106,6 +108,9 @@ const monitoringStore: MonitoringStore = {
 
 		return !!(monitoringState.errors.ph || monitoringState.errors.temp);
 	},
+  loadMockData() {
+    monitoringState.historicals = generateMockData();
+  },
 	async updateLast() {
 		const lastUpdate = getReadableMonitoring(await monitoringApi.API_getLastMonitoringData());
 

@@ -4,12 +4,18 @@
 	import monitoringStore from '$lib/stores/monitoringStore.svelte';
 	import LineChart from '$lib/components/Charts/LineChart.svelte';
 	import configStore from '$lib/stores/configStore.svelte';
+  import authStore from '$lib/stores/authStore.svelte';
 
 	const chartData = $derived(convertToChartData(monitoringStore.historicals));
 
 	onMount(async () => {
 		const { enableMonitoring } = configStore.config?.settings || {};
 		if (!enableMonitoring) return;
+
+    if (authStore.isDemoMode) {
+      monitoringStore.loadMockData();
+      return;
+    }
 
 		if (!monitoringStore.historicals.length) {
 			await monitoringStore.fetchHistoricals();

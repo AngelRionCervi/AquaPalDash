@@ -1,0 +1,6 @@
+[
+	{ "id": "CYPUxM7SMX", "name": "light", "isOnline": true, "state": true },
+	{ "id": "amdZTXpcbN", "name": "co2", "isOnline": true, "state": false },
+	{ "id": "yDnsvsv6H2", "name": "filter", "isOnline": true, "state": true },
+	{ "id": "qldqwXAcSm", "name": "skimmer", "isOnline": false, "state": false }
+]

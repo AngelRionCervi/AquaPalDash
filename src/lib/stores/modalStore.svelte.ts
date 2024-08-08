@@ -38,7 +38,16 @@ const modalStore: ModalStore = {
     return modalState.childProps;
   },
 	toggle(title?: string, type?: ModalTypes, childProps?: ModalState["childProps"], subtitle?: string) {
+    console.log('toggle', title, type, childProps, subtitle);
 		modalState.isOpen = !modalState.isOpen;
+
+    if (!modalState.isOpen) {
+      modalState.title = '';
+      modalState.type = null;
+      modalState.childProps = {};
+      modalState.subtitle = '';
+    }
+
 		if (title) {
 			modalState.title = title;
 		}

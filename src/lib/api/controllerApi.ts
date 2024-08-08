@@ -1,6 +1,8 @@
 import authStore from '$lib/stores/authStore.svelte';
 
 async function API_restartController() {
+  if (authStore.isDemoMode) return;
+
 	try {
 		const response = await fetch(`${authStore.fullApiRoute}/restart`);
 		if (!response.ok) {
@@ -12,6 +14,8 @@ async function API_restartController() {
 }
 
 async function API_pingController() {
+  if (authStore.isDemoMode) return;
+
 	try {
 		const pingResponse = await fetch(`${authStore.fullApiRoute}/ping`);
 
@@ -26,6 +30,8 @@ async function API_pingController() {
 }
 
 async function API_getHardwareToggleUpdate() {
+  if (authStore.isDemoMode) return;
+
 	try {
 		const response = await fetch(`${authStore.fullApiRoute}/gethardwaretoggleupdate`);
 		if (!response.ok) {
@@ -44,6 +50,8 @@ async function API_getHardwareToggleUpdate() {
 }
 
 async function API_toggleSchedule() {
+  if (authStore.isDemoMode) return;
+
 	try {
 		const response = await fetch(`${authStore.fullApiRoute}/toggleschedule`);
 		if (!response.ok) {
@@ -62,6 +70,8 @@ async function API_toggleSchedule() {
 }
 
 async function API_toggleDeviceSchedule(id: string) {
+  if (authStore.isDemoMode) return;
+
 	try {
 		const response = await fetch(`${authStore.fullApiRoute}/toggledevice?id=${id}`);
 		if (!response.ok) {

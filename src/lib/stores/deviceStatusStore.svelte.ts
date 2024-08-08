@@ -1,3 +1,5 @@
+import devicesStatusMock from '$lib/mock/devicesStatusMock.json';
+
 interface DeviceStatus {
   id: string | null;
 	name: string | null;
@@ -14,6 +16,7 @@ interface DevicesStatusStore {
 	getDeviceStatus: (id: string) => DeviceStatus | undefined;
 	updateAllDevicesStatus: (devicesStatus: RawDeviceStatus[]) => void;
   updateDeviceState: (id: string, state: boolean) => void;
+  loadDeviceStatusMock: () => void;
 }
 
 const defaultDeviceStoreValue: DevicesStatusState = Object.freeze({
@@ -41,6 +44,9 @@ const devicesStatusStore: DevicesStatusStore = {
     if (deviceStatus) {
       deviceStatus.isOn = state;
     }
+  },
+  loadDeviceStatusMock() {
+    devicesStatusStore.updateAllDevicesStatus(devicesStatusMock);
   }
 };
 

@@ -8,6 +8,7 @@
 	import RemoveDevices from './RemoveDevices.svelte';
 	import AddDevice from './AddDevice.svelte';
 	import ModifyNameDevice from './ModifyNameDevice.svelte';
+	import Login from './Login.svelte';
 
 	type ModalChildMap = {
 		[key in ModalTypes]: Component;
@@ -20,7 +21,8 @@
 		buttonSlotSetting: ButtonSlotSetting,
 		removeDevices: RemoveDevices,
 		addDevice: AddDevice,
-		modifyNameDevice: ModifyNameDevice
+		modifyNameDevice: ModifyNameDevice,
+		login: Login
 	};
 
 	$effect(() => {
@@ -49,7 +51,7 @@
 {/if}
 
 <style lang="scss">
-  @import '$lib/variables.scss';
+	@import '$lib/variables.scss';
 
 	.backdrop {
 		background-color: rgba(0, 0, 0, 0.5);
@@ -61,7 +63,7 @@
 		z-index: 10;
 	}
 
-  .modal-container {
+	.modal-container {
 		min-width: 600px;
 		z-index: 11;
 		border: 1px solid var(--secondary);
@@ -73,41 +75,41 @@
 		left: 50%;
 		transform: translate(-50%, -50%);
 
-    @media screen and (max-width: $mobile-bp) {
-      min-width: unset;
-      width: 95vw;
-      padding: 16px;
-    }
+		@media screen and (max-width: $mobile-bp) {
+			min-width: unset;
+			width: 95vw;
+			padding: 16px;
+		}
 
-    @media screen and (max-width: $small-mobile-bp) {
-      font-size: var(--font-S);
-    }
+		@media screen and (max-width: $small-mobile-bp) {
+			font-size: var(--font-S);
+		}
 	}
 
 	.modal-top-left {
-    display: flex;
-    align-items: flex-end;
-    gap: 16px;
+		display: flex;
+		align-items: flex-end;
+		gap: 16px;
 	}
 
-  .modal-title {
+	.modal-title {
 		font-size: var(--font-L);
 		font-weight: bold;
 
-    @media screen and (max-width: $small-mobile-bp) {
-      font-size: var(--font-M);
-    }
-  }
+		@media screen and (max-width: $small-mobile-bp) {
+			font-size: var(--font-M);
+		}
+	}
 
-  .modal-subtitle {
-    font-size: var(--font-M);
-    margin-bottom: 4px;
+	.modal-subtitle {
+		font-size: var(--font-M);
+		margin-bottom: 4px;
 
-    @media screen and (max-width: $small-mobile-bp) {
-      font-size: var(--font-S);
-      margin-bottom: 0;
-    }
-  }
+		@media screen and (max-width: $small-mobile-bp) {
+			font-size: var(--font-S);
+			margin-bottom: 0;
+		}
+	}
 
 	.modal-header {
 		display: flex;

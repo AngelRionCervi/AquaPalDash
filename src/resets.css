@@ -74,6 +74,11 @@ input[type='text'], input[type='number'] {
 	background-color: var(--primary-lighter);
 }
 
+input[type='text']:disabled, input[type='number']:disabled, input[type='checkbox']:disabled {
+	background-color: var(--primary-darker);
+  cursor: not-allowed;
+}
+
 input[type='checkbox'] {
 	width: 20px;
 	height: 20px;

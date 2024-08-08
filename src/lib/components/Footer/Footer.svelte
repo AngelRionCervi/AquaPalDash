@@ -6,6 +6,7 @@
 	import { MAX_DEVICES } from '$lib/constants';
 	import { page } from '$app/stores';
 	import controllerStore from '$lib/stores/controllerStore.svelte';
+	import authStore from '$lib/stores/authStore.svelte';
 
 	const { toggle } = modalStore;
 
@@ -22,13 +23,17 @@
 	}
 
 	function onSaveAndRestart() {
+		if (authStore.isDemoMode) {
+			configStore.updateMockConfig();
+			return;
+		}
 		configStore.uploadNewConfig();
 	}
 </script>
 
 <div class="footer">
-	{#if $page.url.pathname === '/devices'}
-		<div class="left-container">
+	<div class="left-container">
+		{#if $page.url.pathname === '/devices'}
 			<span>slots used <b>{configStore.config?.devices.length || '?'}/{MAX_DEVICES}</b></span>
 			<PrimaryButton
 				label="Add device"
@@ -42,9 +47,8 @@
 				disabled={configStore.config?.devices.length === 0}
 				onclick={onRemoveDevices}
 			/>
-		</div>
-	{/if}
-
+		{/if}
+	</div>
 	<div class="right-container">
 		{#if !configStore.isSync && !configStore.callStates.uploadNewConfig.isLoading}
 			<div class="unsaved-infos">

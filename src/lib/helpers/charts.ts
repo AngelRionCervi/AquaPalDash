@@ -1,5 +1,5 @@
 import type { MonitoringPayload } from '$lib/stores/monitoringStore.svelte';
-import { roundTo } from './utils';
+import { randomDecimal, roundTo } from './utils';
 
 export function convertToChartData(data: MonitoringPayload[]) {
 	const dateFormat = 'dd MMM HH:mm';
@@ -13,7 +13,7 @@ export function convertToChartData(data: MonitoringPayload[]) {
 			labels: {
 				format: dateFormat
 			}
-		},
+		}
 	};
 
 	const chartDataTemp = {
@@ -31,4 +31,18 @@ export function convertToChartData(data: MonitoringPayload[]) {
 	console.log('chartDataPh', chartDataPh);
 
 	return { ph: chartDataPh, temp: chartDataTemp };
+}
+
+export function generateMockData() {
+	const data = [];
+	const start = new Date().getTime();
+	for (let i = 0; i < 100; i++) {
+		data.push({
+			temp: randomDecimal(22, 25, 2),
+			ph: randomDecimal(6, 7.5, 2),
+			timestamp: start - i
+		});
+	}
+
+	return data;
 }

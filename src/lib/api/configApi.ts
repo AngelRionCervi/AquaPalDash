@@ -1,6 +1,8 @@
 import authStore from '$lib/stores/authStore.svelte';
 
 async function login(pass: string) {
+  if (authStore.isDemoMode) return;
+
 	const body = JSON.stringify({ pass });
 
 	try {
@@ -14,6 +16,8 @@ async function login(pass: string) {
 }
 
 async function fetchConfig() {
+  if (authStore.isDemoMode) return;
+
 	try {
     console.log('authStore.fullApiRoute', authStore.fullApiRoute)
 		const result = await fetch(`${authStore.fullApiRoute}/getconfig`);
@@ -32,6 +36,8 @@ async function fetchConfig() {
 }
 
 async function uploadConfig(config: Config) {
+  if (authStore.isDemoMode) return;
+  
 	try {
 		const result = await fetch(`${authStore.fullApiRoute}/updateconfig`, {
 			method: 'post',

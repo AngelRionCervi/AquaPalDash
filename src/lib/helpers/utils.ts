@@ -55,3 +55,11 @@ export function roundTo(num: number, decimals: number) {
 export function getCSSvar(varName: string) {
 	return window.getComputedStyle(document.documentElement).getPropertyValue(varName);
 }
+
+export function randomInteger(min: number, max: number) {
+	return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+export function randomDecimal(min: number, max: number, dec: number) {
+  return parseFloat(`${randomInteger(min, max - 1)}.${randomInteger(0, Math.pow(10, dec))}`);
+}
