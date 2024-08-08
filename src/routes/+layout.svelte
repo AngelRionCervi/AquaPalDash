@@ -87,6 +87,17 @@
 		} else {
 			startUp();
 		}
+
+    // test
+
+    const ping = () => {
+      fetch('/ping')
+        .then((res) => res.json())
+        .then((data) => console.log("ping", data))
+        .catch((err) => console.error(err));
+    };
+
+    ping();
 	});
 </script>
 
