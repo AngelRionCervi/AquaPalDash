@@ -37,7 +37,9 @@
 				<span class="modal-title">{modalStore.title}</span>
 				<span class="modal-subtitle">{modalStore?.subtitle || ''}</span>
 			</div>
-			<button onclick={() => toggle()}><CloseIcon width={32} height={32} /></button>
+			{#if modalStore.type !== 'login'}
+				<button onclick={() => toggle()}><CloseIcon width={32} height={32} /></button>
+			{/if}
 		</div>
 		<div>
 			{#if modalStore.type}
@@ -47,7 +49,7 @@
 	</div>
 	<!-- svelte-ignore a11y_click_events_have_key_events -->
 	<!-- svelte-ignore a11y_no_static_element_interactions -->
-	<div class="backdrop" onclick={() => toggle()}></div>
+	<div class="backdrop" onclick={() => (modalStore.type !== 'login' ? toggle() : {})}></div>
 {/if}
 
 <style lang="scss">

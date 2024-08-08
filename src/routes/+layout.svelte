@@ -35,6 +35,7 @@
 
     needsLogin = false;
     startUp();
+    toggle();
 	}
 
 	async function startUp() {
@@ -48,7 +49,6 @@
       controllerStore.loadMockData();
       mainLoading = false;
       needsLogin = false;
-      toggle();
 			return;
 		}
 

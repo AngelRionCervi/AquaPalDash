@@ -1,7 +1,6 @@
 <script lang="ts">
 	import PrimaryButton from '$lib/components/Buttons/PrimaryButton.svelte';
 	import ErrorField from './ErrorField.svelte';
-	import authStore from '$lib/stores/authStore.svelte';
 	import modalStore from '$lib/stores/modalStore.svelte';
 
 	const { childProps } = modalStore;
