@@ -32,38 +32,58 @@ export function configureServer(server: ViteDevServer) {
 
 	wss.on('connection', (socket: ExtendedWebSocket) => {
 		socket.socketId = uuid.randomUUID();
-		socket.on('message', (data) => {
-			console.log(`Recieved ${data}`);
+		socket.on('message', (data: string) => {
+			console.log('MESSAGE data', data);
+			try {
+				const parsedData = JSON.parse(data);
+				console.log('parsedData', parsedData);
+				if (parsedData.source === 'dash') {
+					if (parsedData.type === 'handshake') {
+						const boxClient = [...wss.clients].find((client) => client.source === 'box');
 
-      // smth like that
-      // externalize the logic
-      const [message, rawData] = data.toString().split('_');
-      if (!message || !rawData) {
-        return;
-      }
-      const parsedData = JSON.parse(rawData);
-      if (message.startsWith('initDash_')) {
-        socket.source = 'dash';
-        socket.socketId = parsedData.socketId;
-        return;
-      }
-
-      if (message.startsWith('initBox_')) {
-        socket.source = 'box';
-        socket.socketId = parsedData.socketId;
-        return;
-      }
-
-			if (message.startsWith('fullConfig_')) {
-				// send config to client
-				// socket is either the dashboard or the box, we need to link both (not for the moment lol)
-				// format message like this:
-				// {source}_{function}_{data}
-        return
+						console.log('boxClient', !!boxClient);
+						boxClient?.send(JSON.stringify({ source: 'server', type: 'init' }));
+					}
+				} else if (parsedData.source === 'box') {
+					// need to specify its form box
+					if (parsedData.type === 'handshake') {
+						// send data to dash
+						socket.source = 'box';
+					}
+				}
+			} catch (e) {
+				console.error(e);
 			}
+
+			// smth like that
+			// externalize the logic
+			// const [message, rawData] = data.toString().split('_');
+			// if (!message || !rawData) {
+			//   return;
+			// }
+			// const parsedData = JSON.parse(rawData);
+			// if (message.startsWith('initDash_')) {
+			//   socket.source = 'dash';
+			//   socket.socketId = parsedData.socketId;
+			//   return;
+			// }
+
+			// if (message.startsWith('initBox_')) {
+			//   socket.source = 'box';
+			//   socket.socketId = parsedData.socketId;
+			//   return;
+			// }
+
+			// if (message.startsWith('fullConfig_')) {
+			// 	// send config to client
+			// 	// socket is either the dashboard or the box, we need to link both (not for the moment lol)
+			// 	// format message like this:
+			// 	// {source}_{function}_{data}
+			//   return
+			// }
 		});
 
-		socket.send('test from server');
+		//socket.send('test from server');
 	});
 
 	server.httpServer?.on('upgrade', onHttpServerUpgrade);
