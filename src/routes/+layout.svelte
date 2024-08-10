@@ -82,7 +82,7 @@
 		const ws = new WebSocket(`${protocol}//${window.location.host}/websocket`);
 		ws.addEventListener('open', (event) => {
 			console.log('[websocket] connection open', event);
-			const initPayload = JSON.stringify({ source: 'dash', type: 'handshake' });
+			const initPayload = JSON.stringify({ source: 'dash', type: 'dash_handshake' });
 			ws.send(initPayload);
 		});
 		ws.addEventListener('close', (event) => {
@@ -92,20 +92,20 @@
 			console.log('[websocket] message received', event);
 		});
 
-		if (data.isProd) {
-			authStore.init();
-			if (authStore.port) {
-				startUp();
-			} else {
-				needsLogin = true;
-				toggle('Login', 'login', {
-					onLogin: (password: string, rememberMe: boolean, demoMode: boolean) =>
-						onNewLogin(password, rememberMe, demoMode)
-				});
-			}
-		} else {
-			startUp();
-		}
+		// if (data.isProd) {
+		// 	authStore.init();
+		// 	if (authStore.port) {
+		// 		startUp();
+		// 	} else {
+		// 		needsLogin = true;
+		// 		toggle('Login', 'login', {
+		// 			onLogin: (password: string, rememberMe: boolean, demoMode: boolean) =>
+		// 				onNewLogin(password, rememberMe, demoMode)
+		// 		});
+		// 	}
+		// } else {
+		// 	startUp();
+		// }
 	});
 </script>
 
