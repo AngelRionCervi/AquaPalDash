@@ -20,8 +20,8 @@ interface ConfigState {
 			| 'callStates'
 			| 'undoModifications'
 			| 'prepareConfigForUpload'
-      | 'loadMockConfig'
-      | 'updateMockConfig'
+			| 'loadMockConfig'
+			| 'updateMockConfig'
 		>,
 		CallState
 	>;
@@ -31,6 +31,7 @@ interface ConfigStore {
 	config: Config | null;
 	isSync: boolean;
 	callStates: ConfigState['callStates'];
+  setConfig: (newConfig: Config) => void;
 	undoModifications: () => void;
 	fetchAndSetConfig: () => Promise<void>;
 	updateDevice: (id: string, partialDevice: Partial<Device>) => void;
@@ -47,8 +48,8 @@ interface ConfigStore {
 	addDevice: (newDevice: Device) => void;
 	removeDevices: (id: string | Array<string>) => void;
 	prepareConfigForUpload: () => Config | undefined;
-  loadMockConfig: () => void;
-  updateMockConfig: () => void;
+	loadMockConfig: () => void;
+	updateMockConfig: () => void;
 }
 
 const callStates: ConfigState['callStates'] = $state({
@@ -74,6 +75,12 @@ const configStore: ConfigStore = {
 	},
 	get callStates() {
 		return configState.callStates;
+	},
+	setConfig(newConfig: Config) {
+		configState.config = newConfig;
+		console.log('newConfig', newConfig);
+		previousConfig = Object.freeze(structuredClone(newConfig));
+		configState.isSync = true;
 	},
 	async fetchAndSetConfig() {
 		try {
@@ -277,7 +284,7 @@ const configStore: ConfigStore = {
 				break;
 			}
 
-      if (prevDevice.name !== newDevice.name) {
+			if (prevDevice.name !== newDevice.name) {
 				newSync = false;
 				break;
 			}
@@ -309,18 +316,18 @@ const configStore: ConfigStore = {
 
 		configState.isSync = newSync;
 	},
-  loadMockConfig() {
-    console.log('loadMockConfig', configMock);
-    configState.config = structuredClone(configMock);
-    previousConfig = Object.freeze(structuredClone(configMock));
-    configState.isSync = true;
-  },
-  updateMockConfig() {
-    const cleanConfig = configStore.prepareConfigForUpload();
-    configState.config = structuredClone(cleanConfig);
-    previousConfig = Object.freeze(structuredClone(cleanConfig));
-    configState.isSync = true;
-  },
+	loadMockConfig() {
+		console.log('loadMockConfig', configMock);
+		configState.config = structuredClone(configMock);
+		previousConfig = Object.freeze(structuredClone(configMock));
+		configState.isSync = true;
+	},
+	updateMockConfig() {
+		const cleanConfig = configStore.prepareConfigForUpload();
+		configState.config = structuredClone(cleanConfig);
+		previousConfig = Object.freeze(structuredClone(cleanConfig));
+		configState.isSync = true;
+	}
 };
 
 function validateKey(
@@ -333,7 +340,7 @@ function validateKey(
 		'theme',
 		'tempUnit',
 		'aquariumLabel',
-    'enableMonitoring'
+		'enableMonitoring'
 	];
 
 	const secretsKeys: Array<keyof ConfigSecrets> = ['wifiSSID', 'wifiPass', 'serverPass'];
@@ -360,7 +367,7 @@ function validateSchedule(schedule: ScheduleRange | boolean) {
 
 function checkDeviceIntegrity(device: Device) {
 	return (
-    validateTruthyString(device.id) &&
+		validateTruthyString(device.id) &&
 		validateTruthyString(device.name) &&
 		validateTruthyString(device.ip) &&
 		validateNumber(device.button) &&

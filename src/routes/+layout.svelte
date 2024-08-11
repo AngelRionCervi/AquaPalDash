@@ -15,6 +15,7 @@
 	import modalStore from '$lib/stores/modalStore.svelte';
 	import deviceStatusStore from '$lib/stores/deviceStatusStore.svelte';
 	import { WS_SERVER_PORT } from '$lib/constants';
+	import WSClientHandler from '$lib/wsClient/WSClientHandler';
 
 	const { children, data } = $props();
 	const { toggle } = modalStore;
@@ -77,20 +78,8 @@
 	onMount(() => {
 		// test
 
-		const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-		console.log('window', window.location);
-		const ws = new WebSocket(`${protocol}//${window.location.host}/websocket`);
-		ws.addEventListener('open', (event) => {
-			console.log('[websocket] connection open', event);
-			const initPayload = JSON.stringify({ source: 'dash', type: 'dash_handshake' });
-			ws.send(initPayload);
-		});
-		ws.addEventListener('close', (event) => {
-			console.log('[websocket] connection closed', event);
-		});
-		ws.addEventListener('message', (event) => {
-			console.log('[websocket] message received', event);
-		});
+    WSClientHandler();
+
 
 		// if (data.isProd) {
 		// 	authStore.init();
