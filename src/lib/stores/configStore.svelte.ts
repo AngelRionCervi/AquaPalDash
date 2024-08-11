@@ -1,7 +1,9 @@
+import { DASH_CALL_TYPES } from '$lib/wsGlobal/callTypes';
 import ConfigApi from '$lib/api/configApi';
 import { MAX_DEVICES } from '$lib/constants';
 import controllerStore from './controllerStore.svelte';
 import configMock from '$lib/mock/configMock.json';
+import { sendWSMessage } from '$lib/wsClient/WSClientHandler';
 
 interface CallState {
 	isLoading?: boolean;
@@ -22,6 +24,9 @@ interface ConfigState {
 			| 'prepareConfigForUpload'
 			| 'loadMockConfig'
 			| 'updateMockConfig'
+      | 'handleConfigUpdated'
+      | 'setConfig'
+      | 'queryConfig'
 		>,
 		CallState
 	>;
@@ -50,6 +55,8 @@ interface ConfigStore {
 	prepareConfigForUpload: () => Config | undefined;
 	loadMockConfig: () => void;
 	updateMockConfig: () => void;
+  handleConfigUpdated: () => void;
+  queryConfig: () => void;
 }
 
 const callStates: ConfigState['callStates'] = $state({
@@ -82,6 +89,9 @@ const configStore: ConfigStore = {
 		previousConfig = Object.freeze(structuredClone(newConfig));
 		configState.isSync = true;
 	},
+  queryConfig() {
+    sendWSMessage({ type: DASH_CALL_TYPES.dash_getConfigType });
+  },
 	async fetchAndSetConfig() {
 		try {
 			callStates.fetchAndSetConfig.isLoading = true;
@@ -129,6 +139,9 @@ const configStore: ConfigStore = {
 			callStates.uploadNewConfig.isLoading = false;
 		}
 	},
+  handleConfigUpdated() {
+    //controllerStore.restartController();
+  },
 	prepareConfigForUpload() {
 		if (!configState.config) return;
 
@@ -318,14 +331,14 @@ const configStore: ConfigStore = {
 	},
 	loadMockConfig() {
 		console.log('loadMockConfig', configMock);
-		configState.config = structuredClone(configMock);
-		previousConfig = Object.freeze(structuredClone(configMock));
+		configState.config = structuredClone(configMock) as Config;
+		previousConfig = Object.freeze(structuredClone(configMock)) as Config;
 		configState.isSync = true;
 	},
 	updateMockConfig() {
 		const cleanConfig = configStore.prepareConfigForUpload();
-		configState.config = structuredClone(cleanConfig);
-		previousConfig = Object.freeze(structuredClone(cleanConfig));
+		configState.config = structuredClone(cleanConfig) as Config;
+		previousConfig = Object.freeze(structuredClone(cleanConfig)) as Config;
 		configState.isSync = true;
 	}
 };

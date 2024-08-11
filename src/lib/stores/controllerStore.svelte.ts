@@ -1,8 +1,10 @@
+import { DASH_CALL_TYPES } from '$lib/wsGlobal/callTypes';
 import ControllerApi from '$lib/api/controllerApi';
 import devicesStatusStore from './deviceStatusStore.svelte';
 import { CHECK_CONNECTION_INTERVAL } from '$lib/constants';
 import { sleep } from '$lib/helpers/utils';
 import authStore from './authStore.svelte';
+import { sendWSMessage } from '$lib/wsClient/WSClientHandler';
 
 interface CallState {
 	isLoading?: boolean;
@@ -19,9 +21,13 @@ type BasicCallStates = Record<
 		| 'checkUpdateWithInterval'
 		| 'clearCheckUpdateWithInterval'
 		| 'restartController'
-		| 'toggleDeviceSchedule'
+		| 'toggleDevice'
 		| 'deviceCallStates'
 		| 'loadMockData'
+		| 'controllerRestarted'
+		| 'resultToggleDevice'
+		| 'errorToggleDevice'
+		| 'resultToggleSchedule'
 	>,
 	CallState
 >;
@@ -41,12 +47,16 @@ interface ControllerStore {
 	isScheduleOn: ControllerState['isScheduleOn'];
 	callStates: ControllerState['callStates'];
 	deviceCallStates: ControllerState['deviceCallStates'];
-	restartController: () => Promise<void>;
+	restartController: () => void;
+	controllerRestarted: () => void;
 	checkUpdateWithInterval: () => void;
 	clearCheckUpdateWithInterval: () => void;
 	checkHardwareUpdate: () => Promise<void>;
-	toggleSchedule: () => Promise<void>;
-	toggleDeviceSchedule: (id: string) => Promise<void>;
+	toggleSchedule: () => void;
+	resultToggleSchedule: (state: boolean) => void;
+	toggleDevice: (id: string) => void;
+	resultToggleDevice: ({ id, state }: { id: string; state: boolean }) => void;
+	errorToggleDevice: (id: string) => void;
 	loadMockData: () => void;
 }
 
@@ -97,32 +107,43 @@ const controllerStore: ControllerStore = {
 		constrollerState.isOn = true;
 		constrollerState.isScheduleOn = true;
 	},
-	async toggleSchedule() {
-    if (authStore.isDemoMode) {
-      constrollerState.isScheduleOn = !constrollerState.isScheduleOn;
-      return;
-    }
+	toggleSchedule() {
+		if (authStore.isDemoMode) {
+			constrollerState.isScheduleOn = !constrollerState.isScheduleOn;
+			return;
+		}
 		callStates.toggleSchedule.isLoading = true;
-		const result = await ControllerApi.API_toggleSchedule();
-		constrollerState.isScheduleOn = result.newState;
+		sendWSMessage({ type: DASH_CALL_TYPES.dash_toggleScheduleType });
+	},
+	resultToggleSchedule(state: boolean) {
+		constrollerState.isScheduleOn = state;
 		callStates.toggleSchedule.isLoading = false;
 	},
-	async toggleDeviceSchedule(id: string) {
+	toggleDevice(id: string) {
+		console.log('onstrollerState.isScheduleOn', constrollerState.isScheduleOn);
 		if (constrollerState.isScheduleOn) return;
 
 		if (!deviceCallStates[id]) {
 			deviceCallStates[id] = {};
 		}
 
-    if (authStore.isDemoMode) {
-      devicesStatusStore.updateDeviceState(id, !devicesStatusStore.getDeviceStatus(id)?.isOn);
-      return;
-    }
+		if (authStore.isDemoMode) {
+			devicesStatusStore.updateDeviceState(id, !devicesStatusStore.getDeviceStatus(id)?.isOn);
+			return;
+		}
 
 		deviceCallStates[id].isLoading = true;
-		const result = await ControllerApi.API_toggleDeviceSchedule(id);
-		devicesStatusStore.updateDeviceState(id, result.newState);
+		sendWSMessage({ type: DASH_CALL_TYPES.dash_toggleDeviceType, data: id });
+	},
+	resultToggleDevice({ id, state }) {
+		devicesStatusStore.updateDeviceState(id, state);
 		deviceCallStates[id].isLoading = false;
+	},
+	errorToggleDevice(id: string) {
+		console.log('errorToggleDevice', id);
+		if (deviceCallStates[id]) {
+			deviceCallStates[id].isLoading = false;
+		}
 	},
 	async checkHardwareUpdate() {
 		try {
@@ -139,25 +160,29 @@ const controllerStore: ControllerStore = {
 			callStates.checkHardwareUpdate.isLoading = false;
 		}
 	},
-	async restartController() {
-    if (authStore.isDemoMode) return;
-    
+	restartController() {
+		if (authStore.isDemoMode) return;
+
 		constrollerState.isRestarting = true;
-		await ControllerApi.API_restartController();
+		//await ControllerApi.API_restartController();
+		sendWSMessage({ type: 'restart' });
 
-		for (;;) {
-			await sleep(1000);
-			try {
-				const pingResponse = await ControllerApi.API_pingController();
+		// for (;;) {
+		// 	await sleep(1000);
+		// 	try {
+		// 		const pingResponse = await ControllerApi.API_pingController();
 
-				if (pingResponse?.ok) {
-					constrollerState.isRestarting = false;
-					break;
-				}
-			} catch {
-				// ignore
-			}
-		}
+		// 		if (pingResponse?.ok) {
+		// 			constrollerState.isRestarting = false;
+		// 			break;
+		// 		}
+		// 	} catch {
+		// 		// ignore
+		// 	}
+		// }
+	},
+	controllerRestarted() {
+		constrollerState.isRestarting = false;
 	}
 };
 

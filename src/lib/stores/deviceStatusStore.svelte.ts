@@ -31,6 +31,8 @@ const devicesStatusStore: DevicesStatusStore = {
 		return deviceStatusState.devices.find((device) => device.id === id);
 	},
 	updateAllDevicesStatus(devicesStatus: RawDeviceStatus[]) {
+    if (!devicesStatus.length) return;
+    
 		deviceStatusState.devices = devicesStatus.map(({ id, name, isOnline, state }) => ({
       id,
 			name,

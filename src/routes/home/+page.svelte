@@ -22,7 +22,7 @@
 
 	function onDeviceButtonClick(id: string) {
 		if (controllerStore.isScheduleOn) return;
-		controllerStore.toggleDeviceSchedule(id);
+		controllerStore.toggleDevice(id);
 	}
 
 	$effect(() => {
