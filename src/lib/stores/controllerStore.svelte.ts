@@ -1,8 +1,5 @@
-import { BOX_CALL_TYPES, DASH_CALL_TYPES } from '$lib/wsGlobal/callTypes';
-import ControllerApi from '$lib/api/controllerApi';
+import { DASH_CALL_TYPES } from '$lib/wsGlobal/callTypes';
 import devicesStatusStore from './deviceStatusStore.svelte';
-import { CHECK_CONNECTION_INTERVAL } from '$lib/constants';
-import { sleep } from '$lib/helpers/utils';
 import authStore from './authStore.svelte';
 import { sendWSMessage } from '$lib/wsClient/WSClientHandler';
 
@@ -18,8 +15,6 @@ type BasicCallStates = Record<
 		| 'isOn'
 		| 'isScheduleOn'
 		| 'callStates'
-		| 'checkUpdateWithInterval'
-		| 'clearCheckUpdateWithInterval'
 		| 'restartController'
 		| 'toggleDevice'
 		| 'deviceCallStates'
@@ -51,9 +46,6 @@ interface ControllerStore {
 	deviceCallStates: ControllerState['deviceCallStates'];
 	restartController: () => void;
 	handleRestarted: () => void;
-	checkUpdateWithInterval: () => void;
-	clearCheckUpdateWithInterval: () => void;
-	checkHardwareUpdate: () => Promise<void>;
 	toggleSchedule: () => void;
 	resultToggleSchedule: (state: boolean) => void;
 	toggleDevice: (id: string) => void;
@@ -98,15 +90,6 @@ const controllerStore: ControllerStore = {
 	get deviceCallStates() {
 		return constrollerState.deviceCallStates;
 	},
-	checkUpdateWithInterval() {
-		constrollerState.checkUpdateWithInterval = setInterval(() => {
-			controllerStore.checkHardwareUpdate();
-		}, CHECK_CONNECTION_INTERVAL);
-	},
-	clearCheckUpdateWithInterval() {
-		clearInterval(constrollerState.checkUpdateWithInterval);
-		constrollerState.checkUpdateWithInterval = 0;
-	},
 	loadMockData() {
 		constrollerState.isOn = true;
 		constrollerState.isScheduleOn = true;
@@ -127,7 +110,6 @@ const controllerStore: ControllerStore = {
     constrollerState.isOn = isOn;
   },
 	toggleDevice(id: string) {
-		console.log('onstrollerState.isScheduleOn', constrollerState.isScheduleOn);
 		if (constrollerState.isScheduleOn) return;
 
 		if (!deviceCallStates[id]) {
@@ -147,24 +129,8 @@ const controllerStore: ControllerStore = {
 		deviceCallStates[id].isLoading = false;
 	},
 	errorToggleDevice(id: string) {
-		console.log('errorToggleDevice', id);
 		if (deviceCallStates[id]) {
 			deviceCallStates[id].isLoading = false;
-		}
-	},
-	async checkHardwareUpdate() {
-		try {
-			callStates.checkHardwareUpdate.isLoading = true;
-			const updateResponse = await ControllerApi.API_getHardwareToggleUpdate();
-			constrollerState.isOn = updateResponse?.status === 'success' || false;
-			constrollerState.isScheduleOn = updateResponse?.data?.isScheduleOn || false;
-			if (updateResponse?.data?.devices?.length) {
-				devicesStatusStore.updateAllDevicesStatus(updateResponse.data.devices);
-			}
-		} catch {
-			console.error('Failed to ping controller');
-		} finally {
-			callStates.checkHardwareUpdate.isLoading = false;
 		}
 	},
   handleRestarting() {
@@ -173,25 +139,9 @@ const controllerStore: ControllerStore = {
 	restartController() {
 		if (authStore.isDemoMode) return;
 		
-		//await ControllerApi.API_restartController();
 		sendWSMessage({ type: DASH_CALL_TYPES.dash_restartType });
-
-		// for (;;) {
-		// 	await sleep(1000);
-		// 	try {
-		// 		const pingResponse = await ControllerApi.API_pingController();
-
-		// 		if (pingResponse?.ok) {
-		// 			constrollerState.isRestarting = false;
-		// 			break;
-		// 		}
-		// 	} catch {
-		// 		// ignore
-		// 	}
-		// }
 	},
 	handleRestarted() {
-    console.log('controller done restating !!!!!!!!!!')
 		constrollerState.isRestarting = false;
 	}
 };

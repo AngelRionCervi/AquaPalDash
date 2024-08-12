@@ -1,3 +1,4 @@
+import authStore from '$lib/stores/authStore.svelte';
 import configStore from '$lib/stores/configStore.svelte';
 import controllerStore from '$lib/stores/controllerStore.svelte';
 import devicesStatusStore from '$lib/stores/deviceStatusStore.svelte';
@@ -91,6 +92,8 @@ function WSClientHandler() {
 }
 
 export const sendWSMessage = (message: Record<string, unknown>) => {
+  if (authStore.isDemoMode) return;
+  
 	message.source = 'dash';
 	if (!ws) {
 		console.error('WS connection is not open');

@@ -89,29 +89,7 @@ const configStore: ConfigStore = {
 	queryConfig() {
 		sendWSMessage({ type: DASH_CALL_TYPES.dash_getConfigType });
 	},
-	// async fetchAndSetConfig() {
-	// 	try {
-	// 		callStates.fetchAndSetConfig.isLoading = true;
-	// 		const newConfig = await ConfigApi.fetchConfig();
-	// 		if (newConfig?.status === 'error' || !newConfig?.data) {
-	// 			const message = newConfig?.message || 'no data';
-	// 			callStates.uploadNewConfig.error = message;
-	// 			throw new Error(message);
-	// 		} else {
-	// 			configState.config = newConfig.data;
-	// 			console.log('newConfig.data', newConfig.data);
-	// 			previousConfig = Object.freeze(structuredClone(newConfig.data));
-	// 			configState.isSync = true;
-	// 			console.log('config', newConfig);
-	// 		}
-	// 	} catch (err) {
-	// 		callStates.fetchAndSetConfig.error = err.message;
-	// 		console.error('fetch and set config error', err);
-	// 	} finally {
-	// 		callStates.fetchAndSetConfig.isLoading = false;
-	// 	}
-	// },
-	async uploadNewConfig() {
+	uploadNewConfig() {
 		if (!configState.config) return;
 		const cleanConfig = configStore.prepareConfigForUpload();
 		if (!cleanConfig) {
@@ -119,24 +97,6 @@ const configStore: ConfigStore = {
 		}
 		callStates.uploadNewConfig.isLoading = true;
 		sendWSMessage({ type: DASH_CALL_TYPES.dash_updateConfigType, data: cleanConfig });
-
-		// try {
-
-		// 	const uploadResult = await ConfigApi.uploadConfig(cleanConfig);
-
-		// 	if (uploadResult?.status === 'error') {
-		// 		callStates.uploadNewConfig.error = uploadResult.message;
-		// 		throw new Error(uploadResult.message);
-		// 	} else {
-		// 		await controllerStore.restartController();
-		// 		await configStore.fetchAndSetConfig();
-		// 	}
-		// } catch (err) {
-		// 	callStates.uploadNewConfig.error = err;
-		// 	console.error('upload new config error', err);
-		// } finally {
-		// 	callStates.uploadNewConfig.isLoading = false;
-		// }
 	},
 	handleConfigUpdated() {
 		callStates.uploadNewConfig.isLoading = false;
@@ -195,7 +155,7 @@ const configStore: ConfigStore = {
 		}
 
 		if (!checkDeviceIntegrity(newDevice)) {
-			const message = 'Wrong device payload.';
+			const message = 'Wrong device payload !';
 			console.error(message, newDevice);
 			callStates.addDevice.error = message;
 			return;
