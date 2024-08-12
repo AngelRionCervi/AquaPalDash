@@ -1,4 +1,4 @@
-import { DASH_CALL_TYPES } from '$lib/wsGlobal/callTypes';
+import { BOX_CALL_TYPES, DASH_CALL_TYPES } from '$lib/wsGlobal/callTypes';
 import ControllerApi from '$lib/api/controllerApi';
 import devicesStatusStore from './deviceStatusStore.svelte';
 import { CHECK_CONNECTION_INTERVAL } from '$lib/constants';
@@ -24,10 +24,12 @@ type BasicCallStates = Record<
 		| 'toggleDevice'
 		| 'deviceCallStates'
 		| 'loadMockData'
-		| 'controllerRestarted'
+		| 'handleRestarted'
 		| 'resultToggleDevice'
 		| 'errorToggleDevice'
 		| 'resultToggleSchedule'
+    | 'setIsOn'
+    | 'handleRestarting'
 	>,
 	CallState
 >;
@@ -48,7 +50,7 @@ interface ControllerStore {
 	callStates: ControllerState['callStates'];
 	deviceCallStates: ControllerState['deviceCallStates'];
 	restartController: () => void;
-	controllerRestarted: () => void;
+	handleRestarted: () => void;
 	checkUpdateWithInterval: () => void;
 	clearCheckUpdateWithInterval: () => void;
 	checkHardwareUpdate: () => Promise<void>;
@@ -58,6 +60,8 @@ interface ControllerStore {
 	resultToggleDevice: ({ id, state }: { id: string; state: boolean }) => void;
 	errorToggleDevice: (id: string) => void;
 	loadMockData: () => void;
+  setIsOn: (isOn: boolean) => void;
+  handleRestarting: () => void;
 }
 
 const callStates: ControllerState['callStates'] = $state({
@@ -119,6 +123,9 @@ const controllerStore: ControllerStore = {
 		constrollerState.isScheduleOn = state;
 		callStates.toggleSchedule.isLoading = false;
 	},
+  setIsOn(isOn: boolean) {
+    constrollerState.isOn = isOn;
+  },
 	toggleDevice(id: string) {
 		console.log('onstrollerState.isScheduleOn', constrollerState.isScheduleOn);
 		if (constrollerState.isScheduleOn) return;
@@ -160,12 +167,14 @@ const controllerStore: ControllerStore = {
 			callStates.checkHardwareUpdate.isLoading = false;
 		}
 	},
+  handleRestarting() {
+    constrollerState.isRestarting = true;
+  },
 	restartController() {
 		if (authStore.isDemoMode) return;
-
-		constrollerState.isRestarting = true;
+		
 		//await ControllerApi.API_restartController();
-		sendWSMessage({ type: 'restart' });
+		sendWSMessage({ type: DASH_CALL_TYPES.dash_restartType });
 
 		// for (;;) {
 		// 	await sleep(1000);
@@ -181,7 +190,8 @@ const controllerStore: ControllerStore = {
 		// 	}
 		// }
 	},
-	controllerRestarted() {
+	handleRestarted() {
+    console.log('controller done restating !!!!!!!!!!')
 		constrollerState.isRestarting = false;
 	}
 };

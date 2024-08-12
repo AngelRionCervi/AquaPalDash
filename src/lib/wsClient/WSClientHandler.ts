@@ -7,52 +7,59 @@ import { jstr, parseMessage } from '$lib/wsGlobal/wsUtils';
 let ws: WebSocket;
 
 function checkForError(message: Record<string, unknown>) {
-  console.log('checkForError', message);
-  if (message.type === DASH_CALL_TYPES.dash_resultToggleDeviceType && message.info) {
-    const info = message.info as { id: string };
-    controllerStore.errorToggleDevice(info.id || '');
-  }
-  if (message.status === 'error') {
-    console.error("Error WS message", message);
-    return false;
-  }
+	console.log('checkForError', message);
+	if (message.type === DASH_CALL_TYPES.dash_resultToggleDeviceType && message.info) {
+		const info = message.info as { id: string };
+		controllerStore.errorToggleDevice(info.id || '');
+	}
+	if (message.status === 'error') {
+		console.error('Error WS message', message);
+		return false;
+	}
 
-  return true;
+	return true;
 }
 
 function handleMessage(ws: WebSocket, message: Record<string, unknown>) {
-  console.log('[websocket] parsed message received', message);
+	console.log('[websocket] parsed message received', message);
 
-  if (message.type === DASH_CALL_TYPES.dash_setConfigType) {
+	if (message.type === DASH_CALL_TYPES.dash_handShakeType) {
     if (!checkForError(message)) return;
+    console.log('controller RESTARTED !');
 
-    configStore.setConfig(message.data as Config);
-  } else if (message.type === DASH_CALL_TYPES.dash_setDevicesInfoType) {
-    if (!checkForError(message)) return;
+    controllerStore.handleRestarted();
+    configStore.handleConfigUpdated();
+		configStore.queryConfig();
+	} else if (message.type === DASH_CALL_TYPES.dash_setConfigType) {
+		if (!checkForError(message)) return;
 
-    devicesStatusStore.updateAllDevicesStatus(message.data as Array<RawDeviceStatus>);
-  } else if (message.type === DASH_CALL_TYPES.dash_resultUpdateConfigType) {
-    if (!checkForError(message)) return;
+		configStore.setConfig(message.data as Config);
+		controllerStore.setIsOn(true);
+	} else if (message.type === DASH_CALL_TYPES.dash_setDevicesInfoType) {
+		if (!checkForError(message)) return;
 
-    controllerStore.restartController();
-  } else if (message.type === DASH_CALL_TYPES.dash_resultBoxRestartType) {
-    if (!checkForError(message)) return;
+		devicesStatusStore.updateAllDevicesStatus(message.data as Array<RawDeviceStatus>);
+	} else if (message.type === DASH_CALL_TYPES.dash_resultUpdateConfigType) {
+		if (!checkForError(message)) return;
 
-    controllerStore.controllerRestarted();
-    configStore.queryConfig();
-  } else if (message.type === DASH_CALL_TYPES.dash_resultToggleDeviceType) {
-    if (!checkForError(message)) return;
+		controllerStore.restartController();
+	} else if (message.type === DASH_CALL_TYPES.dash_resultBoxRestartType) {
+		if (!checkForError(message)) return;
+		
+    controllerStore.handleRestarting();
+	} else if (message.type === DASH_CALL_TYPES.dash_resultToggleDeviceType) {
+		if (!checkForError(message)) return;
 
-    controllerStore.resultToggleDevice(message.data as { id: string, state: boolean });
-  } else if (message.type === DASH_CALL_TYPES.dash_resultToggleScheduleType) {
-    if (!checkForError(message)) return;
+		controllerStore.resultToggleDevice(message.data as { id: string; state: boolean });
+	} else if (message.type === DASH_CALL_TYPES.dash_resultToggleScheduleType) {
+		if (!checkForError(message)) return;
 
-    controllerStore.resultToggleSchedule(message.data as boolean);
-  } else if (message.type === DASH_CALL_TYPES.dash_resultGetScheduleStateType) {
-    if (!checkForError(message)) return;
+		controllerStore.resultToggleSchedule(message.data as boolean);
+	} else if (message.type === DASH_CALL_TYPES.dash_resultGetScheduleStateType) {
+		if (!checkForError(message)) return;
 
-    controllerStore.resultToggleSchedule(message.data as boolean);
-  }
+		controllerStore.resultToggleSchedule(message.data as boolean);
+	}
 }
 
 function WSClientHandler() {
@@ -68,15 +75,15 @@ function WSClientHandler() {
 		ws.send(handshakePayload);
 	}
 
-  function onConnectionClose(event: WebSocketEventMap['close']) {
-    console.log('[websocket] connection closed', event);
-  }
+	function onConnectionClose(event: WebSocketEventMap['close']) {
+		console.log('[websocket] connection closed', event);
+	}
 
-  function onMessage(event: WebSocketEventMap['message']) {
-    console.log('[websocket] message received', event);
-    const parsedMessage = parseMessage(event.data);
-    handleMessage(ws, parsedMessage);
-  }
+	function onMessage(event: WebSocketEventMap['message']) {
+		console.log('[websocket] message received', event);
+		const parsedMessage = parseMessage(event.data);
+		handleMessage(ws, parsedMessage);
+	}
 
 	ws.addEventListener('open', onConnectionOpen);
 	ws.addEventListener('close', onConnectionClose);
@@ -84,12 +91,12 @@ function WSClientHandler() {
 }
 
 export const sendWSMessage = (message: Record<string, unknown>) => {
-  message.source = 'dash';
-  if (!ws) {
-    console.error('WS connection is not open');
-    return;
-  }
-  ws.send(jstr(message));
-}
+	message.source = 'dash';
+	if (!ws) {
+		console.error('WS connection is not open');
+		return;
+	}
+	ws.send(jstr(message));
+};
 
 export default WSClientHandler;

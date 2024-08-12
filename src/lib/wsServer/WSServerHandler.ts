@@ -39,12 +39,16 @@ function WSServerHandler(webSocketServer: WebsocketServerType) {
 			}
 
 			boxClient.send(jstr({ source: 'server', type: BOX_CALL_TYPES.box_getConfigType }));
-		} else if (message.type === DASH_CALL_TYPES.dash_toggleDeviceType) {
-			console.log(
-				'DASH_CALL_TYPES.dash_toggleDeviceType',
-				DASH_CALL_TYPES.dash_toggleDeviceType,
-				message.data
+		} else if (message.type === DASH_CALL_TYPES.dash_updateConfigType) {
+			const boxClient = getBoxClient();
+			if (!boxClient) {
+				return;
+			}
+
+			boxClient.send(
+				jstr({ source: 'server', type: BOX_CALL_TYPES.box_updateConfigType, data: message.data })
 			);
+		} else if (message.type === DASH_CALL_TYPES.dash_toggleDeviceType) {
 			const boxClient = getBoxClient();
 			if (!boxClient) {
 				return;
@@ -64,13 +68,25 @@ function WSServerHandler(webSocketServer: WebsocketServerType) {
 	}
 
 	function handleBoxMessage(socket: ExtendedWebSocket, message: ParsedSocketMessage) {
-		console.log('handle box message TYPE', message.type);
+		console.log('handle box message TYPE', message.type, message.data);
 		if (message.type === BOX_CALL_TYPES.box_handShakeType) {
+			const dashClient = getDashClient();
+			if (!dashClient) {
+				return;
+			}
+
 			socket.source = 'box';
 			socket.send(jstr({ source: 'server', type: BOX_CALL_TYPES.box_initType }));
+			dashClient.send(
+				jstr({
+					source: 'server',
+					type: DASH_CALL_TYPES.dash_handShakeType,
+					data: message.data,
+					status: message.status
+				})
+			);
 		} else if (message.type === BOX_CALL_TYPES.box_getConfigType) {
 			const dashClient = getDashClient();
-			console.log('dashClient', !!dashClient);
 			if (!dashClient) {
 				return;
 			}
@@ -166,20 +182,34 @@ function WSServerHandler(webSocketServer: WebsocketServerType) {
 			);
 			console.log('box_schedule_toggle', message);
 		} else if (message.type === BOX_CALL_TYPES.box_getScheduleStateType) {
-      const dashClient = getDashClient();
-      if (!dashClient) {
-        return;
-      }
+			const dashClient = getDashClient();
+			if (!dashClient) {
+				return;
+			}
 
-      dashClient.send(
-        jstr({
-          source: 'server',
-          type: DASH_CALL_TYPES.dash_resultGetScheduleStateType,
-          data: message.data,
-          status: message.status
-        })
-      );
-    }
+			dashClient.send(
+				jstr({
+					source: 'server',
+					type: DASH_CALL_TYPES.dash_resultGetScheduleStateType,
+					data: message.data,
+					status: message.status
+				})
+			);
+		} else if (message.type === BOX_CALL_TYPES.box_resultUpdateConfigType) {
+			const dashClient = getDashClient();
+			if (!dashClient) {
+				return;
+			}
+
+			dashClient.send(
+				jstr({
+					source: 'server',
+					type: DASH_CALL_TYPES.dash_resultUpdateConfigType,
+					data: message.data,
+					status: message.status
+				})
+			);
+		}
 	}
 
 	return function (socket: ExtendedWebSocket, rawData: string) {

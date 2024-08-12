@@ -1,7 +1,5 @@
 import { DASH_CALL_TYPES } from '$lib/wsGlobal/callTypes';
-import ConfigApi from '$lib/api/configApi';
 import { MAX_DEVICES } from '$lib/constants';
-import controllerStore from './controllerStore.svelte';
 import configMock from '$lib/mock/configMock.json';
 import { sendWSMessage } from '$lib/wsClient/WSClientHandler';
 
@@ -24,9 +22,9 @@ interface ConfigState {
 			| 'prepareConfigForUpload'
 			| 'loadMockConfig'
 			| 'updateMockConfig'
-      | 'handleConfigUpdated'
-      | 'setConfig'
-      | 'queryConfig'
+			| 'handleConfigUpdated'
+			| 'setConfig'
+			| 'queryConfig'
 		>,
 		CallState
 	>;
@@ -36,9 +34,8 @@ interface ConfigStore {
 	config: Config | null;
 	isSync: boolean;
 	callStates: ConfigState['callStates'];
-  setConfig: (newConfig: Config) => void;
+	setConfig: (newConfig: Config) => void;
 	undoModifications: () => void;
-	fetchAndSetConfig: () => Promise<void>;
 	updateDevice: (id: string, partialDevice: Partial<Device>) => void;
 	updateSetting: <T extends keyof ConfigSettings>(
 		key: keyof ConfigSettings,
@@ -55,8 +52,8 @@ interface ConfigStore {
 	prepareConfigForUpload: () => Config | undefined;
 	loadMockConfig: () => void;
 	updateMockConfig: () => void;
-  handleConfigUpdated: () => void;
-  queryConfig: () => void;
+	handleConfigUpdated: () => void;
+	queryConfig: () => void;
 }
 
 const callStates: ConfigState['callStates'] = $state({
@@ -89,59 +86,61 @@ const configStore: ConfigStore = {
 		previousConfig = Object.freeze(structuredClone(newConfig));
 		configState.isSync = true;
 	},
-  queryConfig() {
-    sendWSMessage({ type: DASH_CALL_TYPES.dash_getConfigType });
-  },
-	async fetchAndSetConfig() {
-		try {
-			callStates.fetchAndSetConfig.isLoading = true;
-			const newConfig = await ConfigApi.fetchConfig();
-			if (newConfig?.status === 'error' || !newConfig?.data) {
-				const message = newConfig?.message || 'no data';
-				callStates.uploadNewConfig.error = message;
-				throw new Error(message);
-			} else {
-				configState.config = newConfig.data;
-				console.log('newConfig.data', newConfig.data);
-				previousConfig = Object.freeze(structuredClone(newConfig.data));
-				configState.isSync = true;
-				console.log('config', newConfig);
-			}
-		} catch (err) {
-			callStates.fetchAndSetConfig.error = err.message;
-			console.error('fetch and set config error', err);
-		} finally {
-			callStates.fetchAndSetConfig.isLoading = false;
-		}
+	queryConfig() {
+		sendWSMessage({ type: DASH_CALL_TYPES.dash_getConfigType });
 	},
+	// async fetchAndSetConfig() {
+	// 	try {
+	// 		callStates.fetchAndSetConfig.isLoading = true;
+	// 		const newConfig = await ConfigApi.fetchConfig();
+	// 		if (newConfig?.status === 'error' || !newConfig?.data) {
+	// 			const message = newConfig?.message || 'no data';
+	// 			callStates.uploadNewConfig.error = message;
+	// 			throw new Error(message);
+	// 		} else {
+	// 			configState.config = newConfig.data;
+	// 			console.log('newConfig.data', newConfig.data);
+	// 			previousConfig = Object.freeze(structuredClone(newConfig.data));
+	// 			configState.isSync = true;
+	// 			console.log('config', newConfig);
+	// 		}
+	// 	} catch (err) {
+	// 		callStates.fetchAndSetConfig.error = err.message;
+	// 		console.error('fetch and set config error', err);
+	// 	} finally {
+	// 		callStates.fetchAndSetConfig.isLoading = false;
+	// 	}
+	// },
 	async uploadNewConfig() {
 		if (!configState.config) return;
-
-		try {
-			callStates.uploadNewConfig.isLoading = true;
-			const cleanConfig = configStore.prepareConfigForUpload();
-			if (!cleanConfig) {
-				throw new Error('Could not clean config.');
-			}
-			const uploadResult = await ConfigApi.uploadConfig(cleanConfig);
-
-			if (uploadResult?.status === 'error') {
-				callStates.uploadNewConfig.error = uploadResult.message;
-				throw new Error(uploadResult.message);
-			} else {
-				await controllerStore.restartController();
-				await configStore.fetchAndSetConfig();
-			}
-		} catch (err) {
-			callStates.uploadNewConfig.error = err;
-			console.error('upload new config error', err);
-		} finally {
-			callStates.uploadNewConfig.isLoading = false;
+		const cleanConfig = configStore.prepareConfigForUpload();
+		if (!cleanConfig) {
+			throw new Error('Could not clean config.');
 		}
+		callStates.uploadNewConfig.isLoading = true;
+		sendWSMessage({ type: DASH_CALL_TYPES.dash_updateConfigType, data: cleanConfig });
+
+		// try {
+
+		// 	const uploadResult = await ConfigApi.uploadConfig(cleanConfig);
+
+		// 	if (uploadResult?.status === 'error') {
+		// 		callStates.uploadNewConfig.error = uploadResult.message;
+		// 		throw new Error(uploadResult.message);
+		// 	} else {
+		// 		await controllerStore.restartController();
+		// 		await configStore.fetchAndSetConfig();
+		// 	}
+		// } catch (err) {
+		// 	callStates.uploadNewConfig.error = err;
+		// 	console.error('upload new config error', err);
+		// } finally {
+		// 	callStates.uploadNewConfig.isLoading = false;
+		// }
 	},
-  handleConfigUpdated() {
-    //controllerStore.restartController();
-  },
+	handleConfigUpdated() {
+		callStates.uploadNewConfig.isLoading = false;
+	},
 	prepareConfigForUpload() {
 		if (!configState.config) return;
 

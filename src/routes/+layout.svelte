@@ -36,44 +36,44 @@
 		}
 
 		needsLogin = false;
-		startUp();
+		//startUp();
 		toggle();
 	}
 
-	async function startUp() {
-		mainLoading = true;
+	// async function startUp() {
+	// 	mainLoading = true;
 
-		windowStore.init();
+	// 	windowStore.init();
 
-		if (authStore.isDemoMode) {
-			configStore.loadMockConfig();
-			deviceStatusStore.loadDeviceStatusMock();
-			controllerStore.loadMockData();
-			mainLoading = false;
-			needsLogin = false;
-			return;
-		}
+	// 	if (authStore.isDemoMode) {
+	// 		configStore.loadMockConfig();
+	// 		deviceStatusStore.loadDeviceStatusMock();
+	// 		controllerStore.loadMockData();
+	// 		mainLoading = false;
+	// 		needsLogin = false;
+	// 		return;
+	// 	}
 
-		await configStore.fetchAndSetConfig();
+	// 	await configStore.fetchAndSetConfig();
 
-		if (!configStore.config) {
-			mainLoading = false;
-			return;
-		}
+	// 	if (!configStore.config) {
+	// 		mainLoading = false;
+	// 		return;
+	// 	}
 
-		await controllerStore.checkHardwareUpdate();
+	// 	await controllerStore.checkHardwareUpdate();
 
-		const { enableMonitoring, prefetchHistorical } = configStore.config?.settings || {};
-		if (enableMonitoring && prefetchHistorical) {
-			await monitoringStore.updateLast();
-			await monitoringStore.fetchHistoricals();
-			monitoringStore.updateLastWithInterval();
-		}
+	// 	const { enableMonitoring, prefetchHistorical } = configStore.config?.settings || {};
+	// 	if (enableMonitoring && prefetchHistorical) {
+	// 		await monitoringStore.updateLast();
+	// 		await monitoringStore.fetchHistoricals();
+	// 		monitoringStore.updateLastWithInterval();
+	// 	}
 
-		controllerStore.checkUpdateWithInterval();
+	// 	controllerStore.checkUpdateWithInterval();
 
-		mainLoading = false;
-	}
+	// 	mainLoading = false;
+	// }
 
 	onMount(() => {
 		// test
