@@ -3,6 +3,8 @@ import { BOX_CALL_TYPES, DASH_CALL_TYPES } from '../wsGlobal/callTypes';
 import type { ExtendedWebSocket, ParsedSocketMessage } from './wsServer';
 import { jstr, parseMessage } from '../wsGlobal/wsUtils';
 
+type ValueOf<T> = T[keyof T];
+
 function WSServerHandler(webSocketServer: WebsocketServerType) {
 	const wss = webSocketServer;
 
@@ -14,201 +16,91 @@ function WSServerHandler(webSocketServer: WebsocketServerType) {
 		return [...(wss.clients as Set<ExtendedWebSocket>)].find((client) => client.source === 'dash');
 	}
 
+	function sendToDash(
+		dashClient: ExtendedWebSocket,
+		callType: ValueOf<typeof DASH_CALL_TYPES>,
+		message: ParsedSocketMessage
+	) {
+		dashClient.send(
+			jstr({
+				source: 'server',
+				type: callType,
+				data: message.data,
+				status: message.status,
+				info: message.info || null
+			})
+		);
+	}
+
+	function sendToBox(
+		boxClient: ExtendedWebSocket,
+		callType: ValueOf<typeof BOX_CALL_TYPES>,
+		data: string | number | boolean | null = null
+	) {
+		boxClient.send(
+			jstr({
+				source: 'server',
+				type: callType,
+				data
+			})
+		);
+	}
+
 	function handleDashMessage(socket: ExtendedWebSocket, message: ParsedSocketMessage) {
-		console.log('handle dash message TYPE', message.type);
 		if (message.type === DASH_CALL_TYPES.dash_handShakeType) {
 			socket.source = 'dash';
-			const boxClient = getBoxClient();
-			console.log('boxClient', !!boxClient);
-			if (!boxClient) {
-				return;
-			}
+		}
+		const boxClient = getBoxClient();
+		if (!boxClient) {
+			console.error('No box client found !');
+			return;
+		}
 
-			boxClient.send(jstr({ source: 'server', type: BOX_CALL_TYPES.box_handShakeType }));
+		console.log('handle dash message TYPE', message.type);
+		if (message.type === DASH_CALL_TYPES.dash_handShakeType) {
+			sendToBox(boxClient, BOX_CALL_TYPES.box_handShakeType);
 		} else if (message.type === DASH_CALL_TYPES.dash_restartType) {
-			const boxClient = getBoxClient();
-			if (!boxClient) {
-				return;
-			}
-
-			boxClient.send(jstr({ source: 'server', type: BOX_CALL_TYPES.box_restartType }));
+			sendToBox(boxClient, BOX_CALL_TYPES.box_restartType);
 		} else if (message.type === DASH_CALL_TYPES.dash_getConfigType) {
-			const boxClient = getBoxClient();
-			if (!boxClient) {
-				return;
-			}
-
-			boxClient.send(jstr({ source: 'server', type: BOX_CALL_TYPES.box_getConfigType }));
+			sendToBox(boxClient, BOX_CALL_TYPES.box_getConfigType);
 		} else if (message.type === DASH_CALL_TYPES.dash_updateConfigType) {
-			const boxClient = getBoxClient();
-			if (!boxClient) {
-				return;
-			}
-
-			boxClient.send(
-				jstr({ source: 'server', type: BOX_CALL_TYPES.box_updateConfigType, data: message.data })
-			);
+			sendToBox(boxClient, BOX_CALL_TYPES.box_updateConfigType, message.data);
 		} else if (message.type === DASH_CALL_TYPES.dash_toggleDeviceType) {
-			const boxClient = getBoxClient();
-			if (!boxClient) {
-				return;
-			}
-
-			boxClient.send(
-				jstr({ source: 'server', type: BOX_CALL_TYPES.box_deviceToggleType, data: message.data })
-			);
+			sendToBox(boxClient, BOX_CALL_TYPES.box_deviceToggleType, message.data);
 		} else if (message.type === DASH_CALL_TYPES.dash_toggleScheduleType) {
-			const boxClient = getBoxClient();
-			if (!boxClient) {
-				return;
-			}
-
-			boxClient.send(jstr({ source: 'server', type: BOX_CALL_TYPES.box_scheduleToggleType }));
+			sendToBox(boxClient, BOX_CALL_TYPES.box_scheduleToggleType);
 		}
 	}
 
 	function handleBoxMessage(socket: ExtendedWebSocket, message: ParsedSocketMessage) {
-		console.log('handle box message TYPE', message.type, message.data);
 		if (message.type === BOX_CALL_TYPES.box_handShakeType) {
-			const dashClient = getDashClient();
-			if (!dashClient) {
-				return;
-			}
-
 			socket.source = 'box';
+		}
+		const dashClient = getDashClient();
+		if (!dashClient) {
+			console.error('No dash client found !');
+			return;
+		}
+
+		if (message.type === BOX_CALL_TYPES.box_handShakeType) {
 			socket.send(jstr({ source: 'server', type: BOX_CALL_TYPES.box_initType }));
-			dashClient.send(
-				jstr({
-					source: 'server',
-					type: DASH_CALL_TYPES.dash_handShakeType,
-					data: message.data,
-					status: message.status
-				})
-			);
+			sendToDash(dashClient, DASH_CALL_TYPES.dash_handShakeType, message);
 		} else if (message.type === BOX_CALL_TYPES.box_getConfigType) {
-			const dashClient = getDashClient();
-			if (!dashClient) {
-				return;
-			}
-
-			// init config;
-			dashClient.send(
-				jstr({
-					source: 'server',
-					type: DASH_CALL_TYPES.dash_setConfigType,
-					data: message.data,
-					status: message.status
-				})
-			);
-			console.log('handleBoxMessage box_get_config message', message);
+			sendToDash(dashClient, DASH_CALL_TYPES.dash_setConfigType, message);
 		} else if (message.type === BOX_CALL_TYPES.box_getDevicesInfoType) {
-			const dashClient = getDashClient();
-			if (!dashClient) {
-				return;
-			}
-			// get devices infos
-			dashClient.send(
-				jstr({
-					source: 'server',
-					type: DASH_CALL_TYPES.dash_setDevicesInfoType,
-					data: message.data,
-					status: message.status
-				})
-			);
-			console.log('box_get_devices_infos message', message);
+			sendToDash(dashClient, DASH_CALL_TYPES.dash_setDevicesInfoType, message);
 		} else if (message.type === BOX_CALL_TYPES.box_updateConfigType) {
-			const dashClient = getDashClient();
-			if (!dashClient) {
-				return;
-			}
-			// get devices infos
-			dashClient.send(
-				jstr({
-					source: 'server',
-					type: DASH_CALL_TYPES.dash_resultUpdateConfigType,
-					data: message.data,
-					status: message.status
-				})
-			);
-			console.log('box_update_config', message);
+			sendToDash(dashClient, DASH_CALL_TYPES.dash_resultUpdateConfigType, message);
 		} else if (message.type === BOX_CALL_TYPES.box_restartType) {
-			const dashClient = getDashClient();
-			if (!dashClient) {
-				return;
-			}
-
-			dashClient.send(
-				jstr({
-					source: 'server',
-					type: DASH_CALL_TYPES.dash_resultBoxRestartType,
-					data: message.data,
-					status: message.status
-				})
-			);
-			console.log('box_restart', message);
+			sendToDash(dashClient, DASH_CALL_TYPES.dash_resultBoxRestartType, message);
 		} else if (message.type === BOX_CALL_TYPES.box_deviceToggleType) {
-			console.log(
-				'RRECEIVEEDDD BOX_CALL_TYPES.box_deviceToggleType',
-				BOX_CALL_TYPES.box_deviceToggleType
-			);
-			const dashClient = getDashClient();
-			if (!dashClient) {
-				return;
-			}
-
-			dashClient.send(
-				jstr({
-					source: 'server',
-					type: DASH_CALL_TYPES.dash_resultToggleDeviceType,
-					data: message.data,
-					status: message.status,
-					info: message.info || null
-				})
-			);
-			console.log('box_device_manual_toggle', message);
+			sendToDash(dashClient, DASH_CALL_TYPES.dash_resultToggleDeviceType, message);
 		} else if (message.type === BOX_CALL_TYPES.box_scheduleToggleType) {
-			const dashClient = getDashClient();
-			if (!dashClient) {
-				return;
-			}
-
-			dashClient.send(
-				jstr({
-					source: 'server',
-					type: DASH_CALL_TYPES.dash_resultToggleScheduleType,
-					data: message.data,
-					status: message.status
-				})
-			);
-			console.log('box_schedule_toggle', message);
+			sendToDash(dashClient, DASH_CALL_TYPES.dash_resultToggleScheduleType, message);
 		} else if (message.type === BOX_CALL_TYPES.box_getScheduleStateType) {
-			const dashClient = getDashClient();
-			if (!dashClient) {
-				return;
-			}
-
-			dashClient.send(
-				jstr({
-					source: 'server',
-					type: DASH_CALL_TYPES.dash_resultGetScheduleStateType,
-					data: message.data,
-					status: message.status
-				})
-			);
+			sendToDash(dashClient, DASH_CALL_TYPES.dash_resultGetScheduleStateType, message);
 		} else if (message.type === BOX_CALL_TYPES.box_resultUpdateConfigType) {
-			const dashClient = getDashClient();
-			if (!dashClient) {
-				return;
-			}
-
-			dashClient.send(
-				jstr({
-					source: 'server',
-					type: DASH_CALL_TYPES.dash_resultUpdateConfigType,
-					data: message.data,
-					status: message.status
-				})
-			);
+			sendToDash(dashClient, DASH_CALL_TYPES.dash_resultUpdateConfigType, message);
 		}
 	}
 
