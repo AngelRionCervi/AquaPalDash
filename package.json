@@ -4,7 +4,7 @@
 	"private": true,
 	"scripts": {
 		"dev": "vite dev --mode development --host",
-		"start-ws": "npx tsx ./server/index.ts",
+		"start": "npx tsx ./server/index.ts",
 		"devProd": "NODE_ENV='production' vite dev --mode production",
 		"build": "vite build --mode production",
 		"preview": "vite preview --mode production",

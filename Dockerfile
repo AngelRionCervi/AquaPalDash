@@ -26,4 +26,4 @@ COPY --from=sk-build /usr/src/app/server /usr/src/app/server
 
 EXPOSE 3000
 CMD ["node", "build/index.js"]
-CMD ["npm", "run", "start-ws"]
+CMD ["npm", "run", "start"]

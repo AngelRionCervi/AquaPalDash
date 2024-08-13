@@ -65,7 +65,7 @@ function handleMessage(ws: WebSocket, message: Record<string, unknown>) {
 
 function WSClientHandler() {
 	const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-	ws = new WebSocket(`${protocol}//${window.location.host}:3001`);
+	ws = new WebSocket(`${protocol}//${window.location.host}`);
 
 	function onConnectionOpen(event: WebSocketEventMap['open']) {
 		console.log('[websocket] connection open', event);
