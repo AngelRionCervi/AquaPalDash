@@ -3,12 +3,14 @@ import express from 'express';
 import { createServer } from 'http';
 import { handler } from '../build/handler.js';
 
-// const port = 3000;
-// const app = express();
-// const server = createServer(app);
+const port = 3000;
+const app = express();
+const server = createServer(app);
 
-configureServer();
+configureServer(server);
 
-// app.use(handler);
+app.use(handler);
 
-// server.listen(port);
+console.log('Starting server on ' + port);
+
+server.listen(port);

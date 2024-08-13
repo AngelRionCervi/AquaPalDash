@@ -28,10 +28,10 @@ function onHttpServerUpgrade(req: IncomingMessage, sock: Duplex, head: Buffer) {
 	});
 }
 
-export function configureServer() {
+export function configureServer(server: any) {
   console.log('Starting websocket server...');
 	wss = new WebSocketServer({
-		port: 8080
+		server
 	});
 
 	const messageHandler = WSServerHandler(wss);
@@ -47,7 +47,7 @@ export function configureServer() {
 		});
 	});
 
-	//server.httpServer?.on('upgrade', onHttpServerUpgrade);
+	server.httpServer?.on('upgrade', onHttpServerUpgrade);
 }
 
 export const webSocketServer = {
