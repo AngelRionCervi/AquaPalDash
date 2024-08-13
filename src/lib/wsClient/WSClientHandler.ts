@@ -25,11 +25,11 @@ function handleMessage(ws: WebSocket, message: Record<string, unknown>) {
 	console.log('[websocket] parsed message received', message);
 
 	if (message.type === DASH_CALL_TYPES.dash_handShakeType) {
-    if (!checkForError(message)) return;
-    console.log('controller RESTARTED !');
+		if (!checkForError(message)) return;
+		console.log('controller RESTARTED !');
 
-    controllerStore.handleRestarted();
-    configStore.handleConfigUpdated();
+		controllerStore.handleRestarted();
+		configStore.handleConfigUpdated();
 		configStore.queryConfig();
 	} else if (message.type === DASH_CALL_TYPES.dash_setConfigType) {
 		if (!checkForError(message)) return;
@@ -46,8 +46,8 @@ function handleMessage(ws: WebSocket, message: Record<string, unknown>) {
 		controllerStore.restartController();
 	} else if (message.type === DASH_CALL_TYPES.dash_resultBoxRestartType) {
 		if (!checkForError(message)) return;
-		
-    controllerStore.handleRestarting();
+
+		controllerStore.handleRestarting();
 	} else if (message.type === DASH_CALL_TYPES.dash_resultToggleDeviceType) {
 		if (!checkForError(message)) return;
 
@@ -65,8 +65,12 @@ function handleMessage(ws: WebSocket, message: Record<string, unknown>) {
 
 function WSClientHandler() {
 	const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-	ws = new WebSocket(`${protocol}//${window.location.host}`);
-  console.log('WSClientHandler', ws);
+	console.log('window.location', window.location);
+	const { hostname } = window.location;
+	ws = new WebSocket(
+		`${protocol}//${hostname}${hostname === 'localhost' ? ':3000' : ''}/websocket`
+	);
+	console.log('WSClientHandler', ws);
 
 	function onConnectionOpen(event: WebSocketEventMap['open']) {
 		console.log('[websocket] connection open', event);
@@ -93,8 +97,8 @@ function WSClientHandler() {
 }
 
 export const sendWSMessage = (message: Record<string, unknown>) => {
-  if (authStore.isDemoMode) return;
-  
+	if (authStore.isDemoMode) return;
+
 	message.source = 'dash';
 	if (!ws) {
 		console.error('WS connection is not open');

@@ -29,16 +29,17 @@ function onHttpServerUpgrade(req: IncomingMessage, sock: Duplex, head: Buffer) {
 }
 
 export function configureServer(server: any) {
-  console.log('Starting websocket server...');
+	console.log('Starting websocket server...');
 	wss = new WebSocketServer({
-		server
+		server,
+		path: '/websocket'
 	});
 
 	const messageHandler = WSServerHandler(wss);
 
 	wss.on('connection', (socket: ExtendedWebSocket) => {
 		socket.socketId = uuid.randomUUID();
-    console.log('New connection !', socket.socketId);
+		console.log('New connection !', socket.socketId);
 		socket.on('message', (data: string) => {
 			messageHandler(socket, data);
 		});

@@ -11,6 +11,4 @@ configureServer(server);
 
 app.use(handler);
 
-console.log('Starting server on ' + port);
-
 server.listen(port);
