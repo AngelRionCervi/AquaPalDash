@@ -55,4 +55,4 @@ jobs:
           server: https://aqua-dash.com
           app: 'dash'
           token: '${{ secrets.APP_TOKEN }}'
-          image: 'ghcr.io/angelaionaervi/aquapaldash:websocket-vps'
+          image: 'ghcr.io/angelrioncervi/aquapaldash:websocket-vps'
