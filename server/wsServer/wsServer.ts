@@ -20,7 +20,7 @@ const uuid = new ShortUniqueId({ length: 14 });
 let wss: WebsocketServerType;
 
 function onHttpServerUpgrade(req: IncomingMessage, sock: Duplex, head: Buffer) {
-	if (req.url !== '/websocket') return;
+	//if (req.url !== '/websocket') return;
 
 	wss.handleUpgrade(req, sock, head, (ws) => {
 		console.log('[handleUpgrade] creating new connection');
@@ -38,6 +38,7 @@ export function configureServer(server: any) {
 
 	wss.on('connection', (socket: ExtendedWebSocket) => {
 		socket.socketId = uuid.randomUUID();
+    console.log('New connection !', socket.socketId);
 		socket.on('message', (data: string) => {
 			messageHandler(socket, data);
 		});
