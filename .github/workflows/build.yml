@@ -3,7 +3,7 @@ name: build + publish
 on:
   push:
     branches:
-      - master
+      - websocket-vps
   workflow_dispatch:
 
 env:
@@ -56,4 +56,4 @@ jobs:
          server: https://aqua-dash.com
          app: 'sveltekit'
          token: '${{ secrets.APP_TOKEN }}'
-         image: 'ghcr.io/AngelRionCervi/AquaPalDash:master'
+         image: 'ghcr.io/AngelRionCervi/AquaPalDash:websocket-vps'
