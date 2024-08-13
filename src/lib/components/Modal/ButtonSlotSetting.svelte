@@ -170,7 +170,7 @@
 
 			@media screen and (max-width: $mobile-bp) {
 				margin-top: 0;
-        ext-align: center;
+        text-align: center;
 			}
 		}
 	}

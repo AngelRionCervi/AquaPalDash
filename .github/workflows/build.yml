@@ -53,6 +53,6 @@ jobs:
         uses: caprover/deploy-from-github@v1.1.2
         with:
           server: https://aqua-dash.com
-          app: 'sveltekit'
+          app: 'dash'
           token: '${{ secrets.APP_TOKEN }}'
           image: 'ghcr.io/AngelRionCervi/AquaPalDash:websocket-vps'
