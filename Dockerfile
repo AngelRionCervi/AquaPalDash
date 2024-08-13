@@ -22,6 +22,7 @@ COPY --from=sk-build /usr/src/app/package-lock.json /usr/src/app/package-lock.js
 RUN npm i --only=production
 
 COPY --from=sk-build /usr/src/app/build /usr/src/app/build
+COPY --from=sk-build /usr/src/app/server /usr/src/app/server
 
 EXPOSE 3000
 CMD ["node", "build/index.js"]
