@@ -1,7 +1,7 @@
 import type { WebSocketServer as WebsocketServerType } from 'ws';
-import { BOX_CALL_TYPES, DASH_CALL_TYPES } from '../wsGlobal/callTypes';
+import { BOX_CALL_TYPES, DASH_CALL_TYPES } from '../../src/lib/wsGlobal/callTypes';
 import type { ExtendedWebSocket, ParsedSocketMessage } from './wsServer';
-import { jstr, parseMessage } from '../wsGlobal/wsUtils';
+import { jstr, parseMessage } from '../../src/lib/wsGlobal/wsUtils';
 
 type ValueOf<T> = T[keyof T];
 

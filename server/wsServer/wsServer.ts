@@ -28,7 +28,7 @@ function onHttpServerUpgrade(req: IncomingMessage, sock: Duplex, head: Buffer) {
 	});
 }
 
-export function configureServer(server: ViteDevServer) {
+export function configureServer(server: any) {
   console.log('Starting websocket server...');
 	wss = new WebSocketServer({
 		noServer: true
