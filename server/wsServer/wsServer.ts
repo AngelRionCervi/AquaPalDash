@@ -34,6 +34,7 @@ export function configureServer(server: any) {
 		server,
 		path: '/websocket'
 	});
+  console.log(`websocket server started on: ${wss.address()}`);
 
 	const messageHandler = WSServerHandler(wss);
 
