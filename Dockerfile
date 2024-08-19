@@ -9,6 +9,7 @@ RUN apk --no-cache add curl tzdata
 RUN cp /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 RUN npm install --force
 RUN npm run build
+RUN npm install tsx
 
 FROM node:20.16-alpine
 WORKDIR /usr/src/app
@@ -25,5 +26,4 @@ COPY --from=sk-build /usr/src/app/build /usr/src/app/build
 COPY --from=sk-build /usr/src/app/server /usr/src/app/server
 
 EXPOSE 3000
-CMD ["node", "build/index.js"]
-CMD ["npm", "run", "start"]
+CMD ["node", "build/index.js", ";", "npm", "run", "serve"]

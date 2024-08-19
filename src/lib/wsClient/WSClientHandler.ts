@@ -65,11 +65,9 @@ function handleMessage(ws: WebSocket, message: Record<string, unknown>) {
 
 function WSClientHandler() {
 	const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-	console.log('window.location', window.location);
 	const { hostname } = window.location;
-	ws = new WebSocket(
-		`${protocol}//${hostname}${hostname === 'localhost' ? ':3000' : ''}/websocket`
-	);
+	const host = hostname === '192.168.1.18' ? '192.168.1.18:3000' : hostname;
+	ws = new WebSocket(`${protocol}//${host}/websocket`);
 	console.log('WSClientHandler', ws);
 
 	function onConnectionOpen(event: WebSocketEventMap['open']) {
