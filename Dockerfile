@@ -4,12 +4,15 @@ WORKDIR /usr/src/app
 ARG TZ=Europe/Stockholm
 ARG PUBLIC_HELLO
 
+RUN docker container prune --force
+RUN docker image prune --all
+
 COPY . /usr/src/app
 RUN apk --no-cache add curl tzdata
 RUN cp /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+RUN npm install -g tsx
 RUN npm install --force
 RUN npm run build
-RUN npm install tsx
 
 FROM node:20.16-alpine
 WORKDIR /usr/src/app
