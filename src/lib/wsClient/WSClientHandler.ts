@@ -94,6 +94,7 @@ function WSClientHandler() {
 	ws.addEventListener('message', onMessage);
 }
 
+
 export const sendWSMessage = (message: Record<string, unknown>) => {
 	if (authStore.isDemoMode) return;
 
