@@ -5,6 +5,7 @@
 	"scripts": {
 		"dev": "concurrently \"npm:dev-front\" \"npm:serve\"",
 		"dev-front": "vite dev --mode development --host",
+    "start-prod": "concurrently \"node build/index.js\" \"npm:serve\"",
 		"serve": "tsx ./server/index.ts",
 		"devProd": "NODE_ENV='production' vite dev --mode production",
 		"build": "vite build --mode production",

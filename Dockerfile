@@ -28,4 +28,4 @@ COPY --from=sk-build /usr/src/app/build /usr/src/app/build
 COPY --from=sk-build /usr/src/app/server /usr/src/app/server
 
 EXPOSE 3000
-CMD ["/usr/bin/bash", "/start.sh"]
+CMD ["npm", "run", "start-prod"]
