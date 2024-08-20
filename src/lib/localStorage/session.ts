@@ -1,25 +1,25 @@
 export interface Session {
-	port: string;
+  password: string;
   demoMode?: boolean;
 }
 
 function setLoginSession(session: Session) {
-	localStorage.setItem('session', JSON.stringify({ port: session.port, demoMode: !!session.demoMode }));
+  localStorage.setItem('session', JSON.stringify({ port: session.password, demoMode: !!session.demoMode }));
 }
 
 function getLoginSession() {
-	const session = localStorage.getItem('session');
-	return session ? JSON.parse(session) : null;
+  const session = localStorage.getItem('session');
+  return session ? JSON.parse(session) : null;
 }
 
 function removeLoginSession() {
-	localStorage.removeItem('session');
+  localStorage.removeItem('session');
 }
 
 const SessionLS = {
-	setLoginSession,
-	getLoginSession,
-	removeLoginSession
+  setLoginSession,
+  getLoginSession,
+  removeLoginSession
 };
 
 export default SessionLS;

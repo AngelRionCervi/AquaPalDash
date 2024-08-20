@@ -25,4 +25,4 @@ COPY --from=sk-build /usr/src/app/build /usr/src/app/build
 COPY --from=sk-build /usr/src/app/server /usr/src/app/server
 
 EXPOSE 3000
-CMD ["npm", "run", "serve"]
+CMD ["npm", "run", "serveProd"]
