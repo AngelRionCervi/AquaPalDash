@@ -29,37 +29,37 @@ const dash_getScheduleStateType = 'dash_get_schedule_state';
 const dash_resultGetScheduleStateType = 'dash_result_get_schedule_state';
 
 const BOX_CALL_TYPES = {
-	box_handShakeType,
-	box_initType,
-	box_updateConfigType,
+  box_handShakeType,
+  box_initType,
+  box_updateConfigType,
   box_resultUpdateConfigType,
-	box_deviceToggleType,
-	box_scheduleToggleType,
-	box_getDevicesInfoType,
-	box_getConfigType,
-	box_getScheduleStateType,
-	box_pingType,
-	box_restartType,
-	box_fetchLastType,
-	box_fetchHistoricalType
+  box_deviceToggleType,
+  box_scheduleToggleType,
+  box_getDevicesInfoType,
+  box_getConfigType,
+  box_getScheduleStateType,
+  box_pingType,
+  box_restartType,
+  box_fetchLastType,
+  box_fetchHistoricalType
 };
 
 const DASH_CALL_TYPES = {
-	dash_handShakeType,
-	dash_setConfigType,
-	dash_setDevicesInfoType,
+  dash_handShakeType,
+  dash_setConfigType,
+  dash_setDevicesInfoType,
   dash_updateConfigType,
-	dash_resultUpdateConfigType,
-	dash_pingType,
-	dash_restartType,
-	dash_resultBoxRestartType,
-	dash_getConfigType,
-	dash_toggleDeviceType,
-	dash_resultToggleDeviceType,
-	dash_toggleScheduleType,
-	dash_resultToggleScheduleType,
-	dash_getScheduleStateType,
-	dash_resultGetScheduleStateType
+  dash_resultUpdateConfigType,
+  dash_pingType,
+  dash_restartType,
+  dash_resultBoxRestartType,
+  dash_getConfigType,
+  dash_toggleDeviceType,
+  dash_resultToggleDeviceType,
+  dash_toggleScheduleType,
+  dash_resultToggleScheduleType,
+  dash_getScheduleStateType,
+  dash_resultGetScheduleStateType
 };
 
 export { BOX_CALL_TYPES, DASH_CALL_TYPES };

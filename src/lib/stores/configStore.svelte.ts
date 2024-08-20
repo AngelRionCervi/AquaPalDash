@@ -1,4 +1,4 @@
-import { DASH_CALL_TYPES } from '$lib/wsGlobal/callTypes';
+import { DASH_CALL_TYPES } from '$wsGlobal/callTypes';
 import { MAX_DEVICES } from '$lib/constants';
 import configMock from '$lib/mock/configMock.json';
 import { sendWSMessage } from '$lib/wsClient/WSClientHandler';

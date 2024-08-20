@@ -2,8 +2,8 @@ import authStore from '$lib/stores/authStore.svelte';
 import configStore from '$lib/stores/configStore.svelte';
 import controllerStore from '$lib/stores/controllerStore.svelte';
 import devicesStatusStore from '$lib/stores/deviceStatusStore.svelte';
-import { DASH_CALL_TYPES } from '$lib/wsGlobal/callTypes';
-import { jstr, parseMessage } from '$lib/wsGlobal/wsUtils';
+import { DASH_CALL_TYPES } from '$wsGlobal/callTypes';
+import { jstr, parseMessage } from '$wsGlobal/wsUtils';
 
 let ws: WebSocket;
 

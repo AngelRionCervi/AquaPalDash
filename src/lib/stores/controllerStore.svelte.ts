@@ -1,4 +1,4 @@
-import { DASH_CALL_TYPES } from '$lib/wsGlobal/callTypes';
+import { DASH_CALL_TYPES } from '$wsGlobal/callTypes';
 import devicesStatusStore from './deviceStatusStore.svelte';
 import authStore from './authStore.svelte';
 import { sendWSMessage } from '$lib/wsClient/WSClientHandler';
