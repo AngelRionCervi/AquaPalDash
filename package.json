@@ -4,8 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "NODE_ENV='development' concurrently \"npm:dev-front\" \"npm:serve\"",
-    "dev-front": "vite dev --mode development",
-    "start-prod": "concurrently \"node build/index.js\" \"npm:serve\"",
+    "dev-front": "vite dev --mode development --host",
     "serve": "tsx ./server/index.ts",
     "serveProd": "NODE_ENV='production' npm run serve",
     "build": "vite build --mode production",
