@@ -1,97 +1,91 @@
 <script lang="ts">
-	import type { Setting } from './type';
-	import Select from '$lib/components/Inputs/Select.svelte';
-	import { convertToType } from '$lib/helpers/utils';
+  import type { Setting } from './type';
+  import Select from '$lib/components/Inputs/Select.svelte';
+  import { convertToType } from '$lib/helpers/utils';
 
-	interface Props {
-		setting: Setting;
-		index: number;
-		currentValue: unknown;
-		onSettingChange: (settingName: keyof ConfigSettings, value: string | number | boolean) => void;
-	}
+  interface Props {
+    setting: Setting;
+    index: number;
+    currentValue: unknown;
+    onSettingChange: (settingName: keyof ConfigSettings, value: string | number | boolean) => void;
+  }
 
-	const { setting, index, currentValue, onSettingChange }: Props = $props();
-	const { label, name, type, defaultVal, values, valueType } = setting;
+  const { setting, index, currentValue, onSettingChange }: Props = $props();
+  const { label, name, type, defaultVal, values, valueType } = setting;
 
-	const id = `${name}_${type}`;
+  const id = `${name}_${type}`;
 
-	function onChange({ target }: Event) {
-		const value = (target as HTMLInputElement).value;
-		const typedValue = convertToType(valueType, value) as string | number | boolean;
-		console.log('typedValue', typedValue);
-		onSettingChange(name, typedValue);
-	}
+  function onChange({ target }: Event) {
+    const value = (target as HTMLInputElement).value;
+    const typedValue = convertToType(valueType, value) as string | number | boolean;
+    console.log('typedValue', typedValue);
+    onSettingChange(name, typedValue);
+  }
 </script>
 
 <div class="setting-slot-container">
-	{#if index === 0}
-		<div class="separator"></div>
-	{/if}
-	<div class="inner-container">
-		<div class="left-container">
-			<label for={id}>{label}</label>
-		</div>
-		<div class="right-container">
-			{#if type === 'text'}
-				<input
-					class="input"
-					type="text"
-					{id}
-					value={currentValue ?? defaultVal}
-					maxlength="30"
-					oninput={onChange}
-				/>
-			{:else if type === 'select' && values?.length}
-				<Select {id} {name} {values} {currentValue} onchange={onChange} hasBorders />
-			{/if}
-		</div>
-	</div>
-	<div class="separator"></div>
+  {#if index === 0}
+    <div class="separator"></div>
+  {/if}
+  <div class="inner-container">
+    <div class="left-container">
+      <label for={id}>{label}</label>
+    </div>
+    <div class="right-container">
+      {#if type === 'text'}
+        <input class="input" type="text" {id} value={currentValue ?? defaultVal} maxlength="30" oninput={onChange} />
+      {:else if type === 'select' && values?.length}
+        <Select {id} {name} {values} {currentValue} onchange={onChange} hasBorders />
+      {/if}
+    </div>
+  </div>
+  <div class="separator"></div>
 </div>
 
 <style lang="scss">
-	@import '$lib/variables.scss';
+  @import '$lib/variables.scss';
 
-	.setting-slot-container {
-		display: flex;
-		flex-direction: column;
-		justify-content: center;
+  .setting-slot-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 
     @media screen and (max-width: $mobile-bp) {
-			margin: 0 16px;
-		}
-	}
+      margin: 0 16px;
+    }
+  }
 
-	.inner-container {
-		display: flex;
-		justify-content: space-between;
-		padding: 16px 0;
+  .inner-container {
+    display: flex;
+    justify-content: space-between;
+    padding: 16px 0;
+	font-size: var(--font-M);
 
-		@media screen and (max-width: $mobile-bp) {
-			flex-direction: column;
+    @media screen and (max-width: $mobile-bp) {
+      flex-direction: column;
       gap: 8px;
       align-items: flex-end;
-		}
-	}
+    }
+  }
 
-	.left-container {
-		display: flex;
-		flex-direction: column;
-		justify-content: center;
-	}
+  .left-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
 
-	.separator {
-		width: 100%;
-		height: 1px;
-		background-color: var(--secondary);
-	}
+  .separator {
+    width: 100%;
+    height: 1px;
+    background-color: var(--secondary);
+  }
 
-	.select,
-	.input {
-		font-size: var(--font-M);
-	}
+  .select,
+  .input {
+    font-size: var(--font-M);
+  }
 
-	.input {
-		width: 250px;
-	}
+  .input {
+    width: 250px;
+  }
 </style>
