@@ -1,11 +1,7 @@
 import type { WebSocketServer as WebsocketServerType } from 'ws';
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
-import { BOX_CALL_TYPES, DASH_CALL_TYPES } from '$wsGlobal/callTypes';
+import { BOX_CALL_TYPES, DASH_CALL_TYPES } from '../../wsGlobal/callTypes';
 import type { ExtendedWebSocket, ParsedSocketMessage } from './wsServer';
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
-import { jstr, parseMessage } from '$wsGlobal/wsUtils';
+import { jstr, parseMessage } from '../../wsGlobal/wsUtils';
 
 type ValueOf<T> = T[keyof T];
 

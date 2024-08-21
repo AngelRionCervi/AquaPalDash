@@ -5,7 +5,6 @@ import type { Duplex } from 'stream';
 import ShortUniqueId from 'short-unique-id';
 import type { WebSocketServer as WebsocketServerType, WebSocket as WebSocketBase } from 'ws';
 import WSServerHandler from './WSServerHandler';
-import { jstr, parseMessage } from '$wsGlobal/wsUtils';
 
 export type SocketSource = 'dash' | 'box';
 
@@ -29,7 +28,7 @@ function onHttpServerUpgrade(req: IncomingMessage, sock: Duplex, head: Buffer) {
   });
 }
 
-export function configureServer(server: any) {
+export function configureServer(server) {
   console.log('Starting websocket server...');
   wss = new WebSocketServer({
     server,
