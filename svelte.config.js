@@ -14,7 +14,7 @@ const config = {
     adapter: adapter({ out: 'build' }),
     alias: {
       $lib: './src/lib',
-      $wsGlobal: './wsGlobal'
+      $wsGlobal: './server/wsGlobal'
     }
   }
 };
