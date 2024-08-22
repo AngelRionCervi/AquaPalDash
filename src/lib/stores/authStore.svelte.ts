@@ -20,6 +20,7 @@ interface AuthStore {
   getSession: () => Session | null;
   removeSession: () => void;
   setUserId: (userId: string) => void;
+  removeSessionAndReload: () => void;
   init: () => void;
 }
 
@@ -45,7 +46,6 @@ const authStore: AuthStore = {
   },
   init() {
     const session = SessionLS.getLoginSession();
-    console.log('session', session)
     if (session) {
       authStore.setDemoMode(!!session.demoMode);
       authStore.setPassword(session.password);
@@ -68,6 +68,10 @@ const authStore: AuthStore = {
   },
   setUserId(userId: string) {
     authState.userId = userId;
+  },
+  removeSessionAndReload() {
+    authStore.removeSession();
+    window.location.reload();
   }
 };
 

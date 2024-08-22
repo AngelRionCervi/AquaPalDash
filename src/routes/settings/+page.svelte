@@ -24,11 +24,6 @@
   function onRestartController() {
     controllerStore.restartController();
   }
-
-  function onForgetSession() {
-    authStore.removeSession();
-    window.location.reload();
-  }
 </script>
 
 <div class="settings-main-container">
@@ -38,8 +33,8 @@
     {/each}
   </div>
   <div class="special-control-row">
-    <PrimaryButton label="Restart controller" type="red" onclick={onRestartController} disabled={controllerStore.isRestarting} />
-    <PrimaryButton label="Forget session" type="red" onclick={onForgetSession} />
+    <PrimaryButton label="Restart Controller" type="red" onclick={onRestartController} disabled={controllerStore.isRestarting} />
+    <PrimaryButton label="Forget Session" type="red" onclick={() => authStore.removeSessionAndReload()} />
   </div>
 </div>
 

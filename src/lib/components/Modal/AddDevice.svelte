@@ -19,7 +19,7 @@
 	function onAddDevice() {
 		console.log('name ip', name, ipAddress);
     const id = generateUniqueId();
-		if (!isValidateDisabled && buttonSlot && ipAddress && name && newSchedule !== null) {
+		if (!isValidateDisabled && typeof buttonSlot === 'number' && ipAddress && name && newSchedule !== null) {
 			configStore.addDevice({ id, name, ip: ipAddress, button: buttonSlot, schedule: newSchedule });
 		}
 

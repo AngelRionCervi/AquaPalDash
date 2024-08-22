@@ -162,6 +162,7 @@ const configStore: ConfigStore = {
 		}
 
 		newDevice.isUnsaved = true;
+    console.log('newDevice', newDevice);
 
 		configState.config.devices = [...devices, newDevice];
 		configStore.checkSync();

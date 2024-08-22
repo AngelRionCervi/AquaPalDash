@@ -16,6 +16,7 @@
   import WSClientHandler, { sendWSMessage } from '$lib/wsClient/WSClientHandler';
   import { DASH_CALL_TYPES } from '$wsGlobal/callTypes';
   import { TIMEOUT_FETCH_CONFIG } from '$lib/constants';
+  import PrimaryButton from '$lib/components/Buttons/PrimaryButton.svelte';
 
   const { children } = $props();
   const { toggle } = modalStore;
@@ -95,7 +96,10 @@
     {@render children()}
     <Footer />
   {:else if noConfigFetch}
-    <span class="no-config-msg">Could not fetch config...</span>
+    <div class="no-config-container">
+      <span class="no-config-msg">Could not fetch config...</span>
+      <PrimaryButton label="New Login" type="green" onclick={() => authStore.removeSessionAndReload()} />
+    </div>
   {/if}
 </div>
 
@@ -132,7 +136,18 @@
     }
   }
 
+  .no-config-container {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    width: fit-content;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
   .no-config-msg {
-    font-size: var(--font-L);
+    font-size: var(--font-ML);
   }
 </style>

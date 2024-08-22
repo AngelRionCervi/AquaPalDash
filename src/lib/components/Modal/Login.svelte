@@ -10,7 +10,7 @@
   let demoMode = $state(false);
   let rememberMe = $state(false);
 
-  async function onLoginClick() {
+  function onLoginClick() {
     console.log('login');
 
     if (!password && !demoMode) {
@@ -30,13 +30,19 @@
     password = '';
     rememberMe = false;
   }
+
+  function handleKeyDownPassword(event: KeyboardEvent) {
+    if (event.key === 'Enter') {
+      onLoginClick();
+    }
+  }
 </script>
 
 <div class="login-modal-container">
   <div class="top">
     <div class="input-row">
       <label for="login_pass">Password:</label>
-      <input type="password" id="login_pass" bind:value={password} disabled={demoMode} maxlength="60" />
+      <input type="password" id="login_pass" bind:value={password} disabled={demoMode} maxlength="60" onkeypress={handleKeyDownPassword} />
     </div>
     <div class="input-row-flat">
       <label for="remember_me_checkbox">Remember me:</label>
