@@ -63,6 +63,11 @@ function handleMessage(ws: WebSocket, message: Record<string, unknown>) {
       controllerStore.resultToggleSchedule(message.data as boolean);
       break;
     }
+    case DASH_CALL_TYPES.dash_setUserIdType: {
+      console.log('setUserId', message.data);
+      authStore.setUserId(message.data as string);
+      break;
+    }
   }
 
 //   if (message.type === DASH_CALL_TYPES.dash_handShakeType) {
@@ -104,7 +109,7 @@ function handleMessage(ws: WebSocket, message: Record<string, unknown>) {
 //   }
 }
 
-function WSClientHandler() {
+function WSClientHandler(onOpen: () => void) {
   const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
   const { hostname } = window.location;
   const host = hostname === '192.168.1.18' ? '192.168.1.18:3000' : hostname;
@@ -112,12 +117,8 @@ function WSClientHandler() {
   console.log('WSClientHandler', ws);
 
   function onConnectionOpen(event: WebSocketEventMap['open']) {
+    onOpen();
     console.log('[websocket] connection open', event);
-    const handshakePayload = JSON.stringify({
-      source: 'dash',
-      type: DASH_CALL_TYPES.dash_handShakeType
-    });
-    ws.send(handshakePayload);
   }
 
   function onConnectionClose(event: WebSocketEventMap['close']) {
@@ -138,11 +139,20 @@ function WSClientHandler() {
 export const sendWSMessage = (message: Record<string, unknown>) => {
   if (authStore.isDemoMode) return;
 
+  const userId = authStore.userId;
+
+  if (!userId && message.type !== DASH_CALL_TYPES.dash_handShakeType) {
+    return;
+  }
+
   message.source = 'dash';
+  message.userId = userId || '';
+
   if (!ws) {
     console.error('WS connection is not open');
     return;
   }
+
   ws.send(jstr(message));
 };
 

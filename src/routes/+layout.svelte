@@ -13,7 +13,9 @@
   import windowStore from '$lib/stores/windowStore.svelte';
   import modalStore from '$lib/stores/modalStore.svelte';
   import deviceStatusStore from '$lib/stores/deviceStatusStore.svelte';
-  import WSClientHandler from '$lib/wsClient/WSClientHandler';
+  import WSClientHandler, { sendWSMessage } from '$lib/wsClient/WSClientHandler';
+  import { DASH_CALL_TYPES } from '$wsGlobal/callTypes';
+  import { TIMEOUT_FETCH_CONFIG } from '$lib/constants';
 
   const { children } = $props();
   const { toggle } = modalStore;
@@ -27,6 +29,7 @@
   }
 
   function onNewLogin(password: string, rememberMe: boolean, demoMode: boolean) {
+    console.log('on login', password, rememberMe, demoMode);
     authStore.setDemoMode(demoMode);
 
     if (rememberMe) {
@@ -34,14 +37,20 @@
     }
 
     needsLogin = false;
-    startUp();
+    startUp(password);
     toggle();
   }
 
-  function startUp() {
+  function startUp(password: string) {
     mainLoading = true;
 
     windowStore.init();
+
+    const handshakePayload = {
+      type: DASH_CALL_TYPES.dash_handShakeType,
+      data: password
+    };
+    sendWSMessage(handshakePayload);
 
     if (authStore.isDemoMode) {
       configStore.loadMockConfig();
@@ -54,27 +63,30 @@
 
     setTimeout(() => {
       noConfigFetch = true;
-    }, 3000);
+    }, TIMEOUT_FETCH_CONFIG);
   }
 
-  onMount(() => {
+  function onWsOpen() {
     authStore.init();
     if (authStore.password) {
-      startUp();
+      startUp(authStore.password);
     } else {
       needsLogin = true;
       toggle('Login', 'login', {
         onLogin: (password: string, rememberMe: boolean, demoMode: boolean) => onNewLogin(password, rememberMe, demoMode)
       });
     }
-    WSClientHandler();
+  }
+
+  onMount(() => {
+    WSClientHandler(onWsOpen);
   });
 </script>
 
 <div class="main-layout">
   {#if needsLogin}
     <Modal />
-  {:else if mainLoading}
+  {:else if mainLoading && !noConfigFetch && !configStore.config}
     <InitLoadingBackdrop />
   {:else if configStore.config}
     <Modal />

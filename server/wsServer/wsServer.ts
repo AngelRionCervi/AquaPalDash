@@ -13,20 +13,22 @@ export type ParsedSocketMessage = Record<string, string | number | boolean>;
 export interface ExtendedWebSocket extends WebSocketBase {
   socketId: string;
   source: SocketSource;
+  boxId?: string;
+  userId?: string;
 }
 
 const uuid = new ShortUniqueId({ length: 14 });
 
 let wss: WebsocketServerType;
 
-function onHttpServerUpgrade(req: IncomingMessage, sock: Duplex, head: Buffer) {
-  //if (req.url !== '/websocket') return;
+// function onHttpServerUpgrade(req: IncomingMessage, sock: Duplex, head: Buffer) {
+//   //if (req.url !== '/websocket') return;
 
-  wss.handleUpgrade(req, sock, head, (ws) => {
-    console.log('[handleUpgrade] creating new connection');
-    wss.emit('connection', ws, req);
-  });
-}
+//   wss.handleUpgrade(req, sock, head, (ws) => {
+//     console.log('[handleUpgrade] creating new connection');
+//     wss.emit('connection', ws, req);
+//   });
+// }
 
 export function configureServer(server) {
   console.log('Starting websocket server...');
@@ -48,7 +50,7 @@ export function configureServer(server) {
     });
   });
 
-  server.httpServer?.on('upgrade', onHttpServerUpgrade);
+  //server.httpServer?.on('upgrade', onHttpServerUpgrade);
 }
 
 export const webSocketServer = {

@@ -4,7 +4,7 @@ export interface Session {
 }
 
 function setLoginSession(session: Session) {
-  localStorage.setItem('session', JSON.stringify({ port: session.password, demoMode: !!session.demoMode }));
+  localStorage.setItem('session', JSON.stringify({ password: session.password, demoMode: !!session.demoMode }));
 }
 
 function getLoginSession() {

@@ -27,6 +27,7 @@ const dash_toggleScheduleType = 'dash_toggle_schedule';
 const dash_resultToggleScheduleType = 'dash_result_toggle_schedule';
 const dash_getScheduleStateType = 'dash_get_schedule_state';
 const dash_resultGetScheduleStateType = 'dash_result_get_schedule_state';
+const dash_setUserIdType = 'dash_set_user_id';
 
 const BOX_CALL_TYPES = {
   box_handShakeType,
@@ -59,7 +60,8 @@ const DASH_CALL_TYPES = {
   dash_toggleScheduleType,
   dash_resultToggleScheduleType,
   dash_getScheduleStateType,
-  dash_resultGetScheduleStateType
+  dash_resultGetScheduleStateType,
+  dash_setUserIdType
 };
 
 export { BOX_CALL_TYPES, DASH_CALL_TYPES };
