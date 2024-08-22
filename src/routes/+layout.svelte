@@ -95,7 +95,7 @@
     {@render children()}
     <Footer />
   {:else if noConfigFetch}
-    <span>Could not fetch config...</span>
+    <span class="no-config-msg">Could not fetch config...</span>
   {/if}
 </div>
 
@@ -130,5 +130,9 @@
     @media screen and (max-width: $small-mobile-bp) {
       margin: 24px;
     }
+  }
+
+  .no-config-msg {
+    font-size: var(--font-L);
   }
 </style>
