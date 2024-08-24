@@ -33,8 +33,8 @@
     {/each}
   </div>
   <div class="special-control-row">
-    <PrimaryButton label="Restart Controller" type="red" onclick={onRestartController} disabled={controllerStore.isRestarting} />
-    <PrimaryButton label="Forget Session" type="red" onclick={() => authStore.removeSessionAndReload()} />
+    <PrimaryButton label="Restart controller" type="red" onclick={onRestartController} disabled={controllerStore.isRestarting} />
+    <PrimaryButton label="Forget session" type="red" onclick={() => authStore.removeSessionAndReload()} />
   </div>
 </div>
 

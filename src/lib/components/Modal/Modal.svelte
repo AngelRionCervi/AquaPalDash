@@ -7,7 +7,7 @@
 	import ButtonSlotSetting from './ButtonSlotSetting.svelte';
 	import RemoveDevices from './RemoveDevices.svelte';
 	import AddDevice from './AddDevice.svelte';
-	import ModifyNameDevice from './ModifyNameDevice.svelte';
+	import ModifyDevice from './ModifyDevice.svelte';
 	import Login from './Login.svelte';
 
 	type ModalChildMap = {
@@ -21,7 +21,7 @@
 		buttonSlotSetting: ButtonSlotSetting,
 		removeDevices: RemoveDevices,
 		addDevice: AddDevice,
-		modifyNameDevice: ModifyNameDevice,
+		modifyDevice: ModifyDevice,
 		login: Login
 	};
 

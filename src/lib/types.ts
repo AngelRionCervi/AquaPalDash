@@ -16,6 +16,7 @@ interface Device {
 	schedule: Schedule;
   isUnsaved?: boolean;
   toBeRemoved?: boolean;
+  isModified?: boolean;
 }
 
 interface ConfigSecrets {
