@@ -2,7 +2,7 @@ import type { MonitoringPayload } from '$lib/stores/monitoringStore.svelte';
 import { randomDecimal, roundTo } from './utils';
 
 export function convertToChartData(data: MonitoringPayload[]) {
-	const dateFormat = 'dd MMM HH:mm';
+	const dateFormat = 'dd MMM';
 
 	const chartDataPh = {
 		series: [
@@ -27,8 +27,6 @@ export function convertToChartData(data: MonitoringPayload[]) {
 			}
 		}
 	};
-
-	console.log('chartDataPh', chartDataPh);
 
 	return { ph: chartDataPh, temp: chartDataTemp };
 }

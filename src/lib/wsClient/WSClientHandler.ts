@@ -2,13 +2,13 @@ import authStore from '$lib/stores/authStore.svelte';
 import configStore from '$lib/stores/configStore.svelte';
 import controllerStore from '$lib/stores/controllerStore.svelte';
 import devicesStatusStore from '$lib/stores/deviceStatusStore.svelte';
+import monitoringStore, { type RawMonitoringPayload } from '$lib/stores/monitoringStore.svelte';
 import { DASH_CALL_TYPES } from '$wsGlobal/callTypes';
 import { jstr, parseMessage } from '$wsGlobal/wsUtils';
 
 let ws: WebSocket;
 
 function checkForError(message: Record<string, unknown>) {
-  console.log('checkForError', message);
   if (message.type === DASH_CALL_TYPES.dash_resultToggleDeviceType && message.info) {
     const info = message.info as { id: string };
     controllerStore.errorToggleDevice(info.id || '');
@@ -68,45 +68,26 @@ function handleMessage(ws: WebSocket, message: Record<string, unknown>) {
       authStore.setUserId(message.data as string);
       break;
     }
+    case DASH_CALL_TYPES.dash_resultMonitoringGetLastType: {
+      monitoringStore.updateLast(message.data as RawMonitoringPayload);
+      break;
+    }
+    case DASH_CALL_TYPES.dash_startHistoricalType: {
+      monitoringStore.updateHistorical('start', message.data as string);
+      console.log("START HISTORICAL DATA", message.data);
+      break;
+    }
+    case DASH_CALL_TYPES.dash_historicalDataStreamType: {
+      monitoringStore.updateHistorical('stream', message.data as string);
+      console.log("HISTORICAL DATA ROW", message.data);
+      break;
+    }
+    case DASH_CALL_TYPES.dash_endHistoricalType: {
+      monitoringStore.updateHistorical('end', message.data as string);
+      console.log("END HISTORICAL DATA", message.data);
+      break;
+    }
   }
-
-//   if (message.type === DASH_CALL_TYPES.dash_handShakeType) {
-//     if (!checkForError(message)) return;
-//     console.log('controller RESTARTED !');
-
-//     controllerStore.handleRestarted();
-//     configStore.handleConfigUpdated();
-//     configStore.queryConfig();
-//   } else if (message.type === DASH_CALL_TYPES.dash_setConfigType) {
-//     if (!checkForError(message)) return;
-
-//     configStore.setConfig(message.data as Config);
-//     controllerStore.setIsOn(true);
-//   } else if (message.type === DASH_CALL_TYPES.dash_setDevicesInfoType) {
-//     if (!checkForError(message)) return;
-
-//     devicesStatusStore.updateAllDevicesStatus(message.data as Array<RawDeviceStatus>);
-//   } else if (message.type === DASH_CALL_TYPES.dash_resultUpdateConfigType) {
-//     if (!checkForError(message)) return;
-
-//     controllerStore.restartController();
-//   } else if (message.type === DASH_CALL_TYPES.dash_resultBoxRestartType) {
-//     if (!checkForError(message)) return;
-
-//     controllerStore.handleRestarting();
-//   } else if (message.type === DASH_CALL_TYPES.dash_resultToggleDeviceType) {
-//     if (!checkForError(message)) return;
-
-//     controllerStore.resultToggleDevice(message.data as { id: string; state: boolean });
-//   } else if (message.type === DASH_CALL_TYPES.dash_resultToggleScheduleType) {
-//     if (!checkForError(message)) return;
-
-//     controllerStore.resultToggleSchedule(message.data as boolean);
-//   } else if (message.type === DASH_CALL_TYPES.dash_resultGetScheduleStateType) {
-//     if (!checkForError(message)) return;
-
-//     controllerStore.resultToggleSchedule(message.data as boolean);
-//   }
 }
 
 function WSClientHandler(onOpen: () => void) {
@@ -127,7 +108,8 @@ function WSClientHandler(onOpen: () => void) {
 
   function onMessage(event: WebSocketEventMap['message']) {
     console.log('[websocket] message received', event);
-    const parsedMessage = parseMessage(event.data);
+    const message = event.data;
+    const parsedMessage = parseMessage(message);
     handleMessage(ws, parsedMessage);
   }
 

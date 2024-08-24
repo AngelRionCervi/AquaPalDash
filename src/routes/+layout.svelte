@@ -17,6 +17,7 @@
   import { DASH_CALL_TYPES } from '$wsGlobal/callTypes';
   import { TIMEOUT_FETCH_CONFIG } from '$lib/constants';
   import PrimaryButton from '$lib/components/Buttons/PrimaryButton.svelte';
+  import monitoringStore from '$lib/stores/monitoringStore.svelte';
 
   const { children } = $props();
   const { toggle } = modalStore;
@@ -24,13 +25,13 @@
   let mainLoading = $state(false);
   let needsLogin = $state(false);
   let noConfigFetch = $state(false);
+  let historicalQueried = $state(false);
 
   function getCurrentPageTitle() {
     return menuRoutes.find(({ route }) => route === $page.url.pathname)?.label || 'Home';
   }
 
   function onNewLogin(password: string, rememberMe: boolean, demoMode: boolean) {
-    console.log('on login', password, rememberMe, demoMode);
     authStore.setDemoMode(demoMode);
 
     if (rememberMe) {
@@ -78,6 +79,13 @@
       });
     }
   }
+
+  $effect(() => {
+    if (configStore?.config?.settings?.prefetchHistorical && !historicalQueried && $page.url.pathname !== '/monitoring') {
+      historicalQueried = true;
+      monitoringStore.queryHistorical();
+    }
+  });
 
   onMount(() => {
     WSClientHandler(onWsOpen);

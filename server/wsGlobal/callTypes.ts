@@ -9,8 +9,11 @@ const box_getConfigType = 'box_get_config';
 const box_getScheduleStateType = 'box_get_schedule_state';
 const box_pingType = 'box_ping';
 const box_restartType = 'box_restart';
-const box_fetchLastType = 'box_fetch_last';
-const box_fetchHistoricalType = 'box_fetch_historical';
+const box_monitoringGetLastType = 'box_monitoring_get_last';
+const box_monitoringGetHistoricalType = 'box_monitoring_get_historical';
+const box_startHistoricalType = 'box_start_historical';
+const box_endHistoricalType = 'box_end_historical';
+const box_historicalDataStreamType = 'box_hds';
 
 const dash_handShakeType = 'dash_handshake';
 const dash_setConfigType = 'dash_set_config';
@@ -28,6 +31,13 @@ const dash_resultToggleScheduleType = 'dash_result_toggle_schedule';
 const dash_getScheduleStateType = 'dash_get_schedule_state';
 const dash_resultGetScheduleStateType = 'dash_result_get_schedule_state';
 const dash_setUserIdType = 'dash_set_user_id';
+const dash_monitoringGetLastType = 'dash_monitoring_get_last';
+const dash_resultMonitoringGetLastType = 'dash_result_monitoring_get_last';
+const dash_monitoringGetHistoricalType = 'dash_monitoring_get_historical';
+const dash_resultMonitoringGetHistoricalType = 'dash_result_monitoring_get_historical';
+const dash_startHistoricalType = 'dash_start_historical';
+const dash_endHistoricalType = 'dash_end_historical';
+const dash_historicalDataStreamType = 'dash_hds';
 
 const BOX_CALL_TYPES = {
   box_handShakeType,
@@ -41,8 +51,11 @@ const BOX_CALL_TYPES = {
   box_getScheduleStateType,
   box_pingType,
   box_restartType,
-  box_fetchLastType,
-  box_fetchHistoricalType
+  box_monitoringGetLastType,
+  box_monitoringGetHistoricalType,
+  box_historicalDataStreamType,
+  box_startHistoricalType,
+  box_endHistoricalType
 };
 
 const DASH_CALL_TYPES = {
@@ -61,7 +74,14 @@ const DASH_CALL_TYPES = {
   dash_resultToggleScheduleType,
   dash_getScheduleStateType,
   dash_resultGetScheduleStateType,
-  dash_setUserIdType
+  dash_setUserIdType,
+  dash_monitoringGetLastType,
+  dash_resultMonitoringGetLastType,
+  dash_monitoringGetHistoricalType,
+  dash_resultMonitoringGetHistoricalType,
+  dash_startHistoricalType,
+  dash_endHistoricalType,
+  dash_historicalDataStreamType
 };
 
 export { BOX_CALL_TYPES, DASH_CALL_TYPES };

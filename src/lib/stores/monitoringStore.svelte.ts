@@ -1,168 +1,183 @@
-import monitoringApi from '$lib/api/monitoringApi';
-import { GET_MONITORING_UPDATE_INTERVAL, DEFAULT_HISTORICAL_DAYS } from '$lib/constants';
+import { DEFAULT_HISTORICAL_DAYS } from '$lib/constants';
 import { generateMockData } from '$lib/helpers/charts';
+import { roundTo } from '$lib/helpers/utils';
+import { sendWSMessage } from '$lib/wsClient/WSClientHandler';
+import { DASH_CALL_TYPES } from '$wsGlobal/callTypes';
 
 export type MonitoringValueParam = 'ph' | 'temp';
 
 export interface MonitoringPayload {
-	temp: number;
-	ph: number;
-	timestamp: number;
+  temp: number;
+  ph: number;
+  timestamp: number;
+}
+
+export interface RawMonitoringPayload {
+  t: number;
+  p: number;
+  d: number;
 }
 
 interface MonitoringLast {
-	ph: number;
-	temp: number;
-}
-
-interface RawMonitoringPayload {
-	t: number;
-	p: number;
-	d: number;
+  ph: number;
+  temp: number;
 }
 
 type ValueError = null | string;
 
 interface MonitoringError {
-	ph: ValueError;
-	temp: ValueError;
+  ph: ValueError;
+  temp: ValueError;
 }
 
 interface MonitoringState {
-	last: MonitoringLast;
-	historicals: MonitoringPayload[];
-	errors: MonitoringError;
-	lastUpdate: number;
-	updateInterval: number;
+  last: MonitoringLast;
+  historicals: MonitoringPayload[];
+  errors: MonitoringError;
+  lastUpdate: number;
+  hFlow: 'idle' | 'stream';
 }
 
+type HistoricalDataFlow = 'start' | 'end' | 'stream';
+
 interface MonitoringStore {
-	last: MonitoringLast;
-	historicals: MonitoringPayload[];
-	errors: MonitoringError;
-	lastUpdate: number;
-  updateInterval: number;
-	updateLastWithInterval: () => void;
-	clearUpdateInterval: () => void;
-	setError: (param: MonitoringValueParam, error: null | string) => void;
-	checkError: (payload: MonitoringPayload) => boolean;
-	updateLast: () => Promise<void>;
-	fetchHistoricals: (pastDaysCount?: number) => Promise<void>;
+  last: MonitoringLast;
+  historicals: MonitoringPayload[];
+  errors: MonitoringError;
+  lastUpdate: number;
+  hFlow: 'idle' | 'stream';
+  setError: (param: MonitoringValueParam, error: null | string) => void;
+  checkError: (payload: MonitoringPayload) => boolean;
+  updateLast: (data: RawMonitoringPayload) => void;
   loadMockData: () => void;
+  queryLast: () => void;
+  queryHistorical: (totalDays?: number) => void;
+  updateHistorical: (flow: HistoricalDataFlow, data: string) => void;
 }
 
 const defaultMonitoringStoreValue: MonitoringState = {
-	last: { ph: 0, temp: 0 },
-	errors: { ph: null, temp: null },
-	historicals: [],
-	lastUpdate: 0,
-	updateInterval: 0
+  hFlow: 'idle',
+  last: { ph: 0, temp: 0 },
+  errors: { ph: null, temp: null },
+  historicals: [],
+  lastUpdate: 0
 };
 
 const monitoringState = $state<MonitoringState>(defaultMonitoringStoreValue);
 
 const monitoringStore: MonitoringStore = {
-	get last() {
-		return monitoringState.last;
-	},
-	get errors() {
-		return monitoringState.errors;
-	},
-	get lastUpdate() {
-		return monitoringState.lastUpdate;
-	},
-	get historicals() {
-		return monitoringState.historicals;
-	},
-  get updateInterval() {
-		return monitoringState.updateInterval;
-	},
-	updateLastWithInterval() {
-    monitoringStore.clearUpdateInterval();
-		monitoringState.updateInterval = setInterval(() => {
-			monitoringStore.updateLast();
-		}, GET_MONITORING_UPDATE_INTERVAL);
-	},
-	clearUpdateInterval() {
-    if (!monitoringState.updateInterval) return;
-		clearInterval(monitoringState.updateInterval);
-		monitoringState.updateInterval = 0;
-	},
-	setError(param: MonitoringValueParam, error: null | string) {
-		monitoringState.errors[param] = error;
-	},
-	checkError(payload: MonitoringPayload) {
-		const { ph, temp } = payload;
+  get last() {
+    return monitoringState.last;
+  },
+  get errors() {
+    return monitoringState.errors;
+  },
+  get lastUpdate() {
+    return monitoringState.lastUpdate;
+  },
+  get historicals() {
+    return monitoringState.historicals;
+  },
+  get hFlow() {
+    return monitoringState.hFlow;
+  },
+  setError(param: MonitoringValueParam, error: null | string) {
+    monitoringState.errors[param] = error;
+  },
+  checkError(payload: MonitoringPayload) {
+    const { ph, temp } = payload;
 
-		if (ph > 15 || ph <= 0) {
-			monitoringState.errors.ph = 'Invalid PH value';
-		} else {
-			monitoringState.errors.ph = null;
-		}
+    if (ph > 15 || ph <= 0) {
+      monitoringState.errors.ph = 'Invalid PH value';
+    } else {
+      monitoringState.errors.ph = null;
+    }
 
-		if (temp > 50 || temp <= 0) {
-			monitoringState.errors.temp = 'Invalid temperature value';
-		} else {
-			monitoringState.errors.temp = null;
-		}
+    if (temp > 50 || temp <= 0) {
+      monitoringState.errors.temp = 'Invalid temperature value';
+    } else {
+      monitoringState.errors.temp = null;
+    }
 
-		return !!(monitoringState.errors.ph || monitoringState.errors.temp);
-	},
+    return !!(monitoringState.errors.ph || monitoringState.errors.temp);
+  },
   loadMockData() {
     monitoringState.historicals = generateMockData();
   },
-	async updateLast() {
-		const lastUpdate = getReadableMonitoring(await monitoringApi.API_getLastMonitoringData());
+  queryLast() {
+    sendWSMessage({ type: DASH_CALL_TYPES.dash_monitoringGetLastType });
+  },
+  queryHistorical(pastDaysCount = DEFAULT_HISTORICAL_DAYS) {
+    const historicalArg = getHistoricalDaysArg(pastDaysCount);
+    console.log('HISTORICAL ARG', historicalArg);
+    sendWSMessage({ type: DASH_CALL_TYPES.dash_monitoringGetHistoricalType, data: historicalArg });
+  },
+  updateLast(data: RawMonitoringPayload) {
+    console.log('LAST DATA', data);
+    const lastUpdate = getReadableMonitoring(data);
+    monitoringStore.checkError(lastUpdate);
 
-		const isError = monitoringStore.checkError(lastUpdate);
+    monitoringState.last = { ph: roundTo(lastUpdate.ph, 1), temp: roundTo(lastUpdate.temp, 2) };
+    monitoringState.lastUpdate = lastUpdate.timestamp;
 
-		if (isError) return;
+    monitoringState.historicals = [...monitoringState.historicals, lastUpdate];
+  },
+  updateHistorical(flow: HistoricalDataFlow, data: string) {
+    if (flow === 'start') {
+      monitoringState.historicals = [];
+      monitoringState.hFlow = 'stream';
+      return;
+    } else if (flow === 'end') {
+      monitoringState.hFlow = 'idle';
+      return;
+    }
+    if (flow !== 'stream') return;
 
-		monitoringState.last = { ph: lastUpdate.ph, temp: lastUpdate.temp };
-		monitoringState.lastUpdate = lastUpdate.timestamp;
+    try {
+      const parsedData = JSON.parse(`[${data.split('\n').join(',').slice(0, -1)}]`) as Array<RawMonitoringPayload>;
+      const readableData = parsedData.map(getReadableMonitoring);
 
-		monitoringState.historicals = [lastUpdate, ...monitoringState.historicals];
-	},
-	async fetchHistoricals(pastDaysCount = DEFAULT_HISTORICAL_DAYS) {
-		const historicalArg = getHistoricalDaysArg(pastDaysCount);
-		const historicals = await monitoringApi.API_getHistoricalMonitoringData(historicalArg);
+      console.log('HOSTORICALS DATA', readableData);
 
-		monitoringState.historicals = historicals.map(getReadableMonitoring);
-	}
+      monitoringState.historicals = [...readableData, ...monitoringState.historicals];
+    } catch (err) {
+      console.error('Error parsing historical data', err);
+    }
+  }
 };
 
 function getReadableMonitoring(payload: RawMonitoringPayload): MonitoringPayload {
-	return { ph: payload.p, temp: payload.t, timestamp: payload.d };
+  return { ph: payload.p, temp: payload.t, timestamp: payload.d };
 }
 
 function getHistoricalDaysArg(pastDaysCount: number) {
-	const date = new Date();
-	let day = date.getDate();
-	let month = date.getMonth() + 1;
+  const date = new Date();
+  let day = date.getDate();
+  let month = date.getMonth() + 1;
 
-	function daysInMonth(month: number) {
-		return new Date(new Date().getFullYear(), month, 0).getDate();
-	}
+  function daysInMonth(month: number) {
+    return new Date(new Date().getFullYear(), month, 0).getDate();
+  }
 
-	function processDay() {
-		day--;
+  function processDay() {
+    day--;
 
-		if (day < 1) {
-			month--;
-			if (month < 1) {
-				month = 12;
-			}
-			const daysInPrevMonth = daysInMonth(month);
-			day = daysInPrevMonth;
-		}
-	}
+    if (day < 1) {
+      month--;
+      if (month < 1) {
+        month = 12;
+      }
+      const daysInPrevMonth = daysInMonth(month);
+      day = daysInPrevMonth;
+    }
+  }
 
-	const pastDaysArray = Array.from({ length: pastDaysCount }, () => {
-		processDay();
-		return `${day}_${month}`;
-	});
+  const pastDaysArray = Array.from({ length: pastDaysCount }, () => {
+    processDay();
+    return `${day + 1}_${month}`;
+  });
 
-	return pastDaysArray.join(',');
+  return pastDaysArray.join(',');
 }
 
 export default monitoringStore;

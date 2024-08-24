@@ -24,6 +24,10 @@ import authStore from '$lib/stores/authStore.svelte';
       return randomDecimal(22, 25, 2);
     }
   }
+
+  $effect(() => {
+    console.log('stat:', stat, isError, statValue, monitoringStore.errors);
+  })
 </script>
 
 <div class="container">

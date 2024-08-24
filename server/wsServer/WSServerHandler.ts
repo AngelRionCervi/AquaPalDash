@@ -55,7 +55,7 @@ function WSServerHandler(webSocketServer: WebsocketServerType) {
 
     switch (message.type) {
       case DASH_CALL_TYPES.dash_handShakeType:
-        console.log('DASH_CALL_TYPES.dash_handShakeType', DASH_CALL_TYPES.dash_handShakeType)
+        console.log('DASH_CALL_TYPES.dash_handShakeType', DASH_CALL_TYPES.dash_handShakeType);
         sendToBox(boxClient, BOX_CALL_TYPES.box_handShakeType);
         break;
       case DASH_CALL_TYPES.dash_restartType:
@@ -73,21 +73,13 @@ function WSServerHandler(webSocketServer: WebsocketServerType) {
       case DASH_CALL_TYPES.dash_toggleScheduleType:
         sendToBox(boxClient, BOX_CALL_TYPES.box_scheduleToggleType);
         break;
+      case DASH_CALL_TYPES.dash_monitoringGetLastType:
+        sendToBox(boxClient, BOX_CALL_TYPES.box_monitoringGetLastType);
+        break;
+      case DASH_CALL_TYPES.dash_monitoringGetHistoricalType:
+        sendToBox(boxClient, BOX_CALL_TYPES.box_monitoringGetHistoricalType, message.data);
+        break;
     }
-
-    // if (message.type === DASH_CALL_TYPES.dash_handShakeType) {
-    // 	sendToBox(boxClient, BOX_CALL_TYPES.box_handShakeType);
-    // } else if (message.type === DASH_CALL_TYPES.dash_restartType) {
-    // 	sendToBox(boxClient, BOX_CALL_TYPES.box_restartType);
-    // } else if (message.type === DASH_CALL_TYPES.dash_getConfigType) {
-    // 	sendToBox(boxClient, BOX_CALL_TYPES.box_getConfigType);
-    // } else if (message.type === DASH_CALL_TYPES.dash_updateConfigType) {
-    // 	sendToBox(boxClient, BOX_CALL_TYPES.box_updateConfigType, message.data);
-    // } else if (message.type === DASH_CALL_TYPES.dash_toggleDeviceType) {
-    // 	sendToBox(boxClient, BOX_CALL_TYPES.box_deviceToggleType, message.data);
-    // } else if (message.type === DASH_CALL_TYPES.dash_toggleScheduleType) {
-    // 	sendToBox(boxClient, BOX_CALL_TYPES.box_scheduleToggleType);
-    // }
   }
 
   function handleBoxMessage(socket: ExtendedWebSocket, message: ParsedSocketMessage) {
@@ -108,6 +100,7 @@ function WSServerHandler(webSocketServer: WebsocketServerType) {
         break;
       case BOX_CALL_TYPES.box_getConfigType:
         sendToDash(dashClient, DASH_CALL_TYPES.dash_setConfigType, message);
+        console.log('SEND SET CONFIG')
         break;
       case BOX_CALL_TYPES.box_getDevicesInfoType:
         sendToDash(dashClient, DASH_CALL_TYPES.dash_setDevicesInfoType, message);
@@ -130,32 +123,72 @@ function WSServerHandler(webSocketServer: WebsocketServerType) {
       case BOX_CALL_TYPES.box_resultUpdateConfigType:
         sendToDash(dashClient, DASH_CALL_TYPES.dash_resultUpdateConfigType, message);
         break;
+      case BOX_CALL_TYPES.box_monitoringGetLastType:
+        sendToDash(dashClient, DASH_CALL_TYPES.dash_resultMonitoringGetLastType, message);
+        break;
+      case BOX_CALL_TYPES.box_monitoringGetHistoricalType:
+        sendToDash(dashClient, DASH_CALL_TYPES.dash_resultMonitoringGetHistoricalType, message);
+        break;
+    }
+  }
+
+  function handleBoxHistoricalStartEnd(socket: ExtendedWebSocket, message: string, startEnd: 'start' | 'end') {
+    const dashClient = getDashClient(socket.boxId?.toString() || '');
+    if (!dashClient) {
+      console.error('[handleBoxHistoricalStartEnd] No dash client found !');
+      return;
     }
 
-    // if (message.type === BOX_CALL_TYPES.box_handShakeType) {
-    // 	socket.send(jstr({ source: 'server', type: BOX_CALL_TYPES.box_initType }));
-    // 	sendToDash(dashClient, DASH_CALL_TYPES.dash_handShakeType, message);
-    // } else if (message.type === BOX_CALL_TYPES.box_getConfigType) {
-    // 	sendToDash(dashClient, DASH_CALL_TYPES.dash_setConfigType, message);
-    // } else if (message.type === BOX_CALL_TYPES.box_getDevicesInfoType) {
-    // 	sendToDash(dashClient, DASH_CALL_TYPES.dash_setDevicesInfoType, message);
-    // } else if (message.type === BOX_CALL_TYPES.box_updateConfigType) {
-    // 	sendToDash(dashClient, DASH_CALL_TYPES.dash_resultUpdateConfigType, message);
-    // } else if (message.type === BOX_CALL_TYPES.box_restartType) {
-    // 	sendToDash(dashClient, DASH_CALL_TYPES.dash_resultBoxRestartType, message);
-    // } else if (message.type === BOX_CALL_TYPES.box_deviceToggleType) {
-    // 	sendToDash(dashClient, DASH_CALL_TYPES.dash_resultToggleDeviceType, message);
-    // } else if (message.type === BOX_CALL_TYPES.box_scheduleToggleType) {
-    // 	sendToDash(dashClient, DASH_CALL_TYPES.dash_resultToggleScheduleType, message);
-    // } else if (message.type === BOX_CALL_TYPES.box_getScheduleStateType) {
-    // 	sendToDash(dashClient, DASH_CALL_TYPES.dash_resultGetScheduleStateType, message);
-    // } else if (message.type === BOX_CALL_TYPES.box_resultUpdateConfigType) {
-    // 	sendToDash(dashClient, DASH_CALL_TYPES.dash_resultUpdateConfigType, message);
-    // }
+    const type = startEnd === 'start' ? DASH_CALL_TYPES.dash_startHistoricalType : DASH_CALL_TYPES.dash_endHistoricalType;
+    const stripMessage = message.replace(type, '');
+
+    const payload: ParsedSocketMessage = {
+      data: stripMessage
+    };
+
+    sendToDash(dashClient, type, payload);
+  }
+
+  function handleBoxHistoricalStream(socket: ExtendedWebSocket, message: string) {
+    const dashClient = getDashClient(socket.boxId?.toString() || '');
+    if (!dashClient) {
+      console.error('[handleBoxHistoricalRow] No dash client found !');
+      return;
+    }
+
+    const stripMessage = message.replace(`${BOX_CALL_TYPES.box_historicalDataStreamType}_`, '');
+
+    const payload: ParsedSocketMessage = {
+      data: stripMessage
+    };
+
+    sendToDash(dashClient, DASH_CALL_TYPES.dash_historicalDataStreamType, payload);
   }
 
   return function (socket: ExtendedWebSocket, rawData: string) {
-    const parsedData = parseMessage(rawData.toString());
+    if (!rawData) return;
+
+    const data = rawData.toString();
+
+    if (data.startsWith(BOX_CALL_TYPES.box_startHistoricalType)) {
+      console.log('SERVER HISTORICAL DATA', data);
+      handleBoxHistoricalStartEnd(socket, data, 'start');
+      return;
+    }
+
+    if (data.startsWith(BOX_CALL_TYPES.box_historicalDataStreamType)) {
+      console.log('SERVER HISTORICAL DATA ROW', data);
+      handleBoxHistoricalStream(socket, data);
+      return;
+    }
+
+    if (data.startsWith(BOX_CALL_TYPES.box_endHistoricalType)) {
+      console.log('SERVER END HISTORICAL', data);
+      handleBoxHistoricalStartEnd(socket, data, 'end');
+      return;
+    }
+
+    const parsedData = parseMessage(data);
     if (!parsedData) {
       console.log(`Parsed message in falsy: ${parsedData}`);
     } else {
