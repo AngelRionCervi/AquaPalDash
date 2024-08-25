@@ -7,7 +7,12 @@
   import authStore from '$lib/stores/authStore.svelte';
   import TopRightStat from '$lib/components/Header/TopRightStat.svelte';
 
-  const chartData = $derived(convertToChartData(monitoringStore.historicals));
+  const chartData = $derived(convertToChartData(monitoringStore.historicals, { tempUnit: configStore.config?.settings?.tempUnit }));
+
+  function getCorrectTempUnit() {
+    const unit = configStore.config?.settings?.tempUnit;
+    return unit === 'fahrenheit' ? '°F' : '°C';
+  }
 
   onMount(() => {
     const { enableMonitoring } = configStore.config?.settings || {};
@@ -34,7 +39,11 @@
     </div>
     <div class="data-container">
       <div class="chart-container">
-        <LineChart data={chartData?.temp || { series: [] }} isLoading={monitoringStore.hFlow === 'stream'} title="Temperature (C°)" />
+        <LineChart
+          data={chartData?.temp || { series: [] }}
+          isLoading={monitoringStore.hFlow === 'stream'}
+          title="Temperature ({getCorrectTempUnit()})"
+        />
       </div>
       <div class="chart-container">
         <LineChart data={chartData?.ph || { series: [] }} isLoading={monitoringStore.hFlow === 'stream'} title="PH" />

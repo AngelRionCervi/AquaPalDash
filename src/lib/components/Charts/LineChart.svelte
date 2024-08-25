@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { getCSSvar } from '$lib/helpers/utils';
   import { onMount } from 'svelte';
+  import { getCSSvar } from '$lib/helpers/utils';
   import Loader from '$lib/components/Loaders/Loader.svelte';
 
   interface Props {

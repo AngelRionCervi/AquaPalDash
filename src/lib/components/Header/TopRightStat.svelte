@@ -1,21 +1,22 @@
 <script lang="ts">
-	import { randomDecimal } from '$lib/helpers/utils';
-import authStore from '$lib/stores/authStore.svelte';
-	import monitoringStore, { type MonitoringValueParam } from '$lib/stores/monitoringStore.svelte';
+  import { celsiusToFahrenheit, randomDecimal } from '$lib/helpers/utils';
+  import authStore from '$lib/stores/authStore.svelte';
+  import configStore from '$lib/stores/configStore.svelte';
+  import monitoringStore, { type MonitoringValueParam } from '$lib/stores/monitoringStore.svelte';
 
-	interface Props {
-		stat: MonitoringValueParam;
-	}
+  interface Props {
+    stat: MonitoringValueParam;
+  }
 
-	const { stat }: Props = $props();
+  const { stat }: Props = $props();
 
-	const statLabelMap = {
-		ph: 'PH:',
-		temp: 'Temp:'
-	};
+  const statLabelMap = {
+    ph: 'PH:',
+    temp: 'Temp:'
+  };
 
   const isError = $derived(monitoringStore.errors[stat]);
-  const statValue = $derived(isError ? "-" : monitoringStore.last[stat]);
+  const statValue = $derived(isError ? '-' : getCorrectValue(monitoringStore.last[stat], stat));
 
   function getRandomDecimal(label: MonitoringValueParam) {
     if (label === 'ph') {
@@ -25,36 +26,57 @@ import authStore from '$lib/stores/authStore.svelte';
     }
   }
 
-  $effect(() => {
-    console.log('stat:', stat, isError, statValue, monitoringStore.errors);
-  })
+  function getUnit() {
+    const unit = configStore.config?.settings?.tempUnit;
+    const tempUnit = unit === 'fahrenheit' ? '°F' : '°C';
+    return stat === 'ph' ? '' : tempUnit;
+  }
+
+  function getCorrectValue(value: number, stat: string) {
+    if (stat === 'ph') return value;
+
+    const unit = configStore.config?.settings?.tempUnit;
+    if (unit === 'fahrenheit') {
+      return celsiusToFahrenheit(value);
+    }
+    return value;
+  }
 </script>
 
 <div class="container">
-	<div class="label">
-		<span>{statLabelMap[stat]}</span>
-	</div>
-	<div class="value value-{isError ? "ko" : "ok"}">
-		<span>{authStore.isDemoMode ? getRandomDecimal(stat) : statValue}</span>
-	</div>
+  <div class="label">
+    <span>{statLabelMap[stat]}</span>
+  </div>
+  <div class="value value-{isError ? 'ko' : 'ok'}">
+    <span
+      >{authStore.isDemoMode ? getRandomDecimal(stat) : statValue}
+      <p class="stat-unit">{getUnit()}</p>
+    </span>
+  </div>
 </div>
 
 <style lang="scss">
-	.container {
-		display: flex;
-		gap: 8px;
-	}
+  .container {
+    display: flex;
+    gap: 8px;
+  }
 
-	.value {
-		font-size: var(--font-XL);
-		font-weight: bold;
+  .value {
+    font-size: var(--font-XL);
+    font-weight: bold;
 
-		&.value-ok {
-			color: var(--primary-success);
-		}
+    &.value-ok {
+      color: var(--primary-success);
+    }
 
     &.value-ko {
-			color: var(--secondary);
-		}
-	}
+      color: var(--secondary);
+    }
+  }
+
+  .stat-unit {
+    display: inline-block;
+    margin-left: 16px;
+    font-size: var(--font-ML);
+  }
 </style>
