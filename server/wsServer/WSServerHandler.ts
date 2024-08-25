@@ -129,6 +129,9 @@ function WSServerHandler(webSocketServer: WebsocketServerType) {
       case BOX_CALL_TYPES.box_monitoringGetHistoricalType:
         sendToDash(dashClient, DASH_CALL_TYPES.dash_resultMonitoringGetHistoricalType, message);
         break;
+      case BOX_CALL_TYPES.box_monitoringGetLiveType:
+        sendToDash(dashClient, DASH_CALL_TYPES.dash_resultMonitoringGetLiveType, message);
+        break
     }
   }
 

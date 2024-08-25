@@ -2,7 +2,7 @@ import authStore from '$lib/stores/authStore.svelte';
 import configStore from '$lib/stores/configStore.svelte';
 import controllerStore from '$lib/stores/controllerStore.svelte';
 import devicesStatusStore from '$lib/stores/deviceStatusStore.svelte';
-import monitoringStore, { type RawMonitoringPayload } from '$lib/stores/monitoringStore.svelte';
+import monitoringStore, { type LiveMonitoringPayload, type RawMonitoringPayload } from '$lib/stores/monitoringStore.svelte';
 import { DASH_CALL_TYPES } from '$wsGlobal/callTypes';
 import { jstr, parseMessage } from '$wsGlobal/wsUtils';
 
@@ -69,22 +69,28 @@ function handleMessage(ws: WebSocket, message: Record<string, unknown>) {
       break;
     }
     case DASH_CALL_TYPES.dash_resultMonitoringGetLastType: {
-      monitoringStore.updateLast(message.data as RawMonitoringPayload);
+      console.log('LAST HSITORICAL', message.data);
+      monitoringStore.updateHistoricalLast(message.data as RawMonitoringPayload);
+      break;
+    }
+    case DASH_CALL_TYPES.dash_resultMonitoringGetLiveType: {
+      monitoringStore.updateLive(message.data as LiveMonitoringPayload);
+      console.log('LIVE DATA', message.data);
       break;
     }
     case DASH_CALL_TYPES.dash_startHistoricalType: {
       monitoringStore.updateHistorical('start', message.data as string);
-      console.log("START HISTORICAL DATA", message.data);
+      console.log('START HISTORICAL DATA', message.data);
       break;
     }
     case DASH_CALL_TYPES.dash_historicalDataStreamType: {
       monitoringStore.updateHistorical('stream', message.data as string);
-      console.log("HISTORICAL DATA ROW", message.data);
+      console.log('HISTORICAL DATA ROW', message.data);
       break;
     }
     case DASH_CALL_TYPES.dash_endHistoricalType: {
       monitoringStore.updateHistorical('end', message.data as string);
-      console.log("END HISTORICAL DATA", message.data);
+      console.log('END HISTORICAL DATA', message.data);
       break;
     }
   }

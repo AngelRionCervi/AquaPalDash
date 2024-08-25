@@ -18,6 +18,11 @@ export interface RawMonitoringPayload {
   d: number;
 }
 
+export interface LiveMonitoringPayload {
+  ph: number;
+  temp: number;
+}
+
 interface MonitoringLast {
   ph: number;
   temp: number;
@@ -48,11 +53,12 @@ interface MonitoringStore {
   hFlow: 'idle' | 'stream';
   setError: (param: MonitoringValueParam, error: null | string) => void;
   checkError: (payload: MonitoringPayload) => boolean;
-  updateLast: (data: RawMonitoringPayload) => void;
+  updateHistoricalLast: (data: RawMonitoringPayload) => void;
   loadMockData: () => void;
   queryLast: () => void;
   queryHistorical: (totalDays?: number) => void;
   updateHistorical: (flow: HistoricalDataFlow, data: string) => void;
+  updateLive: (data: LiveMonitoringPayload) => void;
 }
 
 const defaultMonitoringStoreValue: MonitoringState = {
@@ -112,7 +118,11 @@ const monitoringStore: MonitoringStore = {
     console.log('HISTORICAL ARG', historicalArg);
     sendWSMessage({ type: DASH_CALL_TYPES.dash_monitoringGetHistoricalType, data: historicalArg });
   },
-  updateLast(data: RawMonitoringPayload) {
+  updateLive(data: LiveMonitoringPayload) {
+    monitoringState.last = { ph: roundTo(data.ph, 1), temp: roundTo(data.temp, 2) };
+    monitoringState.lastUpdate = Date.now();
+  },
+  updateHistoricalLast(data: RawMonitoringPayload) {
     console.log('LAST DATA', data);
     const lastUpdate = getReadableMonitoring(data);
     monitoringStore.checkError(lastUpdate);
@@ -128,6 +138,7 @@ const monitoringStore: MonitoringStore = {
       monitoringState.hFlow = 'stream';
       return;
     } else if (flow === 'end') {
+      console.log('END FLOW')
       monitoringState.hFlow = 'idle';
       return;
     }
