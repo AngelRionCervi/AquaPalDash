@@ -4,10 +4,10 @@ import { celsiusToFahrenheit, randomDecimal, roundTo } from './utils';
 export function convertToChartData(data: MonitoringPayload[], options: Record<string, unknown> = {}) {
   const datetimeFormatter = {
     year: 'yyyy',
-    month: 'MMM \'yy',
+    month: "MMM 'yy",
     day: 'dd MMM',
-    hour: 'HH:mm'
-  }
+    hour: `${options.timeFormat === '24h' ? 'HH' : 'hh'}:mm`
+  };
 
   function getCorrectedTempValue(value: number) {
     if (options.tempUnit === 'fahrenheit') {

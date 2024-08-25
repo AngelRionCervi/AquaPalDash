@@ -76,7 +76,7 @@
 
   .stat-unit {
     display: inline-block;
-    margin-left: 16px;
+    margin-left: 8px;
     font-size: var(--font-ML);
   }
 </style>

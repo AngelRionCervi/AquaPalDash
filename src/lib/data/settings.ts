@@ -39,6 +39,17 @@ const settings: Array<Setting> = [
 			{ label: 'fahrenheit', value: 'fahrenheit' }
 		]
 	},
+  {
+		name: 'timeFormat',
+		label: 'Time format:',
+		defaultVal: '24h',
+		type: 'select',
+    valueType: 'string',
+		values: [
+			{ label: '24H', value: '24h' },
+			{ label: '12H', value: '12h' }
+		]
+	},
 	{
 		name: 'aquariumLabel',
 		label: 'Aquarium label:',

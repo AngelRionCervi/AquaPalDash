@@ -11,14 +11,6 @@
     if (configStore.config) {
       configStore.updateSetting(settingName, value);
     }
-    if (settingName === 'enableMonitoring') {
-      if (value) {
-        await monitoringStore.fetchHistoricals();
-        monitoringStore.updateLastWithInterval();
-      } else {
-        monitoringStore.clearUpdateInterval();
-      }
-    }
   }
 
   function onRestartController() {

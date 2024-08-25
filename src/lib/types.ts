@@ -30,6 +30,7 @@ interface ConfigSettings {
 	prefetchHistorical: boolean;
 	theme: 'light' | 'dark';
 	tempUnit: 'celsius' | 'fahrenheit';
+  timeFormat: '24h' | '12h';
 	aquariumLabel: string;
   enableMonitoring: boolean;
 }

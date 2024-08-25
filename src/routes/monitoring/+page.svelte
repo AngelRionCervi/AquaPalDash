@@ -7,7 +7,12 @@
   import authStore from '$lib/stores/authStore.svelte';
   import TopRightStat from '$lib/components/Header/TopRightStat.svelte';
 
-  const chartData = $derived(convertToChartData(monitoringStore.historicals, { tempUnit: configStore.config?.settings?.tempUnit }));
+  const chartData = $derived(
+    convertToChartData(monitoringStore.historicals, {
+      tempUnit: configStore.config?.settings?.tempUnit,
+      timeFormat: configStore.config?.settings?.timeFormat
+    })
+  );
 
   function getCorrectTempUnit() {
     const unit = configStore.config?.settings?.tempUnit;

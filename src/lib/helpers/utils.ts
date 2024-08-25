@@ -9,10 +9,21 @@ export function minutesToHours(mins: number) {
   return { hours: int, minutes: dec };
 }
 
-export function minsToReadableTime(mins: number) {
+export function convertFrom24To12Format(time24: number, minutes: number) {
+  const period = time24 < 12 ? 'AM' : 'PM';
+  const hours = time24 % 12 || 12;
+
+  return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')} ${period}`;
+}
+
+export function minsToReadableTime(mins: number, timeFormat: '24h' | '12h' = '24h') {
   const { hours, minutes } = minutesToHours(mins);
 
-  return `${hours.toString().padStart(2, '0')}h${minutes.toString().padStart(2, '0')}`;
+  if (timeFormat === '24h') {
+    return `${hours.toString().padStart(2, '0')}h${minutes.toString().padStart(2, '0')}`;
+  }
+
+  return `${convertFrom24To12Format(hours, minutes)}`;
 }
 
 export function convertToType(valueType: string, value: string) {
@@ -33,9 +44,9 @@ export function sleep(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-export function getScheduleLabel(schedule: Schedule) {
+export function getScheduleLabel(schedule: Schedule, timeFormat: '24h' | '12h' = '24h') {
   if (Array.isArray(schedule)) {
-    return `On between <b>${minsToReadableTime(schedule[0])}</b> and <b>${minsToReadableTime(schedule[1])}</b>.`;
+    return `On between <b>${minsToReadableTime(schedule[0], timeFormat)}</b> and <b>${minsToReadableTime(schedule[1], timeFormat)}</b>.`;
   } else if (typeof schedule === 'boolean') {
     return schedule ? 'Always on.' : 'Always off.';
   }

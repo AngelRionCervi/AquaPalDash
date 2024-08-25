@@ -31,7 +31,6 @@
   }
 
   function onRevertDevice() {
-    console.log('revert device');
     configStore.revertDevice(device.id);
   }
 
@@ -83,7 +82,7 @@
     <div class="editable-row-schedule">
       <span class="setting-title">Schedule:</span>
       <div class="current-value-schedule">
-        <span>{@html getScheduleLabel(device.schedule)}</span>
+        <span>{@html getScheduleLabel(device.schedule, configStore.config?.settings?.timeFormat)}</span>
       </div>
       <SmallButton onclick={onScheduleEdit} disabled={deviceDisabled} label="Edit" />
     </div>

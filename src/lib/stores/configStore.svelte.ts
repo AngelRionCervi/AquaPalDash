@@ -306,7 +306,6 @@ const configStore: ConfigStore = {
     configState.isSync = newSync;
   },
   loadMockConfig() {
-    console.log('loadMockConfig', configMock);
     configState.config = structuredClone(configMock) as Config;
     previousConfig = Object.freeze(structuredClone(configMock)) as Config;
     configState.isSync = true;
@@ -323,6 +322,7 @@ function validateKey(type: 'settings' | 'secrets', key: keyof ConfigSettings | k
   const settingsKeys: Array<keyof ConfigSettings> = [
     'autoSchedulesOnAfter',
     'prefetchHistorical',
+    'timeFormat',
     'theme',
     'tempUnit',
     'aquariumLabel',
