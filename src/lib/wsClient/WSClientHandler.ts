@@ -96,10 +96,10 @@ function handleMessage(ws: WebSocket, message: Record<string, unknown>) {
   }
 }
 
-function WSClientHandler(onOpen: () => void) {
+function WSClientHandler(onOpen: () => void, onClose: () => void) {
   const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
   const { hostname } = window.location;
-  console.log('window.location', window.location)
+  console.log('window.location', window.location);
   const host = hostname.startsWith('192.168.1.') ? `${hostname}:3000` : hostname;
   ws = new WebSocket(`${protocol}//${host}/websocket`);
   console.log('WSClientHandler', ws);
@@ -110,6 +110,7 @@ function WSClientHandler(onOpen: () => void) {
   }
 
   function onConnectionClose(event: WebSocketEventMap['close']) {
+    onClose();
     console.log('[websocket] connection closed', event);
   }
 

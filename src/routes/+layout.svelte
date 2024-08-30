@@ -8,6 +8,7 @@
   import Modal from '$lib/components/Modal/Modal.svelte';
   import configStore from '$lib/stores/configStore.svelte';
   import controllerStore from '$lib/stores/controllerStore.svelte';
+  import bluetoothStore from '$lib/stores/bluetoothStore.svelte';
   import InitLoadingBackdrop from '$lib/components/Backdrop/InitLoadingBackdrop.svelte';
   import authStore from '$lib/stores/authStore.svelte';
   import windowStore from '$lib/stores/windowStore.svelte';
@@ -26,9 +27,10 @@
   let needsLogin = $state(false);
   let noConfigFetch = $state(false);
   let historicalQueried = $state(false);
+  let noWsConnection = $state(false);
 
   function getCurrentPageTitle() {
-    return menuRoutes.find(({ route }) => route === $page.url.pathname)?.label || 'Home';
+    return menuRoutes.find(({ route }) => route === $page?.url?.pathname)?.label || 'Home';
   }
 
   function onNewLogin(password: string, rememberMe: boolean, demoMode: boolean) {
@@ -80,6 +82,10 @@
     }
   }
 
+  function onWsClose() {
+    noWsConnection = true;
+  }
+
   $effect(() => {
     if (configStore?.config?.settings?.prefetchHistorical && !historicalQueried && $page.url.pathname !== '/monitoring') {
       historicalQueried = true;
@@ -87,8 +93,9 @@
     }
   });
 
-  onMount(() => {
-    WSClientHandler(onWsOpen);
+  onMount(async () => {
+    WSClientHandler(onWsOpen, onWsClose);
+    bluetoothStore.init();
   });
 </script>
 
@@ -108,7 +115,13 @@
       <span class="no-config-msg">Could not fetch config...</span>
       <PrimaryButton label="New Login" type="green" onclick={() => authStore.removeSessionAndReload()} />
     </div>
+  {:else if noWsConnection}
+    <div class="no-config-container">
+      <span class="no-config-msg">No connection to server...</span>
+      <PrimaryButton label="Try reconnecting" type="green" onclick={() => location.reload()} />
+    </div>
   {/if}
+  <button style="z-index:9999" onclick={() => bluetoothStore.startScan()}>bt hey</button>
 </div>
 
 <style lang="scss">

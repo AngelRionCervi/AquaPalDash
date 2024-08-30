@@ -1,5 +1,6 @@
 export const MAX_DEVICES = 5;
-export const GET_MONITORING_UPDATE_INTERVAL = 10*60*1000 // 10 mins;
+export const GET_MONITORING_UPDATE_INTERVAL = 10 * 60 * 1000; // 10 mins;
 export const TIMEOUT_FETCH_CONFIG = 30000;
 export const DEFAULT_HISTORICAL_DAYS = 30;
 export const MOBILE_BP = 768;
+export const BLUETOOTH_GATT_SERVICE_UUID = '0880619c-4a5f-4420-a3fa-496713d52298';

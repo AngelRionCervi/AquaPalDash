@@ -4,7 +4,7 @@ import type { IncomingMessage } from 'http';
 import type { Duplex } from 'stream';
 import ShortUniqueId from 'short-unique-id';
 import type { WebSocketServer as WebsocketServerType, WebSocket as WebSocketBase } from 'ws';
-import WSServerHandler from './WSServerHandler';
+import WSMessageHandler from './WSMessageHandler';
 
 export type SocketSource = 'dash' | 'box';
 
@@ -21,14 +21,14 @@ const uuid = new ShortUniqueId({ length: 14 });
 
 let wss: WebsocketServerType;
 
-// function onHttpServerUpgrade(req: IncomingMessage, sock: Duplex, head: Buffer) {
-//   //if (req.url !== '/websocket') return;
+function onHttpServerUpgrade(req: IncomingMessage, sock: Duplex, head: Buffer) {
+  if (req.url !== '/websocket') return;
 
-//   wss.handleUpgrade(req, sock, head, (ws) => {
-//     console.log('[handleUpgrade] creating new connection');
-//     wss.emit('connection', ws, req);
-//   });
-// }
+  wss.handleUpgrade(req, sock, head, (ws) => {
+    console.log('[handleUpgrade] creating new connection');
+    wss.emit('connection', ws, req);
+  });
+}
 
 export function configureServer(server) {
   console.log('Starting websocket server...');
@@ -37,7 +37,7 @@ export function configureServer(server) {
     path: '/websocket'
   });
 
-  const messageHandler = WSServerHandler(wss);
+  const messageHandler = WSMessageHandler(wss);
 
   wss.on('connection', (socket: ExtendedWebSocket) => {
     socket.socketId = uuid.randomUUID();
@@ -50,7 +50,7 @@ export function configureServer(server) {
     });
   });
 
-  //server.httpServer?.on('upgrade', onHttpServerUpgrade);
+  server.httpServer?.on('upgrade', onHttpServerUpgrade);
 }
 
 export const webSocketServer = {
