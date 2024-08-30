@@ -1,4 +1,3 @@
-import { API_ROUTE } from '$lib/constants';
 import SessionLS, { type Session } from '$lib/localStorage/session';
 
 interface AuthState {
@@ -11,7 +10,6 @@ interface AuthState {
 interface AuthStore {
   isAuth: boolean;
   password: string;
-  fullApiRoute: string;
   isDemoMode: boolean;
   userId: string;
   setDemoMode: (demoMode: boolean) => void;
@@ -34,9 +32,6 @@ const authStore: AuthStore = {
   },
   get password() {
     return authState.password;
-  },
-  get fullApiRoute() {
-    return `${API_ROUTE}${authStore.password}`;
   },
   get isDemoMode() {
     return authState.isDemoMode;
