@@ -30,7 +30,7 @@ function onHttpServerUpgrade(req: IncomingMessage, sock: Duplex, head: Buffer) {
   });
 }
 
-export function configureServer(server) {
+export function configureWSServer(server) {
   console.log('Starting websocket server...');
   wss = new WebSocketServer({
     server,
@@ -52,8 +52,3 @@ export function configureServer(server) {
 
   server.httpServer?.on('upgrade', onHttpServerUpgrade);
 }
-
-export const webSocketServer = {
-  name: 'webSocketServer',
-  configureServer
-};
