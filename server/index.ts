@@ -15,7 +15,6 @@ import https from 'https';
     configureServer(server);
     server.listen(port);
   } else {
-    console.log('heyo')
     const key = fs.readFileSync('cert/dev.pem', 'utf-8');
     const cert = fs.readFileSync('cert/cert.pem', 'utf-8');
     const server = https.createServer({ key, cert }, app);
