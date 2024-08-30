@@ -99,7 +99,8 @@ function handleMessage(ws: WebSocket, message: Record<string, unknown>) {
 function WSClientHandler(onOpen: () => void) {
   const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
   const { hostname } = window.location;
-  const host = hostname === '192.168.1.18' ? '192.168.1.18:3000' : hostname;
+  console.log('window.location', window.location)
+  const host = hostname.startsWith('192.168.1.') ? `${hostname}:3000` : hostname;
   ws = new WebSocket(`${protocol}//${host}/websocket`);
   console.log('WSClientHandler', ws);
 
