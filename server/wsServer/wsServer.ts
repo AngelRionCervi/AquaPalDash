@@ -1,10 +1,9 @@
-import type { ViteDevServer } from 'vite';
 import { WebSocketServer } from 'ws';
-import type { IncomingMessage } from 'http';
-import type { Duplex } from 'stream';
 import ShortUniqueId from 'short-unique-id';
-import type { WebSocketServer as WebsocketServerType, WebSocket as WebSocketBase } from 'ws';
+import type { WebSocket as WebSocketBase } from 'ws';
 import WSMessageHandler from './WSMessageHandler';
+import http from 'http';
+import https from 'https';
 
 export type SocketSource = 'dash' | 'box';
 
@@ -19,20 +18,9 @@ export interface ExtendedWebSocket extends WebSocketBase {
 
 const uuid = new ShortUniqueId({ length: 14 });
 
-let wss: WebsocketServerType;
-
-function onHttpServerUpgrade(req: IncomingMessage, sock: Duplex, head: Buffer) {
-  if (req.url !== '/websocket') return;
-
-  wss.handleUpgrade(req, sock, head, (ws) => {
-    console.log('[handleUpgrade] creating new connection');
-    wss.emit('connection', ws, req);
-  });
-}
-
-export function configureWSServer(server) {
+export function configureWSServer(server: http.Server | https.Server) {
   console.log('Starting websocket server...');
-  wss = new WebSocketServer({
+  const wss = new WebSocketServer({
     server,
     path: '/websocket'
   });
@@ -49,6 +37,4 @@ export function configureWSServer(server) {
       console.error('Socket error', err);
     });
   });
-
-  server.httpServer?.on('upgrade', onHttpServerUpgrade);
 }
