@@ -9,6 +9,7 @@
 	import AddDevice from './AddDevice.svelte';
 	import ModifyDevice from './ModifyDevice.svelte';
 	import Login from './Login.svelte';
+  import WifiSetup from './WifiSetup.svelte';
 
 	type ModalChildMap = {
 		[key in ModalTypes]: Component;
@@ -22,7 +23,8 @@
 		removeDevices: RemoveDevices,
 		addDevice: AddDevice,
 		modifyDevice: ModifyDevice,
-		login: Login
+		login: Login,
+    wifiSetup: WifiSetup,
 	};
 
 	$effect(() => {

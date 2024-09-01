@@ -2,6 +2,7 @@
   import type { ComponentType } from 'svelte';
   import AddIcon from '$lib/icons/add.svg?component';
   import BinIcon from '$lib/icons/bin.svg?component';
+  import BluetoothIcon from '$lib/icons/bluetooth.svg?component';
   import Loader from '$lib/components/Loaders/Loader.svelte';
   import windowStore from '$lib/stores/windowStore.svelte';
   import { MOBILE_BP } from '$lib/constants';
@@ -10,7 +11,7 @@
     label: string;
     onclick: () => void;
     type?: 'default' | 'green' | 'red';
-    icon?: 'add' | 'bin';
+    icon?: 'add' | 'bin' | 'bluetooth';
     disabled?: boolean;
     isLoading?: boolean;
   }
@@ -23,7 +24,8 @@
 
   const iconMap: IconMapType = {
     add: AddIcon,
-    bin: BinIcon
+    bin: BinIcon,
+    bluetooth: BluetoothIcon
   };
 </script>
 

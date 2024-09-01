@@ -1,4 +1,4 @@
-import { BLUETOOTH_GATT_SERVICE_UUID } from '$lib/constants';
+import { BLUETOOTH_CHARACTERISTICS_UUID_MAP, BLUETOOTH_GATT_SERVICE_UUID } from '$lib/constants';
 
 interface BluetoothState {
   isBluetoothEnabled: boolean;
@@ -6,7 +6,7 @@ interface BluetoothState {
   devices: BluetoothDevice[];
   connectedDevice: BluetoothDevice | null;
   error: string;
-  scan: null | BluetoothLEScan;
+  GATTServer: BluetoothRemoteGATTServer | null;
 }
 
 interface BluetoothStore {
@@ -15,11 +15,12 @@ interface BluetoothStore {
   devices: BluetoothDevice[];
   connectedDevice: BluetoothDevice | null;
   error: string;
-  startScan: () => void;
-  stopScan: () => void;
-  connectDevice: (device: BluetoothDevice) => void;
-  disconnectDevice: () => void;
+  GATTServer: BluetoothRemoteGATTServer | null;
   init: () => void;
+  findDevice: () => Promise<boolean>;
+  writeToCharacteristic: (characName: keyof typeof BLUETOOTH_CHARACTERISTICS_UUID_MAP, value: string) => Promise<boolean>;
+  writeToMultipleCharacteristics: (characNames: Record<keyof typeof BLUETOOTH_CHARACTERISTICS_UUID_MAP, string>) => Promise<boolean[]>;
+  readCharacteristic: (characName: keyof typeof BLUETOOTH_CHARACTERISTICS_UUID_MAP) => Promise<string | undefined>;
 }
 
 const defaultBluetoothStoreValue: BluetoothState = {
@@ -28,7 +29,7 @@ const defaultBluetoothStoreValue: BluetoothState = {
   devices: [],
   connectedDevice: null,
   error: '',
-  scan: null
+  GATTServer: null
 };
 
 const bluetoothState = $state<BluetoothState>(defaultBluetoothStoreValue);
@@ -38,7 +39,7 @@ const bluetoothStore: BluetoothStore = {
     return bluetoothState.isBluetoothEnabled;
   },
   get isScanning() {
-    return bluetoothState.scan !== null;
+    return bluetoothState.isScanning;
   },
   get devices() {
     return bluetoothState.devices;
@@ -49,21 +50,25 @@ const bluetoothStore: BluetoothStore = {
   get error() {
     return bluetoothState.error;
   },
-  set error(value: string) {
-    bluetoothState.error = value;
-    console.error('Bluetooth error: ', value);
+  get GATTServer() {
+    return bluetoothState.GATTServer;
+  },
+  set error(err: string) {
+    bluetoothState.error = err;
+    console.error('Bluetooth error: ', err);
   },
   init() {
     if ('bluetooth' in navigator) {
       bluetoothState.isBluetoothEnabled = true;
     }
   },
-  async startScan() {
+  async findDevice() {
     if (!bluetoothState.isBluetoothEnabled) {
       bluetoothState.error = 'Bluetooth is not enabled !';
-      return;
+      return false;
     }
     try {
+      bluetoothState.isScanning = true;
       const device = await navigator.bluetooth.requestDevice({
         filters: [
           {
@@ -71,22 +76,75 @@ const bluetoothStore: BluetoothStore = {
           }
         ]
       });
-      console.log('bluetooth device found !!!', device);
+      device.addEventListener('gattserverdisconnected', () => {
+        bluetoothState.GATTServer = null;
+        console.log('Bluetooth device disconnected !');
+      });
+      bluetoothState.GATTServer = (await device.gatt?.connect()) || null;
+
+      console.log('bluetooth device found !', device);
     } catch (error) {
-      bluetoothState.error = 'Bluetooth error: ' + error;
+      bluetoothStore.error = 'Bluetooth error: ' + error;
+    } finally {
+      bluetoothState.isScanning = false;
+    }
+
+    return !!bluetoothState.GATTServer;
+  },
+  async writeToCharacteristic(characName: keyof typeof BLUETOOTH_CHARACTERISTICS_UUID_MAP, value: string) {
+    if (!bluetoothState.GATTServer) {
+      bluetoothStore.error = 'No GATT server found !';
+      return false;
+    }
+
+    const characUUID = BLUETOOTH_CHARACTERISTICS_UUID_MAP[characName];
+
+    if (!characUUID) {
+      bluetoothStore.error = `Characteristic ${characName} not found !`;
+      return false;
+    }
+
+    try {
+      const service = await bluetoothState.GATTServer.getPrimaryService(BLUETOOTH_GATT_SERVICE_UUID);
+      const charac = await service.getCharacteristic(characUUID);
+      const encodedText = new TextEncoder().encode(value);
+      await charac.writeValue(encodedText);
+      return true;
+    } catch (err) {
+      bluetoothStore.error = `Error writing to characteristic ${characName} with UUID ${characUUID}: ${err}`;
+      return false;
     }
   },
-  stopScan() {
-    if (bluetoothState.scan) {
-      bluetoothState.scan.stop();
-      bluetoothState.scan = null;
+  writeToMultipleCharacteristics(characNames: Record<keyof typeof BLUETOOTH_CHARACTERISTICS_UUID_MAP, string>) {
+    const writePromises = Object.entries(characNames).map(([characName, value]) =>
+      bluetoothStore.writeToCharacteristic(characName as keyof typeof BLUETOOTH_CHARACTERISTICS_UUID_MAP, value)
+    );
+
+    return Promise.all(writePromises);
+  },
+  async readCharacteristic(characName: keyof typeof BLUETOOTH_CHARACTERISTICS_UUID_MAP) {
+    console.log('"readCharacteristic" called with characName:', characName);
+    if (!bluetoothState.GATTServer) {
+      bluetoothStore.error = 'No GATT server found !';
+      return;
     }
-  },
-  connectDevice(device: BluetoothDevice) {
-    bluetoothState.connectedDevice = device;
-  },
-  disconnectDevice() {
-    bluetoothState.connectedDevice = null;
+
+    const characUUID = BLUETOOTH_CHARACTERISTICS_UUID_MAP[characName];
+
+    if (!characUUID) {
+      bluetoothStore.error = `Characteristic ${characName} not found !`;
+      return;
+    }
+
+    try {
+      const service = await bluetoothState.GATTServer.getPrimaryService(BLUETOOTH_GATT_SERVICE_UUID);
+      const charac = await service.getCharacteristic(characUUID);
+      const rawValue = await charac.readValue();
+      const decoder = new TextDecoder('utf-8');
+      return decoder.decode(rawValue);
+    } catch (err) {
+      bluetoothStore.error = `Error reading characteristic ${characName} with UUID ${characUUID}: ${err}`;
+    }
   }
 };
 

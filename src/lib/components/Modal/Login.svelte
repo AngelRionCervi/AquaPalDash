@@ -2,6 +2,7 @@
   import PrimaryButton from '$lib/components/Buttons/PrimaryButton.svelte';
   import ErrorField from './ErrorField.svelte';
   import modalStore from '$lib/stores/modalStore.svelte';
+  import bluetoothStore from '$lib/stores/bluetoothStore.svelte';
 
   const { childProps } = modalStore;
 
@@ -36,9 +37,17 @@
       onLoginClick();
     }
   }
+
+  async function onWifiSetup() {
+    const deviceFound = await bluetoothStore.findDevice();
+    if (deviceFound) {
+      modalStore.toggle('Wifi Setup', 'wifiSetup');
+    }
+  }
 </script>
 
 <div class="login-modal-container">
+  <button onclick={onWifiSetup}>connect bt</button>
   <div class="top">
     <div class="input-row">
       <label for="login_pass">Password:</label>

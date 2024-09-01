@@ -121,7 +121,6 @@
       <PrimaryButton label="Try reconnecting" type="green" onclick={() => location.reload()} />
     </div>
   {/if}
-  <button style="z-index:9999" onclick={() => bluetoothStore.startScan()}>bt hey</button>
 </div>
 
 <style lang="scss">

@@ -4,3 +4,12 @@ export const TIMEOUT_FETCH_CONFIG = 30000;
 export const DEFAULT_HISTORICAL_DAYS = 30;
 export const MOBILE_BP = 768;
 export const BLUETOOTH_GATT_SERVICE_UUID = '0880619c-4a5f-4420-a3fa-496713d52298';
+export const BLUETOOTH_CHARACTERISTICS_UUID_MAP = {
+  ssid: 'beb5483e-36e1-4688-b7f5-ea07361b26a8',
+  wifi_pass: '30855ddd-1312-43be-a6e1-1b8d188c43d2',
+  config_done: 'f4187856-ff8e-402a-b609-1486b775c94f'
+};
+export const BT_SSID_CHARACTERISTIC_NAME = 'ssid';
+export const BT_WIFIPASS_CHARACTERISTIC_NAME = 'wifi_pass';
+export const BT_CONFIG_DONE_CHARACTERISTIC_NAME = 'config_done';
+export const AQUA_PAL_NAME = 'Aqua Pal';

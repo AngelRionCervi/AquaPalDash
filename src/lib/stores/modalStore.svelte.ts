@@ -1,20 +1,20 @@
 import type { ModalTypes } from '$lib/components/Modal/types';
 
 interface ModalState {
-	isOpen: boolean;
-	title: string;
-	type: ModalTypes | null;
+  isOpen: boolean;
+  title: string;
+  type: ModalTypes | null;
   subtitle?: string;
-  childProps?: Record<string, any>
+  childProps?: Record<string, any>;
 }
 
 interface ModalStore {
-	isOpen: boolean;
-	title: string;
-	type: ModalTypes | null;
+  isOpen: boolean;
+  title: string;
+  type: ModalTypes | null;
   subtitle?: string;
-  childProps?: Record<string, any>
-	toggle: (title?: string, type?: ModalTypes, childProps?: ModalState["childProps"], subtitle?: string) => void;
+  childProps?: Record<string, any>;
+  toggle: (title?: string, type?: ModalTypes, childProps?: ModalState['childProps'], subtitle?: string) => void;
 }
 
 const defaultModalStoreValue: ModalState = { isOpen: false, title: '', type: null };
@@ -22,24 +22,25 @@ const defaultModalStoreValue: ModalState = { isOpen: false, title: '', type: nul
 const modalState = $state<ModalState>(defaultModalStoreValue);
 
 const modalStore: ModalStore = {
-	get isOpen() {
-		return modalState.isOpen;
-	},
-	get title() {
-		return modalState.title;
-	},
+  get isOpen() {
+    return modalState.isOpen;
+  },
+  get title() {
+    return modalState.title;
+  },
   get subtitle() {
-		return modalState.subtitle;
-	},
-	get type() {
-		return modalState.type;
-	},
+    return modalState.subtitle;
+  },
+  get type() {
+    return modalState.type;
+  },
   get childProps() {
     return modalState.childProps;
   },
-	toggle(title?: string, type?: ModalTypes, childProps?: ModalState["childProps"], subtitle?: string) {
+  toggle(title?: string, type?: ModalTypes, childProps?: ModalState['childProps'], subtitle?: string) {
     console.log('toggle', title, type, childProps, subtitle);
-		modalState.isOpen = !modalState.isOpen;
+
+    modalState.isOpen = !!title;
 
     if (!modalState.isOpen) {
       modalState.title = '';
@@ -48,12 +49,12 @@ const modalStore: ModalStore = {
       modalState.subtitle = '';
     }
 
-		if (title) {
-			modalState.title = title;
-		}
-		if (type) {
-			modalState.type = type;
-		}
+    if (title) {
+      modalState.title = title;
+    }
+    if (type) {
+      modalState.type = type;
+    }
     if (childProps) {
       modalState.childProps = childProps;
     }
@@ -66,7 +67,7 @@ const modalStore: ModalStore = {
     } else {
       document.body.classList.remove('no-scroll');
     }
-	}
+  }
 };
 
 export default modalStore;

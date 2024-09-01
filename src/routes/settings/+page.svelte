@@ -2,10 +2,11 @@
   import settings from '$lib/data/settings';
   import SettingSlot from '$lib/components/Settings/SettingSlot.svelte';
   import configStore from '$lib/stores/configStore.svelte';
-  import monitoringStore from '$lib/stores/monitoringStore.svelte';
   import PrimaryButton from '$lib/components/Buttons/PrimaryButton.svelte';
   import controllerStore from '$lib/stores/controllerStore.svelte';
   import authStore from '$lib/stores/authStore.svelte';
+  import bluetoothStore from '$lib/stores/bluetoothStore.svelte';
+  import modalStore from '$lib/stores/modalStore.svelte';
 
   async function onSettingChange(settingName: keyof ConfigSettings, value: string | number | boolean) {
     if (configStore.config) {
@@ -13,8 +14,8 @@
     }
   }
 
-  function onRestartController() {
-    controllerStore.restartController();
+  async function onWifiSetup() {
+    console.log('wip change wifi');
   }
 </script>
 
@@ -25,7 +26,15 @@
     {/each}
   </div>
   <div class="special-control-row">
-    <PrimaryButton label="Restart controller" type="red" onclick={onRestartController} disabled={controllerStore.isRestarting} />
+    {#if bluetoothStore.isBluetoothEnabled}
+      <PrimaryButton label="Change WiFi" type="green" onclick={onWifiSetup} />
+    {/if}
+    <PrimaryButton
+      label="Restart controller"
+      type="red"
+      onclick={() => controllerStore.restartController()}
+      disabled={controllerStore.isRestarting}
+    />
     <PrimaryButton label="Forget session" type="red" onclick={() => authStore.removeSessionAndReload()} />
   </div>
 </div>
