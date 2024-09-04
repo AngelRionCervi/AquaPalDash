@@ -1,35 +1,47 @@
-import { BLUETOOTH_CHARACTERISTICS_UUID_MAP, BLUETOOTH_GATT_SERVICE_UUID } from '$lib/constants';
+import {
+  BLUETOOTH_CHARACTERISTICS_UUID_MAP,
+  BLUETOOTH_GATT_SERVICE_UUID,
+  BT_WIFI_LIST_CHARACTERISTIC_NAME,
+  WIFI_LIST_QUERY_INTERVAL
+} from '$lib/constants';
+import type { WifiNetwork } from '$lib/types';
 
 interface BluetoothState {
   isBluetoothEnabled: boolean;
   isScanning: boolean;
-  devices: BluetoothDevice[];
   connectedDevice: BluetoothDevice | null;
   error: string;
   GATTServer: BluetoothRemoteGATTServer | null;
+  wifiList: Array<WifiNetwork>;
+  queryWifiListInterval: ReturnType<typeof setInterval> | null;
 }
 
 interface BluetoothStore {
   isBluetoothEnabled: boolean;
   isScanning: boolean;
-  devices: BluetoothDevice[];
   connectedDevice: BluetoothDevice | null;
   error: string;
   GATTServer: BluetoothRemoteGATTServer | null;
+  wifiList: Array<WifiNetwork>;
+  queryWifiListInterval: ReturnType<typeof setInterval> | null;
   init: () => void;
   findDevice: () => Promise<boolean>;
   writeToCharacteristic: (characName: keyof typeof BLUETOOTH_CHARACTERISTICS_UUID_MAP, value: string) => Promise<boolean>;
   writeToMultipleCharacteristics: (characNames: Record<keyof typeof BLUETOOTH_CHARACTERISTICS_UUID_MAP, string>) => Promise<boolean[]>;
   readCharacteristic: (characName: keyof typeof BLUETOOTH_CHARACTERISTICS_UUID_MAP) => Promise<string | undefined>;
+  onGattServerDisconnected: () => Promise<void>;
+  toggleWifiListInterval: (onOrOff: boolean) => void;
+  updateWifiList: () => Promise<void>;
 }
 
 const defaultBluetoothStoreValue: BluetoothState = {
   isBluetoothEnabled: false,
   isScanning: false,
-  devices: [],
   connectedDevice: null,
   error: '',
-  GATTServer: null
+  GATTServer: null,
+  wifiList: [],
+  queryWifiListInterval: null
 };
 
 const bluetoothState = $state<BluetoothState>(defaultBluetoothStoreValue);
@@ -41,9 +53,6 @@ const bluetoothStore: BluetoothStore = {
   get isScanning() {
     return bluetoothState.isScanning;
   },
-  get devices() {
-    return bluetoothState.devices;
-  },
   get connectedDevice() {
     return bluetoothState.connectedDevice;
   },
@@ -52,6 +61,12 @@ const bluetoothStore: BluetoothStore = {
   },
   get GATTServer() {
     return bluetoothState.GATTServer;
+  },
+  get wifiList() {
+    return bluetoothState.wifiList;
+  },
+  get queryWifiListInterval() {
+    return bluetoothState.queryWifiListInterval;
   },
   set error(err: string) {
     bluetoothState.error = err;
@@ -76,11 +91,10 @@ const bluetoothStore: BluetoothStore = {
           }
         ]
       });
-      device.addEventListener('gattserverdisconnected', () => {
-        bluetoothState.GATTServer = null;
-        console.log('Bluetooth device disconnected !');
-      });
+      device.addEventListener('gattserverdisconnected', bluetoothStore.onGattServerDisconnected);
       bluetoothState.GATTServer = (await device.gatt?.connect()) || null;
+
+      bluetoothState.connectedDevice = device;
 
       console.log('bluetooth device found !', device);
     } catch (error) {
@@ -90,6 +104,23 @@ const bluetoothStore: BluetoothStore = {
     }
 
     return !!bluetoothState.GATTServer;
+  },
+  async updateWifiList() {
+    const wifiList = await bluetoothStore.readCharacteristic(BT_WIFI_LIST_CHARACTERISTIC_NAME);
+    if (wifiList) {
+      bluetoothState.wifiList = parseWifiList(wifiList);
+    }
+  },
+  toggleWifiListInterval(onOrOff: boolean) {
+    if (onOrOff && bluetoothState.queryWifiListInterval) {
+      clearInterval(bluetoothState.queryWifiListInterval);
+      bluetoothState.queryWifiListInterval = null;
+      return;
+    }
+
+    bluetoothState.queryWifiListInterval = setInterval(async () => {
+      await bluetoothStore.updateWifiList();
+    }, WIFI_LIST_QUERY_INTERVAL);
   },
   async writeToCharacteristic(characName: keyof typeof BLUETOOTH_CHARACTERISTICS_UUID_MAP, value: string) {
     if (!bluetoothState.GATTServer) {
@@ -145,7 +176,21 @@ const bluetoothStore: BluetoothStore = {
     } catch (err) {
       bluetoothStore.error = `Error reading characteristic ${characName} with UUID ${characUUID}: ${err}`;
     }
+  },
+  async onGattServerDisconnected() {
+    if (bluetoothState.GATTServer) {
+      bluetoothState.GATTServer = null;
+      bluetoothState.connectedDevice?.removeEventListener('gattserverdisconnected', bluetoothStore.onGattServerDisconnected);
+      await bluetoothState.connectedDevice?.forget();
+      bluetoothState.connectedDevice = null;
+    }
   }
 };
+
+function parseWifiList(wifiList: string) {
+  console.log('parseWifiList called with wifiList:', wifiList);
+
+  return [{}] as WifiNetwork[];
+}
 
 export default bluetoothStore;

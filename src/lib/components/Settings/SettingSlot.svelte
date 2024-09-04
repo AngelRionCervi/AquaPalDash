@@ -2,6 +2,7 @@
   import type { Setting } from './type';
   import Select from '$lib/components/Inputs/Select.svelte';
   import { convertToType } from '$lib/helpers/utils';
+  import type { ConfigSettings } from '$lib/types';
 
   interface Props {
     setting: Setting;

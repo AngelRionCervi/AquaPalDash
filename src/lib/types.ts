@@ -1,14 +1,20 @@
 type ScheduleRange = [number, number];
 type Schedule = ScheduleRange | boolean;
 
-interface RawDeviceStatus {
+export interface WifiNetwork {
+  ssid: string;
+  rssi: number;
+  encryptionType: string;
+}
+
+export interface RawDeviceStatus {
   id: string;
 	name: string;
 	state: boolean;
 	isOnline: boolean;
 }
 
-interface Device {
+export interface Device {
   id: string;
 	name: string;
 	ip: string;
@@ -19,13 +25,13 @@ interface Device {
   isModified?: boolean;
 }
 
-interface ConfigSecrets {
+export interface ConfigSecrets {
 	wifiSSID: string;
 	wifiPass: string;
 	serverPass: string;
 }
 
-interface ConfigSettings {
+export interface ConfigSettings {
 	autoSchedulesOnAfter: number;
 	prefetchHistorical: boolean;
 	theme: 'light' | 'dark';
@@ -35,14 +41,9 @@ interface ConfigSettings {
   enableMonitoring: boolean;
 }
 
-interface Config {
+export interface Config {
 	devices: Array<Device>;
 	secrets: ConfigSecrets;
 	settings: ConfigSettings;
 }
 
-interface ApiResponse {
-	status: 'error' | 'success';
-	message?: string;
-	data?: any;
-}

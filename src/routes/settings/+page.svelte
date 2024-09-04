@@ -7,6 +7,7 @@
   import authStore from '$lib/stores/authStore.svelte';
   import bluetoothStore from '$lib/stores/bluetoothStore.svelte';
   import modalStore from '$lib/stores/modalStore.svelte';
+  import type { ConfigSettings } from '$lib/types';
 
   async function onSettingChange(settingName: keyof ConfigSettings, value: string | number | boolean) {
     if (configStore.config) {
