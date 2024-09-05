@@ -41,9 +41,11 @@
   async function onWifiSetup() {
     const deviceFound = await bluetoothStore.findDevice();
     if (deviceFound) {
-      //await bluetoothStore.updateWifiList();
       bluetoothStore.toggleWifiListInterval(true);
       modalStore.toggle('Wifi Setup', 'wifiSetup');
+      setTimeout(() => {
+        bluetoothStore.updateWifiList();
+      });
     }
   }
 </script>

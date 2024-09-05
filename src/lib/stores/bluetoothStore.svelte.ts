@@ -188,9 +188,13 @@ const bluetoothStore: BluetoothStore = {
 };
 
 function parseWifiList(wifiList: string) {
-  console.log('parseWifiList called with wifiList:', wifiList);
-
-  return [{}] as WifiNetwork[];
+  try {
+    const parsedWifiList = JSON.parse(wifiList) as WifiNetwork[];
+    return parsedWifiList;
+  } catch (err) {
+    bluetoothStore.error = `Error parsing wifi list: ${err}`;
+    return [];
+  }
 }
 
 export default bluetoothStore;

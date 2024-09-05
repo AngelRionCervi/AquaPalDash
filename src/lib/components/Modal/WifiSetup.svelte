@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { onMount } from 'svelte';
   import PrimaryButton from '$lib/components/Buttons/PrimaryButton.svelte';
   import modalStore from '$lib/stores/modalStore.svelte';
   import ErrorField from './ErrorField.svelte';
@@ -8,15 +9,19 @@
     BLUETOOTH_CHARACTERISTICS_UUID_MAP,
     BT_CONFIG_DONE_CHARACTERISTIC_NAME,
     BT_SSID_CHARACTERISTIC_NAME,
-    BT_WIFIPASS_CHARACTERISTIC_NAME
+    BT_WIFIPASS_CHARACTERISTIC_NAME,
+    NO_WIFI_NETWORKS_FOUND_TIMEOUT
   } from '$lib/constants';
   import controllerStore from '$lib/stores/controllerStore.svelte';
   import Loader from '$lib/components/Loaders/Loader.svelte';
+  import WifiNetworkCard from '../Inputs/WifiNetworkCard.svelte';
+  import type { WifiNetwork } from '$lib/types';
 
   let ssid = $state<string | null>(null);
   let wifiPass = $state<string | null>(null);
   let errorMessage = $state<string | null>(null);
   let configDone = $state<boolean>(false);
+  let noNetworksFound = $state<boolean>(false);
 
   async function onValidate() {
     if (!ssid) {
@@ -45,10 +50,26 @@
     }
   }
 
-  $effect(() => {
-    if (configDone && !controllerStore.isRestarting) {
-      //modalStore.toggle();
-    }
+  function onWifiNetworkSelect(chosenSSID: string) {
+    ssid = chosenSSID;
+  }
+
+  function sortWifiList(wifiList: WifiNetwork[]) {
+    return wifiList.sort((a, b) => {
+      if (a.rssi > b.rssi) {
+        return -1;
+      }
+      if (a.rssi < b.rssi) {
+        return 1;
+      }
+      return 0;
+    });
+  }
+
+  onMount(() => {
+    setTimeout(() => {
+      noNetworksFound = !bluetoothStore.wifiList.length;
+    }, NO_WIFI_NETWORKS_FOUND_TIMEOUT);
   });
 </script>
 
@@ -59,12 +80,24 @@
       <Loader size="medium" theme="dark" />
     </div>
   {:else}
-    <div class="modify-row">
-      <label for="network_ssid">Network SSID:</label>
-      <input type="text" id="network_ssid" bind:value={ssid} />
+    <div class="network-list-row">
+      {#if !bluetoothStore.wifiList.length}
+        <div class="waiting-for-networks-container">
+          {#if noNetworksFound}
+            <p>No wifi networks found...</p>
+          {/if}
+          <Loader size="medium" theme="dark" />
+        </div>
+      {:else}
+        {#each sortWifiList(bluetoothStore.wifiList) as wifiNetwork (wifiNetwork.ssid)}
+          <WifiNetworkCard {wifiNetwork} isSelected={wifiNetwork.ssid === ssid} onClick={onWifiNetworkSelect} />
+        {/each}
+      {/if}
     </div>
     <div class="modify-row">
-      <label for="network_pass">Network password (leave empty if the network is public):</label>
+      <label for="network_pass">
+        <span class="main-label">Network password:</span> <span class="public-indication">(leave empty if the network is public)</span>
+      </label>
       <input type="password" id="network_pass" bind:value={wifiPass} />
     </div>
     <div class="bottom">
@@ -105,5 +138,33 @@
     gap: 16px;
     justify-content: center;
     align-items: center;
+  }
+
+  .network-list-row {
+    width: 60%;
+    display: flex;
+    gap: 8px;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 180px;
+    overflow: auto;
+  }
+
+  .waiting-for-networks-container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+  }
+
+  .main-label {
+    font-weight: bold;
+  }
+
+  .public-indication {
+    font-size: var(--font-S);
   }
 </style>
