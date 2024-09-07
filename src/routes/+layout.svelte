@@ -24,13 +24,12 @@
   const { toggle } = modalStore;
 
   let mainLoading = $state(false);
-  let needsLogin = $state(false);
   let noConfigFetch = $state(false);
   let historicalQueried = $state(false);
   let noWsConnection = $state(false);
 
   function getCurrentPageTitle() {
-    return menuRoutes.find(({ route }) => route === $page?.url?.pathname)?.label || 'Home';
+    return menuRoutes.find(({ route }) => route === $page.url?.pathname)?.label || 'Home';
   }
 
   function onNewLogin(password: string, rememberMe: boolean, demoMode: boolean) {
@@ -40,7 +39,8 @@
       authStore.saveSession({ password, demoMode });
     }
 
-    needsLogin = false;
+    authStore.needLogin = false;
+    bluetoothStore.stopBluetooth();
     startUp(password);
     toggle();
   }
@@ -61,7 +61,7 @@
       deviceStatusStore.loadDeviceStatusMock();
       controllerStore.loadMockData();
       mainLoading = false;
-      needsLogin = false;
+      authStore.needLogin = false;
       return;
     }
 
@@ -71,11 +71,12 @@
   }
 
   function onWsOpen() {
+    console.log('WS connection established', authStore.needLogin);
     authStore.init();
     if (authStore.password) {
       startUp(authStore.password);
     } else {
-      needsLogin = true;
+      authStore.needLogin = true;
       toggle('Login', 'login', {
         onLogin: (password: string, rememberMe: boolean, demoMode: boolean) => onNewLogin(password, rememberMe, demoMode)
       });
@@ -100,7 +101,7 @@
 </script>
 
 <div class="main-layout">
-  {#if needsLogin}
+  {#if authStore.needLogin}
     <Modal />
   {:else if mainLoading && !noConfigFetch && !configStore.config}
     <InitLoadingBackdrop />

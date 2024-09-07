@@ -3,6 +3,7 @@ import configStore from '$lib/stores/configStore.svelte';
 import controllerStore from '$lib/stores/controllerStore.svelte';
 import devicesStatusStore from '$lib/stores/deviceStatusStore.svelte';
 import monitoringStore, { type LiveMonitoringPayload, type RawMonitoringPayload } from '$lib/stores/monitoringStore.svelte';
+import type { RawDeviceStatus, Config } from '$lib/types';
 import { DASH_CALL_TYPES } from '$wsGlobal/callTypes';
 import { jstr, parseMessage } from '$wsGlobal/wsUtils';
 
@@ -37,6 +38,7 @@ function handleMessage(ws: WebSocket, message: Record<string, unknown>) {
     case DASH_CALL_TYPES.dash_setConfigType: {
       configStore.setConfig(message.data as Config);
       controllerStore.setIsOn(true);
+      authStore.needLogin = false;
       break;
     }
     case DASH_CALL_TYPES.dash_setDevicesInfoType: {

@@ -7,11 +7,11 @@
   interface Props {
     wifiNetwork: WifiNetwork;
     isSelected: boolean;
-    onClick: (ssid: string) => void;
+    onSelect: (ssid: string, fingerprint: string) => void;
   }
 
-  const { wifiNetwork, isSelected, onClick }: Props = $props();
-  const { ssid, encryptionType, rssi, channel } = wifiNetwork;
+  const { wifiNetwork, isSelected, onSelect }: Props = $props();
+  const { ssid, encryptionType, rssi, channel, fingerprint } = wifiNetwork;
 
   const wirelessIconMap = {
     3: Wireless1Icon,
@@ -31,7 +31,7 @@
   }
 </script>
 
-<button class="card-container" class:is-selected={isSelected} onclick={() => onClick(ssid)}>
+<button class="card-container" class:is-selected={isSelected} onclick={() => onSelect(ssid, fingerprint)}>
   <div class="signal-strength-container">
     <div class="signal-strength-icon">
       <svelte:component this={wirelessIconMap[getSignalStrength()]} />
@@ -39,8 +39,8 @@
     <p class="ssid-label">{ssid}</p>
   </div>
   <div class="network-info">
-    <p class="info-label">channel: {channel}</p>
     <p class="info-label">{encryptionType}</p>
+    <p class="info-label-secondary">channel: {channel}</p>
   </div>
 </button>
 
@@ -58,7 +58,13 @@
     border-radius: var(--radius-S);
 
     &.is-selected {
-      border: 4px solid var(--primary-success);
+      border: 3px solid var(--primary-success);
+      padding: 8px 16px;
+      background-color: var(--primary-lighter);
+    }
+
+    &:not(.is-selected):hover {
+      background-color: var(--primary-lighter);
     }
   }
 
@@ -86,12 +92,18 @@
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
-    max-width: 120px;
+    max-width: 160px;
     text-align: right;
   }
 
   .info-label {
     font-size: var(--font-S);
     text-align: right;
+  }
+
+  .info-label-secondary {
+    font-size: var(--font-S);
+    text-align: right;
+    color: var(--secondary-lighter);
   }
 </style>

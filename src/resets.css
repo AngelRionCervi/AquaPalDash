@@ -1,123 +1,129 @@
 * {
-	box-sizing: border-box;
+  box-sizing: border-box;
 }
 
 html {
-	margin: 0;
-	padding: 0;
+  margin: 0;
+  padding: 0;
 }
 
 body {
-	margin: 0;
-	padding: 0;
-	font-family: 'Karla', sans-serif;
-	font-optical-sizing: auto;
-	font-weight: 400;
-	font-style: normal;
-	font-size: var(--font-M);
-	background-color: var(--primary);
-	color: var(--primary-text);
+  margin: 0;
+  padding: 0;
+  font-family: 'Karla', sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+  font-size: var(--font-M);
+  background-color: var(--primary);
+  color: var(--primary-text);
 }
 
 a {
-	text-decoration: none;
-	color: var(--primary-text);
+  text-decoration: none;
+  color: var(--primary-text);
 }
 
 li {
-	list-style-type: none;
+  list-style-type: none;
 }
 
 ul {
-	padding: 0;
-	margin: 0;
+  padding: 0;
+  margin: 0;
 }
 
 button {
-	margin: 0;
-	padding: 0;
-	cursor: pointer;
-	background-color: transparent;
-	border: none;
-	font-size: var(--font-M);
+  margin: 0;
+  padding: 0;
+  cursor: pointer;
+  background-color: transparent;
+  border: none;
+  font-size: var(--font-M);
+  transition: background-color 0.15s ease;
 }
 
 p {
-	margin: 0;
+  margin: 0;
 }
 
 select,
 input {
-	box-sizing: border-box;
-	-webkit-appearance: none;
-	appearance: none;
-	background-color: transparent;
-	border: none;
-	padding: 0 1em 0 0;
-	margin: 0;
-	width: 100%;
-	font-family: inherit;
-	font-size: inherit;
-	cursor: inherit;
-	line-height: inherit;
+  box-sizing: border-box;
+  -webkit-appearance: none;
+  appearance: none;
+  background-color: transparent;
+  border: none;
+  padding: 0 1em 0 0;
+  margin: 0;
+  width: 100%;
+  font-family: inherit;
+  font-size: inherit;
+  cursor: inherit;
+  line-height: inherit;
 }
 
 fieldset {
-	border: none;
+  border: none;
   padding: 0;
 }
 
-input[type='text'], input[type='number'], input[type='password'] {
-	border: 1px solid var(--secondary);
-	padding: 2px;
-	border-radius: var(--radius-S);
-	background-color: var(--primary-lighter);
+input[type='text'],
+input[type='number'],
+input[type='password'] {
+  border: 1px solid var(--secondary);
+  padding: 2px;
+  border-radius: var(--radius-S);
+  background-color: var(--primary-lighter);
 }
 
-input[type='text']:disabled, input[type='number']:disabled, input[type='checkbox']:disabled, input[type='password']:disabled {
-	background-color: var(--primary-darker);
+input[type='text']:disabled,
+input[type='number']:disabled,
+input[type='checkbox']:disabled,
+input[type='password']:disabled {
+  background-color: var(--primary-darker);
   cursor: not-allowed;
 }
 
 input[type='checkbox'] {
-	width: 20px;
-	height: 20px;
-	padding: 0;
-	border-radius: var(--radius-S);
-	background-color: var(--primary-lighter);
-	border: 1px solid var(--secondary);
-	cursor: pointer;
-	display: grid;
-	place-content: center;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  border-radius: var(--radius-S);
+  background-color: var(--primary-lighter);
+  border: 1px solid var(--secondary);
+  cursor: pointer;
+  display: grid;
+  place-content: center;
 }
 
 input[type='checkbox']::before {
-	content: '';
-	width: 18px;
-	height: 18px;
-	background-color: var(--secondary);
-	transform: scale(0);
-	transition: 0.1s transform linear;
-	border-radius: var(--radius-S);
+  content: '';
+  width: 18px;
+  height: 18px;
+  background-color: var(--secondary);
+  transform: scale(0);
+  transition: 0.1s transform linear;
+  border-radius: var(--radius-S);
 }
 
 input[type='checkbox']:checked::before {
-	transform: scale(0.75);
+  transform: scale(0.75);
 }
 
 input[type='radio'] {
-	border-radius: 999px;
-	width: 16px;
-	height: 16px;
-	margin: 0;
-	padding: 0;
-	border: 2px solid var(--secondary-success);
-	transition: 0.1s all linear;
-	cursor: pointer;
+  border-radius: 999px;
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  padding: 0;
+  border: 2px solid var(--secondary-success);
+  transition: 0.1s all linear;
+  cursor: pointer;
 }
 
 input[type='radio']:checked {
-	border: 6px solid var(--secondary);
+  border: 6px solid var(--secondary);
 }
 
 .apexcharts-pan-icon.apexcharts-selected svg {

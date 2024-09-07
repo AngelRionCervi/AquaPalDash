@@ -27,6 +27,7 @@
 		border-radius: var(--radius-S);
 		background-color: var(--primary-lighter);
 		padding: 8px 16px;
+		max-width: 400px;
 	}
 
 	.error-message {

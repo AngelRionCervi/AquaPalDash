@@ -4,8 +4,6 @@
   import BinIcon from '$lib/icons/bin.svg?component';
   import BluetoothIcon from '$lib/icons/bluetooth.svg?component';
   import Loader from '$lib/components/Loaders/Loader.svelte';
-  import windowStore from '$lib/stores/windowStore.svelte';
-  import { MOBILE_BP } from '$lib/constants';
 
   interface Props {
     label: string;
@@ -14,13 +12,14 @@
     icon?: 'add' | 'bin' | 'bluetooth';
     disabled?: boolean;
     isLoading?: boolean;
+    size?: 'small' | 'medium';
   }
 
   type IconMapType = {
     [key in Exclude<Props['icon'], undefined>]: ComponentType;
   };
 
-  const { label, onclick, type = 'default', icon = undefined, disabled = false, isLoading = false }: Props = $props();
+  const { label, onclick, type = 'default', icon = undefined, disabled = false, isLoading = false, size = 'medium' }: Props = $props();
 
   const iconMap: IconMapType = {
     add: AddIcon,
@@ -29,12 +28,14 @@
   };
 </script>
 
-<button class="primary-button button-{type}" class:disabled={disabled || isLoading} {onclick} disabled={disabled || isLoading}>
+<button class="primary-button button-{type} size-{size}" class:disabled={disabled || isLoading} {onclick} disabled={disabled || isLoading}>
   {#if icon}
-    <svelte:component this={iconMap[icon]} width={windowStore.width < MOBILE_BP ? 24 : 28} height={windowStore.width < MOBILE_BP ? 24 : 28} />
+    <div class="icon-container size-icon-{size}">
+      <svelte:component this={iconMap[icon]} width="100%" height="100%" />
+    </div>
   {/if}
   {#if isLoading}
-    <Loader size="small" theme="light" />
+    <Loader size="small" theme={type === 'default' ? 'dark' : 'light'} />
   {:else}
     <span class:label-align-center={!icon}>{label}</span>
   {/if}
@@ -47,17 +48,55 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 8px;
     border-radius: var(--radius-S);
-    padding: 10px 16px;
-    font-size: var(--font-M);
+
+    &.size-small {
+      gap: 6px;
+      padding: 6px 10px;
+      font-size: var(--font-S);
+    }
+
+    &.size-medium {
+      gap: 8px;
+      padding: 10px 16px;
+      font-size: var(--font-M);
+    }
 
     @media screen and (max-width: $mobile-bp) {
       padding: 8px 12px;
+
+      &.size-small {
+        padding: 5px 8px;
+        font-size: var(--font-S);
+      }
     }
 
     @media screen and (max-width: $small-mobile-bp) {
       font-size: var(--font-S);
+
+      &.size-small {
+        padding: 5px 8px;
+      }
+    }
+  }
+
+  .icon-container {
+    width: 28px;
+    height: 28px;
+
+    &.size-icon-small {
+      width: 20px;
+      height: 20px;
+    }
+
+    @media screen and (max-width: $mobile-bp) {
+      width: 24px;
+      height: 24px;
+
+      &.size-icon-small {
+        width: 16px;
+        height: 16px;
+      }
     }
   }
 

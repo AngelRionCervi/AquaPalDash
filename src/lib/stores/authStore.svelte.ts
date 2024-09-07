@@ -5,6 +5,7 @@ interface AuthState {
   password: string;
   isDemoMode: boolean;
   userId: string;
+  needLogin: boolean;
 }
 
 interface AuthStore {
@@ -12,6 +13,7 @@ interface AuthStore {
   password: string;
   isDemoMode: boolean;
   userId: string;
+  needLogin: boolean;
   setDemoMode: (demoMode: boolean) => void;
   setPassword: (password: string) => void;
   saveSession: (session: Session) => void;
@@ -22,7 +24,7 @@ interface AuthStore {
   init: () => void;
 }
 
-const defaultAuthStoreValue: AuthState = { isAuth: false, password: '', isDemoMode: false, userId: '' };
+const defaultAuthStoreValue: AuthState = { isAuth: false, password: '', isDemoMode: false, userId: '', needLogin: true };
 
 const authState = $state<AuthState>(defaultAuthStoreValue);
 
@@ -38,6 +40,12 @@ const authStore: AuthStore = {
   },
   get userId() {
     return authState.userId;
+  },
+  get needLogin() {
+    return authState.needLogin;
+  },
+  set needLogin(needLogin: boolean) {
+    authState.needLogin = needLogin;
   },
   init() {
     const session = SessionLS.getLoginSession();

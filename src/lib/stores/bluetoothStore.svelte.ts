@@ -32,6 +32,7 @@ interface BluetoothStore {
   onGattServerDisconnected: () => Promise<void>;
   toggleWifiListInterval: (onOrOff: boolean) => void;
   updateWifiList: () => Promise<void>;
+  stopBluetooth: () => Promise<void>;
 }
 
 const defaultBluetoothStoreValue: BluetoothState = {
@@ -112,7 +113,7 @@ const bluetoothStore: BluetoothStore = {
     }
   },
   toggleWifiListInterval(onOrOff: boolean) {
-    if (onOrOff && bluetoothState.queryWifiListInterval) {
+    if (!onOrOff && bluetoothState.queryWifiListInterval) {
       clearInterval(bluetoothState.queryWifiListInterval);
       bluetoothState.queryWifiListInterval = null;
       return;
@@ -184,12 +185,29 @@ const bluetoothStore: BluetoothStore = {
       await bluetoothState.connectedDevice?.forget();
       bluetoothState.connectedDevice = null;
     }
+  },
+  async stopBluetooth() {
+    bluetoothStore.toggleWifiListInterval(false);
+
+    if (bluetoothState.connectedDevice) {
+      await bluetoothState.connectedDevice?.forget();
+      bluetoothState.connectedDevice = null;
+    }
+
+    if (bluetoothState.GATTServer) {
+      bluetoothState.GATTServer.disconnect();
+      bluetoothState.GATTServer = null;
+    }
   }
 };
 
 function parseWifiList(wifiList: string) {
+  console.log('RAW wifiList:', wifiList);
   try {
     const parsedWifiList = JSON.parse(wifiList) as WifiNetwork[];
+    for (const wifi of parsedWifiList) {
+      wifi.fingerprint = `${wifi.ssid}-${wifi.channel}-${wifi.encryptionType}`;
+    }
     return parsedWifiList;
   } catch (err) {
     bluetoothStore.error = `Error parsing wifi list: ${err}`;

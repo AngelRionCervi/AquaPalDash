@@ -1,11 +1,12 @@
-type ScheduleRange = [number, number];
-type Schedule = ScheduleRange | boolean;
+export type ScheduleRange = [number, number];
+export type Schedule = ScheduleRange | boolean;
 
 export interface WifiNetwork {
   ssid: string;
   rssi: number;
   channel: number;
   encryptionType: string;
+  fingerprint: string;
 }
 
 export interface RawDeviceStatus {

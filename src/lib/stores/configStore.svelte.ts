@@ -2,6 +2,7 @@ import { DASH_CALL_TYPES } from '$wsGlobal/callTypes';
 import { MAX_DEVICES } from '$lib/constants';
 import configMock from '$lib/mock/configMock.json';
 import { sendWSMessage } from '$lib/wsClient/WSClientHandler';
+import type { Config, ConfigSecrets, ConfigSettings, Device, Schedule } from '$lib/types';
 
 interface CallState {
   isLoading?: boolean;
@@ -343,7 +344,7 @@ function validateNumber(nbr: number) {
   return typeof nbr === 'number';
 }
 
-function validateSchedule(schedule: ScheduleRange | boolean) {
+function validateSchedule(schedule: Schedule) {
   if (Array.isArray(schedule)) {
     return validateNumber(schedule[0]) && validateNumber(schedule[1]);
   } else {
