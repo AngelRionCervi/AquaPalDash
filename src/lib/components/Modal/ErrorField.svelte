@@ -22,7 +22,7 @@
 		flex-direction: column;
 		gap: 4px;
 		width: 100%;
-		margin: 16px 0;
+		margin: 8px 0 16px 0;
 		border: 1px solid var(--secondary-error);
 		border-radius: var(--radius-S);
 		background-color: var(--primary-lighter);

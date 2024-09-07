@@ -12,7 +12,15 @@
     id?: string;
   }
 
-  const { placeholder, onInput, disabled = false, maxlength = undefined, minlength = undefined, onKeyPress = undefined, id = '' }: Props = $props();
+  const {
+    placeholder,
+    onInput,
+    disabled = false,
+    maxlength = undefined,
+    minlength = undefined,
+    onKeyPress = undefined,
+    id = ''
+  }: Props = $props();
 
   let show = $state(false);
   let value = $state('');
@@ -27,7 +35,7 @@
 <div class="input-container" class:disabled>
   <input
     class="input"
-    id={id}
+    {id}
     type={show ? 'text' : 'password'}
     {placeholder}
     bind:value

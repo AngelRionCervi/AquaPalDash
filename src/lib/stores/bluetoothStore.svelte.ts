@@ -2,6 +2,7 @@ import {
   BLUETOOTH_CHARACTERISTICS_UUID_MAP,
   BLUETOOTH_GATT_SERVICE_UUID,
   BT_WIFI_LIST_CHARACTERISTIC_NAME,
+  BT_WIFI_TESTED_CHARACTERISTIC_NAME,
   WIFI_LIST_QUERY_INTERVAL
 } from '$lib/constants';
 import type { WifiNetwork } from '$lib/types';
@@ -14,6 +15,8 @@ interface BluetoothState {
   GATTServer: BluetoothRemoteGATTServer | null;
   wifiList: Array<WifiNetwork>;
   queryWifiListInterval: ReturnType<typeof setInterval> | null;
+  isSelectedWifiTested: boolean;
+  isSelectedWifiError: boolean;
 }
 
 interface BluetoothStore {
@@ -24,6 +27,8 @@ interface BluetoothStore {
   GATTServer: BluetoothRemoteGATTServer | null;
   wifiList: Array<WifiNetwork>;
   queryWifiListInterval: ReturnType<typeof setInterval> | null;
+  isSelectedWifiTested: boolean;
+  isSelectedWifiError: boolean;
   init: () => void;
   findDevice: () => Promise<boolean>;
   writeToCharacteristic: (characName: keyof typeof BLUETOOTH_CHARACTERISTICS_UUID_MAP, value: string) => Promise<boolean>;
@@ -33,11 +38,14 @@ interface BluetoothStore {
   toggleWifiListInterval: (onOrOff: boolean) => void;
   updateWifiList: () => Promise<void>;
   stopBluetooth: () => Promise<void>;
+  subscribeToWifiTestedCharacteristic: () => Promise<void>;
 }
 
 const defaultBluetoothStoreValue: BluetoothState = {
   isBluetoothEnabled: false,
   isScanning: false,
+  isSelectedWifiTested: false,
+  isSelectedWifiError: false,
   connectedDevice: null,
   error: '',
   GATTServer: null,
@@ -68,6 +76,18 @@ const bluetoothStore: BluetoothStore = {
   },
   get queryWifiListInterval() {
     return bluetoothState.queryWifiListInterval;
+  },
+  get isSelectedWifiTested() {
+    return bluetoothState.isSelectedWifiTested;
+  },
+  get isSelectedWifiError() {
+    return bluetoothState.isSelectedWifiError;
+  },
+  set isSelectedWifiError(value: boolean) {
+    bluetoothState.isSelectedWifiError = value;
+  },
+  set isSelectedWifiTested(value: boolean) {
+    bluetoothState.isSelectedWifiTested = value;
   },
   set error(err: string) {
     bluetoothState.error = err;
@@ -122,6 +142,41 @@ const bluetoothStore: BluetoothStore = {
     bluetoothState.queryWifiListInterval = setInterval(async () => {
       await bluetoothStore.updateWifiList();
     }, WIFI_LIST_QUERY_INTERVAL);
+  },
+  async subscribeToWifiTestedCharacteristic() {
+    if (!bluetoothState.GATTServer) {
+      bluetoothStore.error = 'No GATT server found !';
+      return;
+    }
+
+    const characUUID = BLUETOOTH_CHARACTERISTICS_UUID_MAP.wifi_tested;
+
+    if (!characUUID) {
+      bluetoothStore.error = `Characteristic wifiTested not found !`;
+      return;
+    }
+
+    try {
+      const service = await bluetoothState.GATTServer.getPrimaryService(BLUETOOTH_GATT_SERVICE_UUID);
+      const charac = await service.getCharacteristic(characUUID);
+      await charac.startNotifications();
+      //console.log('startNotifications:', r);
+      charac.addEventListener('characteristicvaluechanged', (event) => {
+        const value = (event.target as BluetoothRemoteGATTCharacteristic).value;
+        const decoder = new TextDecoder('utf-8');
+        const decodedValue = decoder.decode(value);
+        bluetoothState.isSelectedWifiTested = false;
+        bluetoothState.isSelectedWifiError = false;
+        setTimeout(() => {
+          bluetoothState.isSelectedWifiTested = decodedValue === 'true';
+          bluetoothState.isSelectedWifiError = decodedValue === 'error';
+        });
+
+        console.log('WIFI_TESTED value changed:', decodedValue);
+      });
+    } catch (err) {
+      bluetoothStore.error = `Error subscribing to ${BT_WIFI_TESTED_CHARACTERISTIC_NAME} characteristic with UUID ${characUUID}: ${err}`;
+    }
   },
   async writeToCharacteristic(characName: keyof typeof BLUETOOTH_CHARACTERISTICS_UUID_MAP, value: string) {
     if (!bluetoothState.GATTServer) {
@@ -202,7 +257,6 @@ const bluetoothStore: BluetoothStore = {
 };
 
 function parseWifiList(wifiList: string) {
-  console.log('RAW wifiList:', wifiList);
   try {
     const parsedWifiList = JSON.parse(wifiList) as WifiNetwork[];
     for (const wifi of parsedWifiList) {

@@ -48,7 +48,7 @@
     <span>{statLabelMap[stat]}</span>
   </div>
   <div class="value value-{isError ? 'ko' : 'ok'}">
-    <span
+    <span class="value-label"
       >{authStore.isDemoMode ? getRandomDecimal(stat) : statValue}
       <p class="stat-unit">{getUnit()}</p>
     </span>
@@ -78,5 +78,10 @@
     display: inline-block;
     margin-left: 8px;
     font-size: var(--font-ML);
+  }
+
+  .value-label {
+    display: flex;
+    align-items: flex-start;
   }
 </style>

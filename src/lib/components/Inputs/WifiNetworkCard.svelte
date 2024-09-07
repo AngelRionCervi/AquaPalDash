@@ -21,9 +21,9 @@
 
   function getSignalStrength() {
     const nRSSI = Math.abs(rssi);
-    if (nRSSI <= 60) {
+    if (nRSSI <= 55) {
       return 3;
-    } else if (nRSSI <= 75) {
+    } else if (nRSSI <= 70) {
       return 2;
     } else {
       return 1;

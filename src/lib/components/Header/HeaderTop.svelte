@@ -85,6 +85,6 @@
   .stat-container {
     margin-top: 7px;
     display: flex;
-    align-items: center;
+    align-items: flex-start;
   }
 </style>

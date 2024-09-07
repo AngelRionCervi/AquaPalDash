@@ -7,6 +7,7 @@
     AQUA_PAL_NAME,
     BLUETOOTH_CHARACTERISTICS_UUID_MAP,
     BT_CONFIG_DONE_CHARACTERISTIC_NAME,
+    BT_RESTART_CHARACTERISTIC_NAME,
     BT_SSID_CHARACTERISTIC_NAME,
     BT_WIFIPASS_CHARACTERISTIC_NAME,
     CONNECT_TO_PAL_AFTER_SETUP_TIMEOUT,
@@ -32,27 +33,32 @@
   let cantConnectToPal = $state<boolean>(false);
 
   let handshakeInterval: ReturnType<typeof setInterval> | null = null;
+  let cantConnectToPalTimeout: ReturnType<typeof setTimeout> | null = null;
 
   const configCheckPeriode = 3000;
 
   async function onConfigDone() {
     configDone = true;
+    console.log('config done');
     modalStore.childProps = { ...modalStore.childProps, backButtonHandler: null };
 
-    setTimeout(() => {
+    await bluetoothStore.writeToCharacteristic(BT_RESTART_CHARACTERISTIC_NAME, 'true');
+
+    if (handshakeInterval) {
+      clearInterval(handshakeInterval);
+    }
+    if (cantConnectToPalTimeout) {
+      clearTimeout(cantConnectToPalTimeout);
+    }
+
+    cantConnectToPalTimeout = setTimeout(() => {
       cantConnectToPal = true;
     }, CONNECT_TO_PAL_AFTER_SETUP_TIMEOUT);
-
-    await bluetoothStore.stopBluetooth();
 
     const handshakePayload = {
       type: DASH_CALL_TYPES.dash_handShakeType,
       data: loginPass
     };
-
-    if (handshakeInterval) {
-      clearInterval(handshakeInterval);
-    }
 
     handshakeInterval = setInterval(() => {
       sendWSMessage(handshakePayload);
@@ -66,6 +72,8 @@
       errorMessage = null;
     }
 
+    bluetoothStore.isSelectedWifiTested = false;
+
     const newCredValues = {
       [BT_SSID_CHARACTERISTIC_NAME]: ssid || '',
       [BT_WIFIPASS_CHARACTERISTIC_NAME]: wifiPass || ''
@@ -77,7 +85,6 @@
 
       if (newCredResult.every((r) => !!r)) {
         await bluetoothStore.writeToCharacteristic(BT_CONFIG_DONE_CHARACTERISTIC_NAME, 'true');
-        onConfigDone();
         return;
       }
 
@@ -112,6 +119,9 @@
   }
 
   onMount(() => {
+    bluetoothStore.isSelectedWifiTested = false;
+    bluetoothStore.isSelectedWifiError = false;
+    bluetoothStore.subscribeToWifiTestedCharacteristic();
     setTimeout(() => {
       noNetworksFound = !bluetoothStore.wifiList.length;
     }, NO_WIFI_NETWORKS_FOUND_TIMEOUT);
@@ -120,6 +130,10 @@
       if (handshakeInterval) {
         clearInterval(handshakeInterval);
       }
+      if (cantConnectToPalTimeout) {
+        clearTimeout(cantConnectToPalTimeout);
+      }
+      bluetoothStore.toggleWifiListInterval(false);
     };
   });
 
@@ -128,10 +142,25 @@
       modalStore.toggle();
     }
   });
+
+  $effect(() => {
+    if (bluetoothStore.isSelectedWifiError) {
+      errorMessage = `Could not connect to the selected network.`;
+    } else {
+      errorMessage = null;
+    }
+  });
+
+  $effect(() => {
+    if (bluetoothStore.isSelectedWifiTested && !configDone) {
+      configDone = true;
+      onConfigDone();
+    }
+  });
 </script>
 
 <div class="wifi-setup-container">
-  {#if configDone}
+  {#if configDone && bluetoothStore.isSelectedWifiTested}
     {#if cantConnectToPal}
       <div class="cant-connect-container">
         <p>Could not connect to {AQUA_PAL_NAME} for now...</p>
@@ -226,7 +255,7 @@
     display: flex;
     gap: 8px;
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: flex-start;
     height: 180px;
     overflow: auto;
   }

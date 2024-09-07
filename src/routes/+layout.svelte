@@ -71,9 +71,9 @@
   }
 
   function onWsOpen() {
-    console.log('WS connection established', authStore.needLogin);
     authStore.init();
     if (authStore.password) {
+      authStore.needLogin = false;
       startUp(authStore.password);
     } else {
       authStore.needLogin = true;
@@ -129,7 +129,7 @@
 
   .main-layout {
     width: calc(100vw - 128px);
-    height: calc(100vh - 64px);
+    min-height: calc(100vh - 64px);
     display: flex;
     flex-direction: column;
     justify-content: space-between;

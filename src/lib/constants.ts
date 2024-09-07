@@ -11,10 +11,14 @@ export const BLUETOOTH_CHARACTERISTICS_UUID_MAP = {
   ssid: 'beb5483e-36e1-4688-b7f5-ea07361b26a8',
   wifi_pass: '30855ddd-1312-43be-a6e1-1b8d188c43d2',
   wifi_list: '9b148ccd-66d1-49e2-9642-074d9ab49897',
-  config_done: 'f4187856-ff8e-402a-b609-1486b775c94f'
+  config_done: 'f4187856-ff8e-402a-b609-1486b775c94f',
+  wifi_tested: '240651d4-5b43-413c-a88d-209b7a9257ba',
+  restart: 'd7543730-e033-44e0-b83c-db7a5ddb6e61'
 };
 export const BT_SSID_CHARACTERISTIC_NAME = 'ssid';
 export const BT_WIFIPASS_CHARACTERISTIC_NAME = 'wifi_pass';
 export const BT_CONFIG_DONE_CHARACTERISTIC_NAME = 'config_done';
 export const BT_WIFI_LIST_CHARACTERISTIC_NAME = 'wifi_list';
+export const BT_WIFI_TESTED_CHARACTERISTIC_NAME = 'wifi_tested';
+export const BT_RESTART_CHARACTERISTIC_NAME = 'restart';
 export const AQUA_PAL_NAME = 'Aqua Pal';
