@@ -11,7 +11,7 @@
   }
 
   const { wifiNetwork, isSelected, onClick }: Props = $props();
-  const { ssid, encryptionType, rssi } = wifiNetwork;
+  const { ssid, encryptionType, rssi, channel } = wifiNetwork;
 
   const wirelessIconMap = {
     3: Wireless1Icon,
@@ -33,11 +33,14 @@
 
 <button class="card-container" class:is-selected={isSelected} onclick={() => onClick(ssid)}>
   <div class="signal-strength-container">
-    <svelte:component this={wirelessIconMap[getSignalStrength()]} />
+    <div class="signal-strength-icon">
+      <svelte:component this={wirelessIconMap[getSignalStrength()]} />
+    </div>
+    <p class="ssid-label">{ssid}</p>
   </div>
   <div class="network-info">
-    <p class="ssid-label">{ssid}</p>
-    <p class="encryption-label">{encryptionType}</p>
+    <p class="info-label">channel: {channel}</p>
+    <p class="info-label">{encryptionType}</p>
   </div>
 </button>
 
@@ -60,6 +63,13 @@
   }
 
   .signal-strength-container {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .signal-strength-icon {
     width: 24px;
     height: 24px;
   }
@@ -80,7 +90,7 @@
     text-align: right;
   }
 
-  .encryption-label {
+  .info-label {
     font-size: var(--font-S);
     text-align: right;
   }

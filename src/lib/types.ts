@@ -4,6 +4,7 @@ type Schedule = ScheduleRange | boolean;
 export interface WifiNetwork {
   ssid: string;
   rssi: number;
+  channel: number;
   encryptionType: string;
 }
 

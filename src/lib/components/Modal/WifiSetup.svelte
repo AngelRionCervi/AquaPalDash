@@ -51,6 +51,10 @@
   }
 
   function onWifiNetworkSelect(chosenSSID: string) {
+    if (ssid === chosenSSID) {
+      ssid = null;
+      return;
+    }
     ssid = chosenSSID;
   }
 
@@ -71,6 +75,10 @@
       noNetworksFound = !bluetoothStore.wifiList.length;
     }, NO_WIFI_NETWORKS_FOUND_TIMEOUT);
   });
+
+  $effect(() => {
+    console.log('sortWifiList(bluetoothStore.wifiList)', sortWifiList(bluetoothStore.wifiList));
+  });
 </script>
 
 <div class="wifi-setup-container">
@@ -89,7 +97,7 @@
           <Loader size="medium" theme="dark" />
         </div>
       {:else}
-        {#each sortWifiList(bluetoothStore.wifiList) as wifiNetwork (wifiNetwork.ssid)}
+        {#each sortWifiList(bluetoothStore.wifiList) as wifiNetwork (wifiNetwork.ssid + wifiNetwork.encryptionType + wifiNetwork.channel)}
           <WifiNetworkCard {wifiNetwork} isSelected={wifiNetwork.ssid === ssid} onClick={onWifiNetworkSelect} />
         {/each}
       {/if}
