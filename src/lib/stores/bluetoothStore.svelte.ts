@@ -139,8 +139,13 @@ const bluetoothStore: BluetoothStore = {
       return;
     }
 
-    bluetoothState.queryWifiListInterval = setInterval(async () => {
-      await bluetoothStore.updateWifiList();
+    if (bluetoothState.queryWifiListInterval) {
+      clearInterval(bluetoothState.queryWifiListInterval);
+      bluetoothState.queryWifiListInterval = null;
+    }
+
+    bluetoothState.queryWifiListInterval = setInterval(() => {
+      bluetoothStore.updateWifiList();
     }, WIFI_LIST_QUERY_INTERVAL);
   },
   async subscribeToWifiTestedCharacteristic() {
