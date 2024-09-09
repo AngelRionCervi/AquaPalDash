@@ -144,7 +144,7 @@
   }
 
   .page-title {
-    margin: 42px 64px;
+    margin: 32px 42px;
     font-size: var(--font-L);
     font-weight: bold;
 

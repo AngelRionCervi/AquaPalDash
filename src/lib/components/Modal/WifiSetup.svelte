@@ -133,7 +133,7 @@
       if (cantConnectToPalTimeout) {
         clearTimeout(cantConnectToPalTimeout);
       }
-      bluetoothStore.toggleWifiListInterval(false);
+      bluetoothStore.stopBluetooth();
     };
   });
 

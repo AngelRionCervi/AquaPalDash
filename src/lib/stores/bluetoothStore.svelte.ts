@@ -133,15 +133,11 @@ const bluetoothStore: BluetoothStore = {
     }
   },
   toggleWifiListInterval(onOrOff: boolean) {
-    if (!onOrOff && bluetoothState.queryWifiListInterval) {
-      clearInterval(bluetoothState.queryWifiListInterval);
-      bluetoothState.queryWifiListInterval = null;
-      return;
-    }
+    clearInterval(bluetoothState?.queryWifiListInterval || undefined);
+    bluetoothState.queryWifiListInterval = null;
 
-    if (bluetoothState.queryWifiListInterval) {
-      clearInterval(bluetoothState.queryWifiListInterval);
-      bluetoothState.queryWifiListInterval = null;
+    if (!onOrOff) {
+      return;
     }
 
     bluetoothState.queryWifiListInterval = setInterval(() => {
@@ -165,7 +161,7 @@ const bluetoothStore: BluetoothStore = {
       const service = await bluetoothState.GATTServer.getPrimaryService(BLUETOOTH_GATT_SERVICE_UUID);
       const charac = await service.getCharacteristic(characUUID);
       await charac.startNotifications();
-      //console.log('startNotifications:', r);
+
       charac.addEventListener('characteristicvaluechanged', (event) => {
         const value = (event.target as BluetoothRemoteGATTCharacteristic).value;
         const decoder = new TextDecoder('utf-8');
@@ -248,6 +244,12 @@ const bluetoothStore: BluetoothStore = {
   },
   async stopBluetooth() {
     bluetoothStore.toggleWifiListInterval(false);
+    bluetoothState.isBluetoothEnabled = false;
+    bluetoothState.isScanning = false;
+    bluetoothState.error = '';
+    bluetoothState.wifiList = [];
+    bluetoothState.isSelectedWifiTested = false;
+    bluetoothState.isSelectedWifiError = false;
 
     if (bluetoothState.connectedDevice) {
       await bluetoothState.connectedDevice?.forget();

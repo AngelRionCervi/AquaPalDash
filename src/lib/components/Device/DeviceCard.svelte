@@ -6,6 +6,7 @@
   import GearIcon from '$lib/icons/gear.svg?component';
   import UnsyncIcon from '$lib/icons/unsync.svg?component';
   import configStore from '$lib/stores/configStore.svelte';
+  import type { Device } from '$lib/types';
 
   interface Props {
     device: Device;
@@ -14,6 +15,7 @@
   const { device }: Props = $props();
   const deviceStatus = $derived(devicesStatusStore.getDeviceStatus(device.id));
   const deviceDisabled = $derived(device.isUnsaved || device.toBeRemoved);
+  const scheduleLabels = $derived(getScheduleLabel(device.schedule, configStore.config?.settings?.timeFormat));
 
   function onScheduleEdit() {
     console.log('schedule edit');
@@ -82,7 +84,11 @@
     <div class="editable-row-schedule">
       <span class="setting-title">Schedule:</span>
       <div class="current-value-schedule">
-        <span>{@html getScheduleLabel(device.schedule, configStore.config?.settings?.timeFormat)}</span>
+        {#if Array.isArray(scheduleLabels)}
+          <span><p>On between <b>{scheduleLabels[0]}</b> and <b>{scheduleLabels[1]}</b>.</p></span>
+        {:else}
+          <span>{scheduleLabels}.</span>
+        {/if}
       </div>
       <SmallButton onclick={onScheduleEdit} disabled={deviceDisabled} label="Edit" />
     </div>

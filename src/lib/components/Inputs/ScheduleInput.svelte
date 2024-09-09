@@ -2,6 +2,7 @@
   import { getScheduleLabel } from '$lib/helpers/utils';
   import DoubleRangeSlider from '$lib/components/Inputs/DoubleRangeSlider.svelte';
   import scheduleRadioTypes from '$lib/data/scheduleSettings';
+  import type { Schedule, ScheduleRangeLabels } from '$lib/types';
 
   interface Props {
     onChange: (schedule: Schedule) => void;
@@ -22,6 +23,7 @@
   );
   let minMins = $state(0);
   let maxMins = $state(0);
+  let scheduleLabels = $state<ScheduleRangeLabels | null>(null);
 
   function onRangeChange({ min, max }: { min: number; max: number }) {
     minMins = min;
@@ -42,6 +44,7 @@
     } else {
       onChange([minMins, maxMins]);
     }
+    scheduleLabels = getScheduleLabel([minMins, maxMins], timeFormat) as ScheduleRangeLabels;
   }
 </script>
 
@@ -58,6 +61,11 @@
   </div>
   {#if scheduleType === 'range'}
     <div class="slider-container">
+      <div class="new-schedule">
+        {#if scheduleLabels?.length}
+          <p>On between <b>{scheduleLabels[0]}</b> and <b>{scheduleLabels[1]}</b>.</p>
+        {/if}
+      </div>
       <DoubleRangeSlider
         {min}
         {max}
@@ -66,9 +74,6 @@
         defaultMax={Array.isArray(previousSetting) ? previousSetting[1] : defaultMax}
         onchange={onRangeChange}
       />
-      <div class="new-schedule">
-        <p>{@html getScheduleLabel([minMins, maxMins], timeFormat)}</p>
-      </div>
     </div>
   {/if}
 </div>
@@ -99,7 +104,7 @@
   .new-schedule {
     display: flex;
     justify-content: center;
-    margin-top: 20px;
+    margin-bottom: 20px;
   }
 
   .input-row {

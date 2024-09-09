@@ -123,7 +123,7 @@ const monitoringStore: MonitoringStore = {
     monitoringState.lastUpdate = Date.now();
   },
   updateHistoricalLast(data: RawMonitoringPayload) {
-    console.log('LAST DATA', data);
+    console.log('LAST HISTORICAL DATA', data);
     const lastUpdate = getReadableMonitoring(data);
     monitoringStore.checkError(lastUpdate);
 

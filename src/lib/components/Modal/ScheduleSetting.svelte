@@ -4,14 +4,17 @@
   import configStore from '$lib/stores/configStore.svelte';
   import ErrorField from './ErrorField.svelte';
   import ScheduleInput from '$lib/components/Inputs/ScheduleInput.svelte';
+  import type { Schedule } from '$lib/types';
+  import { getScheduleLabel } from '$lib/helpers/utils';
 
   interface Props {
-    id?: string;
+    id: string;
   }
 
-  const { id = '' }: Props = $props();
+  const { id }: Props = $props();
   const { toggle } = modalStore;
   const device = configStore.config?.devices.find((device) => device.id === id);
+  const scheduleLabels = $derived(device?.schedule ? getScheduleLabel(device?.schedule, configStore.config?.settings?.timeFormat) : null);
 
   let newSchedule = $state<Schedule | undefined>(device?.schedule);
   let isOldSchedule = $derived(device?.schedule.toString() === newSchedule?.toString());
@@ -19,7 +22,6 @@
 
   function onValidate() {
     if (!isOldSchedule && newSchedule) {
-      console.log('validate schedule', id, { schedule: newSchedule });
       configStore.updateDevice(id, { schedule: newSchedule });
       errorMessage = null;
     } else {
@@ -34,14 +36,20 @@
 </script>
 
 <div class="schedule-setting-container">
-  <div class="top">
-    <div class="current-schedule">
-      <div class="current-schedule-inner">
-        <p class="label">Current:</p>
-        <p class="value">On between 11h and 18h.</p>
+  {#if scheduleLabels}
+    <div class="top">
+      <div class="current-schedule">
+        <div class="current-schedule-inner">
+          <p class="label">Current:</p>
+          {#if Array.isArray(scheduleLabels)}
+            <span><p>On between {scheduleLabels[0]} and {scheduleLabels[1]}.</p></span>
+          {:else}
+            <span>{scheduleLabels}.</span>
+          {/if}
+        </div>
       </div>
     </div>
-  </div>
+  {/if}
   <div class="schedule-field">
     <ScheduleInput {onChange} previousSetting={device?.schedule} timeFormat={configStore.config?.settings?.timeFormat} />
   </div>
@@ -68,11 +76,6 @@
     gap: 16px;
   }
 
-  .device-name {
-    font-size: var(--font-M);
-    font-weight: bold;
-  }
-
   .current-schedule {
     display: flex;
     width: 100%;
@@ -90,6 +93,7 @@
   }
 
   .bottom {
+    margin-top: 12px;
     display: flex;
     flex-direction: column;
     align-items: center;

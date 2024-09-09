@@ -28,8 +28,8 @@
     margin: 0 64px 32px 64px;
     height: 100%;
     display: flex;
-	margin: 0 0 32px 0;
-	overflow: auto;
+    margin: 0 0 32px 0;
+    overflow: auto;
 
     @media screen and (max-width: $mobile-bp) {
       margin: 0 0 32px 0;
@@ -39,6 +39,6 @@
   .devices-cards {
     display: flex;
     gap: 32px;
-	padding: 32px 0;
+    padding-bottom: 32px;
   }
 </style>

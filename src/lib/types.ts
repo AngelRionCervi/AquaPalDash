@@ -1,4 +1,5 @@
 export type ScheduleRange = [number, number];
+export type ScheduleRangeLabels = [string, string];
 export type Schedule = ScheduleRange | boolean;
 
 export interface WifiNetwork {
