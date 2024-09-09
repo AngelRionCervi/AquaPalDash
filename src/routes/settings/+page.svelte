@@ -9,13 +9,16 @@
   import modalStore from '$lib/stores/modalStore.svelte';
   import type { ConfigSettings } from '$lib/types';
 
+  const { toggle } = modalStore;
+
   async function onSettingChange(settingName: keyof ConfigSettings, value: string | number | boolean) {
     if (configStore.config) {
       configStore.updateSetting(settingName, value);
     }
   }
 
-  async function onWifiSetup() {
+  async function onResetWifiSettings() {
+    toggle('warningWifiReset');
     console.log('wip change wifi');
   }
 </script>
@@ -27,16 +30,14 @@
     {/each}
   </div>
   <div class="special-control-row">
-    {#if bluetoothStore.isBluetoothEnabled}
-      <PrimaryButton label="Change WiFi" type="green" onclick={onWifiSetup} />
-    {/if}
+    <PrimaryButton label="Reset Wi-Fi settings" type="green" onclick={onResetWifiSettings} disabled={controllerStore.isRestarting} />
     <PrimaryButton
       label="Restart controller"
-      type="red"
+      type="green"
       onclick={() => controllerStore.restartController()}
       disabled={controllerStore.isRestarting}
     />
-    <PrimaryButton label="Forget session" type="red" onclick={() => authStore.removeSessionAndReload()} />
+    <PrimaryButton label="Forget session" type="green" onclick={() => authStore.removeSessionAndReload()} />
   </div>
 </div>
 

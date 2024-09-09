@@ -77,7 +77,7 @@
       startUp(authStore.password);
     } else {
       authStore.needLogin = true;
-      toggle('Login', 'login', {
+      toggle('login', {
         onLogin: (password: string, rememberMe: boolean, demoMode: boolean) => onNewLogin(password, rememberMe, demoMode)
       });
     }

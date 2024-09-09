@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { Component } from 'svelte';
-  import type { ModalTypes } from './types';
+  import type { ModalTypes, ModalSpecs } from './types';
   import modalStore from '$lib/stores/modalStore.svelte';
   import CloseIcon from '$lib/icons/close.svg?component';
   import ScheduleSetting from './ScheduleSetting.svelte';
@@ -10,13 +10,15 @@
   import ModifyDevice from './ModifyDevice.svelte';
   import Login from './Login.svelte';
   import WifiSetup from './WifiSetup.svelte';
+  import WarningWifiReset from './WarningWifiReset.svelte';
   import ArrowLeftIcon from '$lib/icons/arrow-left.svg?component';
+  import WarningIcon from '$lib/icons/warning.svg?component';
 
   type ModalChildMap = {
     [key in ModalTypes]: Component;
   };
 
-  let { toggle } = modalStore;
+  const { toggle } = modalStore;
 
   const modalChildMap: ModalChildMap = {
     scheduleSetting: ScheduleSetting,
@@ -25,18 +27,43 @@
     addDevice: AddDevice,
     modifyDevice: ModifyDevice,
     login: Login,
-    wifiSetup: WifiSetup
+    wifiSetup: WifiSetup,
+    warningWifiReset: WarningWifiReset
   };
 
-  const staticModals: Array<string | null> = ['login', 'wifiSetup'];
-
-  $effect(() => {
-    console.log('isOpen', modalStore.isOpen);
-  });
+  const modalSpecs: ModalSpecs = {
+    scheduleSetting: {
+      title: 'Schedule Edit'
+    },
+    buttonSlotSetting: {
+      title: 'Button Edit'
+    },
+    removeDevices: {
+      title: 'Remove Devices'
+    },
+    addDevice: {
+      title: 'Add Device'
+    },
+    modifyDevice: {
+      title: 'Modify Device'
+    },
+    login: {
+      title: 'Login',
+      isStatic: true
+    },
+    wifiSetup: {
+      title: 'Wi-Fi Setup',
+      isStatic: true
+    },
+    warningWifiReset: {
+      title: '',
+      variant: 'warning'
+    }
+  };
 </script>
 
-{#if modalStore.isOpen}
-  <div class="modal-container">
+{#if modalStore.isOpen && modalStore.type}
+  <div class="modal-container" class:modal-warning={modalSpecs[modalStore.type]?.variant === 'warning'}>
     <div class="modal-header">
       <div class="modal-top-left">
         <div class="button-title-container">
@@ -45,12 +72,20 @@
               <ArrowLeftIcon width={32} height={32} />
             </button>
           {/if}
-          <span class="modal-title">{modalStore.title}</span>
+          <span class="modal-title">{modalSpecs[modalStore.type]?.title || ''}</span>
         </div>
         <span class="modal-subtitle">{modalStore?.subtitle || ''}</span>
       </div>
-      {#if !staticModals.includes(modalStore.type)}
-        <button onclick={() => toggle()}><CloseIcon width={32} height={32} /></button>
+      {#if modalSpecs[modalStore.type || '']?.variant === 'warning'}
+        <div class="warning-icon-container">
+          <WarningIcon width={64} height={64} />
+        </div>
+        {#if modalSpecs[modalStore.type || '']?.isStatic}
+          <div class="empty-div"></div>
+        {/if}
+      {/if}
+      {#if !modalSpecs[modalStore.type || '']?.isStatic}
+        <button class="close-button" onclick={() => toggle()}><CloseIcon width={32} height={32} /></button>
       {/if}
     </div>
     <div>
@@ -61,7 +96,7 @@
   </div>
   <!-- svelte-ignore a11y_click_events_have_key_events -->
   <!-- svelte-ignore a11y_no_static_element_interactions -->
-  <div class="backdrop" onclick={() => (!staticModals.includes(modalStore.type) ? toggle() : {})}></div>
+  <div class="backdrop" onclick={() => (modalStore.type && !modalSpecs[modalStore.type]?.isStatic ? toggle() : {})}></div>
 {/if}
 
 <style lang="scss">
@@ -89,6 +124,10 @@
     left: 50%;
     transform: translate(-50%, -50%);
 
+    &.modal-warning {
+      border: 4px solid var(--warning);
+    }
+
     @media screen and (max-width: $mobile-bp) {
       min-width: unset;
       width: 95vw;
@@ -104,6 +143,7 @@
     display: flex;
     align-items: flex-end;
     gap: 16px;
+    min-width: 32px;
   }
 
   .modal-title {
@@ -128,15 +168,15 @@
   .modal-header {
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: flex-start;
     margin-bottom: 32px;
   }
 
   .button-title-container {
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	gap: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
   }
 
   .back-button {
@@ -148,5 +188,22 @@
     &:hover {
       background-color: var(--primary-darker);
     }
+  }
+
+  .warning-icon-container {
+    color: var(--warning);
+  }
+
+  .close-button {
+    display: flex;
+    border-radius: var(--radius-S);
+
+    &:hover {
+      background-color: var(--primary-darker);
+    }
+  }
+
+  .empty-div {
+    min-width: 32px;
   }
 </style>

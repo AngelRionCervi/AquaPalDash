@@ -5,7 +5,7 @@
   import bluetoothStore from '$lib/stores/bluetoothStore.svelte';
   import PasswordInput from '../Inputs/PasswordInput.svelte';
 
-  const { childProps } = modalStore;
+  const { childProps, toggle } = modalStore;
 
   let loginErrorMsg = $state<string | null>(null);
   let btErrorMsg = $state<string | null>(null);
@@ -19,6 +19,7 @@
       return;
     } else {
       loginErrorMsg = null;
+      if (typeof childProps?.onLogin !== 'function') return;
       if (demoMode) {
         childProps?.onLogin('demo', rememberMe, demoMode);
       } else {
@@ -34,7 +35,7 @@
 
   function stopBluetoothSetup() {
     bluetoothStore.stopBluetooth();
-    modalStore.toggle('Login', 'login', { onLogin: childProps?.onLogin });
+    toggle('login', { onLogin: childProps?.onLogin });
   }
 
   async function onWifiSetup() {
@@ -44,7 +45,7 @@
     const deviceFound = await bluetoothStore.findDevice();
     if (deviceFound) {
       bluetoothStore.toggleWifiListInterval(true);
-      modalStore.toggle('Wifi Setup', 'wifiSetup', { backButtonHandler: () => stopBluetoothSetup() });
+      toggle('wifiSetup', { backButtonHandler: () => stopBluetoothSetup() });
       setTimeout(() => {
         bluetoothStore.updateWifiList();
       });

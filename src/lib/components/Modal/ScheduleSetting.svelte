@@ -7,13 +7,8 @@
   import type { Schedule } from '$lib/types';
   import { getScheduleLabel } from '$lib/helpers/utils';
 
-  interface Props {
-    id: string;
-  }
-
-  const { id }: Props = $props();
-  const { toggle } = modalStore;
-  const device = configStore.config?.devices.find((device) => device.id === id);
+  const { toggle, childProps } = modalStore;
+  const device = configStore.config?.devices.find((device) => device.id === childProps?.id);
   const scheduleLabels = $derived(device?.schedule ? getScheduleLabel(device?.schedule, configStore.config?.settings?.timeFormat) : null);
 
   let newSchedule = $state<Schedule | undefined>(device?.schedule);
@@ -22,7 +17,7 @@
 
   function onValidate() {
     if (!isOldSchedule && newSchedule) {
-      configStore.updateDevice(id, { schedule: newSchedule });
+      configStore.updateDevice(childProps?.id, { schedule: newSchedule });
       errorMessage = null;
     } else {
       errorMessage = 'The new schedule is the same as the current one';

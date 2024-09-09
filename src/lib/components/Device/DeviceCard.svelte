@@ -16,20 +16,21 @@
   const deviceStatus = $derived(devicesStatusStore.getDeviceStatus(device.id));
   const deviceDisabled = $derived(device.isUnsaved || device.toBeRemoved);
   const scheduleLabels = $derived(getScheduleLabel(device.schedule, configStore.config?.settings?.timeFormat));
+  const { toggle } = modalStore;
 
   function onScheduleEdit() {
     console.log('schedule edit');
-    modalStore.toggle('Schedule Edit', 'scheduleSetting', { id: device.id }, device.name);
+    toggle('scheduleSetting', { id: device.id }, device.name);
   }
 
   function onButtonSlotEdit() {
     console.log('button slot edit');
-    modalStore.toggle('Button Edit', 'buttonSlotSetting', { id: device.id }, device.name);
+    toggle('buttonSlotSetting', { id: device.id }, device.name);
   }
 
   function onModifyName() {
     console.log('modify name');
-    modalStore.toggle('Modify Name', 'modifyDevice', { id: device.id }, device.name);
+    toggle('modifyDevice', { id: device.id }, device.name);
   }
 
   function onRevertDevice() {
