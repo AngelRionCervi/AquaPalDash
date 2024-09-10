@@ -6,15 +6,16 @@
   import PasswordInput from '$lib/components/Inputs/PasswordInput.svelte';
   import { MIN_PASSWORD_LENGTH } from '$lib/constants';
   import { onMount } from 'svelte';
+  import SuccessField from './SuccessField.svelte';
 
   const { toggle } = modalStore;
 
   let oldPassword = $state('');
   let newPassword1 = $state('');
   let newPassword2 = $state('');
+  let successMsg = $state('Password changed successfully ! Restarting...');
 
   async function onEdit() {
-    console.log('edit pw', newPassword1, newPassword2, authStore.password, newPassword1 !== newPassword2);
     if (newPassword1.toString() !== newPassword2.toString()) {
       authStore.modifyPasswordError = 'New passwords do not match';
       return;
@@ -23,9 +24,12 @@
       return;
     }
     await authStore.modifyUserPassword(oldPassword, newPassword1);
-    console.log('edit pw', authStore.modifyPasswordError);
     if (!authStore.modifyPasswordError) {
-      toggle();
+      successMsg = 'Password changed successfully ! Restarting...';
+      setTimeout(() => {
+        toggle();
+        authStore.removeSessionAndReload();
+      }, 3000);
     }
   }
 
@@ -50,6 +54,7 @@
   </div>
   <div class="bottom">
     <ErrorField messages={authStore.modifyPasswordError} />
+    <SuccessField messages={successMsg} />
     <PrimaryButton
       label="Save"
       isLoading={authStore.callStates.modifyPassword.isLoading}

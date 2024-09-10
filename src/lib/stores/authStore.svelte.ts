@@ -79,14 +79,16 @@ const authStore: AuthStore = {
   },
   set modifyPasswordError(error: string) {
     authState.callStates.modifyPassword.error = error;
-    console.error(error);
+    if (error) {
+      console.error(error);
+    }
   },
   set needLogin(needLogin: boolean) {
     authState.needLogin = needLogin;
   },
   init() {
     const session = SessionLS.getLoginSession();
-    console.log('init session', session)
+    console.log('init session', session);
     if (session) {
       authStore.setDemoMode(!!session.demoMode);
       authStore.setPassword(session.password);
@@ -119,6 +121,7 @@ const authStore: AuthStore = {
     window.location.reload();
   },
   async modifyUserPassword(oldPassword: string, newPassword: string) {
+    console.log('authState.email', authState.email)
     const email = authState.email;
     if (!email) {
       return;
@@ -137,7 +140,6 @@ const authStore: AuthStore = {
         })
       });
       if (res.ok) {
-        authStore.removeSessionAndReload();
         authState.callStates.modifyPassword.error = '';
       } else {
         authState.callStates.modifyPassword.error = 'Error while changing password';

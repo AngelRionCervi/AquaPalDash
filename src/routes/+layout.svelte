@@ -38,6 +38,8 @@
     if (rememberMe) {
       authStore.saveSession({ email, password, demoMode });
     }
+    authStore.setPassword(password);
+    authStore.setEmail(email);
 
     authStore.needLogin = false;
     bluetoothStore.stopBluetooth();
