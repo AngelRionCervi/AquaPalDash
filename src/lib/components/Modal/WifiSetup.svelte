@@ -185,7 +185,7 @@
           <Loader size="medium" theme="dark" />
         </div>
       {:else}
-        {#each sortWifiList(bluetoothStore.wifiList) as wifiNetwork (wifiNetwork.fingerprint)}
+        {#each sortWifiList(bluetoothStore.wifiList) as wifiNetwork}
           <WifiNetworkCard {wifiNetwork} isSelected={wifiNetwork.fingerprint === wifiNetworkFingerprint} onSelect={onWifiNetworkSelect} />
         {/each}
       {/if}

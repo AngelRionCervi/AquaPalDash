@@ -244,7 +244,6 @@ const bluetoothStore: BluetoothStore = {
   },
   async stopBluetooth() {
     bluetoothStore.toggleWifiListInterval(false);
-    bluetoothState.isBluetoothEnabled = false;
     bluetoothState.isScanning = false;
     bluetoothState.error = '';
     bluetoothState.wifiList = [];

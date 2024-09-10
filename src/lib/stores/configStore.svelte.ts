@@ -330,7 +330,7 @@ function validateKey(type: 'settings' | 'secrets', key: keyof ConfigSettings | k
     'enableMonitoring'
   ];
 
-  const secretsKeys: Array<keyof ConfigSecrets> = ['wifiSSID', 'wifiPass', 'serverPass'];
+  const secretsKeys: Array<keyof ConfigSecrets> = ['wifiSSID', 'wifiPass'];
 
   const allKeys = { settings: settingsKeys, secrets: secretsKeys };
   return allKeys[type].some((possibleKey) => possibleKey === key);
