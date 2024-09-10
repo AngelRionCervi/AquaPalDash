@@ -5,7 +5,6 @@
   import PrimaryButton from '$lib/components/Buttons/PrimaryButton.svelte';
   import controllerStore from '$lib/stores/controllerStore.svelte';
   import authStore from '$lib/stores/authStore.svelte';
-  import bluetoothStore from '$lib/stores/bluetoothStore.svelte';
   import modalStore from '$lib/stores/modalStore.svelte';
   import type { ConfigSettings } from '$lib/types';
 
@@ -16,11 +15,6 @@
       configStore.updateSetting(settingName, value);
     }
   }
-
-  async function onResetWifiSettings() {
-    toggle('warningWifiReset');
-    console.log('wip change wifi');
-  }
 </script>
 
 <div class="settings-main-container">
@@ -30,7 +24,7 @@
     {/each}
   </div>
   <div class="special-control-row">
-    <PrimaryButton label="Reset Wi-Fi settings" type="green" onclick={onResetWifiSettings} disabled={controllerStore.isRestarting} />
+    <PrimaryButton label="Reset Wi-Fi settings" type="green" onclick={() => toggle('warningWifiReset')} disabled={controllerStore.isRestarting} />
     <PrimaryButton
       label="Restart controller"
       type="green"
@@ -38,6 +32,7 @@
       disabled={controllerStore.isRestarting}
     />
     <PrimaryButton label="Forget session" type="green" onclick={() => authStore.removeSessionAndReload()} />
+    <PrimaryButton label="Change password" type="green" onclick={() => toggle('modifyPassword')} />
   </div>
 </div>
 
@@ -71,5 +66,6 @@
     justify-content: center;
     margin-bottom: 32px;
     gap: 32px;
+    flex-wrap: wrap;
   }
 </style>

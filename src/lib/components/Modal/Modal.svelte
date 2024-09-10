@@ -13,6 +13,7 @@
   import WarningWifiReset from './WarningWifiReset.svelte';
   import ArrowLeftIcon from '$lib/icons/arrow-left.svg?component';
   import WarningIcon from '$lib/icons/warning.svg?component';
+  import ModifyPassword from './ModifyPassword.svelte';
 
   type ModalChildMap = {
     [key in ModalTypes]: Component;
@@ -28,7 +29,8 @@
     modifyDevice: ModifyDevice,
     login: Login,
     wifiSetup: WifiSetup,
-    warningWifiReset: WarningWifiReset
+    warningWifiReset: WarningWifiReset,
+    modifyPassword: ModifyPassword
   };
 
   const modalSpecs: ModalSpecs = {
@@ -58,6 +60,9 @@
     warningWifiReset: {
       title: '',
       variant: 'warning'
+    },
+    modifyPassword: {
+      title: 'Change Password'
     }
   };
 </script>

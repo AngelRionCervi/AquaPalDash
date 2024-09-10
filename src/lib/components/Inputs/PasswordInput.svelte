@@ -3,7 +3,7 @@
   import EyeHideIcon from '$lib/icons/eye-hide.svg?component';
 
   interface Props {
-    placeholder: string;
+    placeholder?: string;
     disabled?: boolean;
     maxlength?: number;
     minlength?: number;

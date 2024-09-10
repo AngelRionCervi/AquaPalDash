@@ -1,5 +1,10 @@
 import SessionLS, { type Session } from '$lib/localStorage/session';
 
+interface CallState {
+  isLoading: boolean;
+  error: string;
+}
+
 interface AuthState {
   isAuth: boolean;
   password: string;
@@ -7,6 +12,9 @@ interface AuthState {
   userId: string;
   needLogin: boolean;
   email: string;
+  callStates: {
+    modifyPassword: CallState;
+  };
 }
 
 interface AuthStore {
@@ -16,6 +24,8 @@ interface AuthStore {
   isDemoMode: boolean;
   userId: string;
   needLogin: boolean;
+  modifyPasswordError: string;
+  callStates: AuthState['callStates'];
   setDemoMode: (demoMode: boolean) => void;
   setPassword: (password: string) => void;
   setEmail: (email: string) => void;
@@ -24,11 +34,21 @@ interface AuthStore {
   removeSession: () => void;
   setUserId: (userId: string) => void;
   removeSessionAndReload: () => void;
-  changeUserPassword: (oldPassword: string, newPassword: string) => Promise<void>;
+  modifyUserPassword: (oldPassword: string, newPassword: string) => Promise<void>;
   init: () => void;
 }
 
-const defaultAuthStoreValue: AuthState = { isAuth: false, password: '', email: '', isDemoMode: false, userId: '', needLogin: true };
+const defaultAuthStoreValue: AuthState = {
+  isAuth: false,
+  password: '',
+  email: '',
+  isDemoMode: false,
+  userId: '',
+  needLogin: true,
+  callStates: {
+    modifyPassword: { error: '', isLoading: false }
+  }
+};
 
 const authState = $state<AuthState>(defaultAuthStoreValue);
 
@@ -51,11 +71,22 @@ const authStore: AuthStore = {
   get email() {
     return authState.email;
   },
+  get modifyPasswordError() {
+    return authState.callStates.modifyPassword.error;
+  },
+  get callStates() {
+    return authState.callStates;
+  },
+  set modifyPasswordError(error: string) {
+    authState.callStates.modifyPassword.error = error;
+    console.error(error);
+  },
   set needLogin(needLogin: boolean) {
     authState.needLogin = needLogin;
   },
   init() {
     const session = SessionLS.getLoginSession();
+    console.log('init session', session)
     if (session) {
       authStore.setDemoMode(!!session.demoMode);
       authStore.setPassword(session.password);
@@ -87,24 +118,35 @@ const authStore: AuthStore = {
     authStore.removeSession();
     window.location.reload();
   },
-  async changeUserPassword(oldPassword: string, newPassword: string) {
-    const session = authStore.getSession();
-    if (!session) {
+  async modifyUserPassword(oldPassword: string, newPassword: string) {
+    const email = authState.email;
+    if (!email) {
       return;
     }
-    const res = await fetch('/api/account/modifyPassword', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        email: session.email,
-        oldPassword,
-        newPassword
-      })
-    });
-    if (res.ok) {
-      authStore.removeSessionAndReload();
+    try {
+      authState.callStates.modifyPassword.isLoading = true;
+      const res = await fetch('/api/account/modifyPassword', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          email,
+          oldPassword,
+          newPassword
+        })
+      });
+      if (res.ok) {
+        authStore.removeSessionAndReload();
+        authState.callStates.modifyPassword.error = '';
+      } else {
+        authState.callStates.modifyPassword.error = 'Error while changing password';
+      }
+    } catch (err) {
+      authState.callStates.modifyPassword.error = 'Error while changing password';
+      console.error('Error while changing password', err);
+    } finally {
+      authState.callStates.modifyPassword.isLoading = false;
     }
   }
 };

@@ -9,12 +9,14 @@ type ValueOf<T> = T[keyof T];
 function WSServerHandler(webSocketServer: WebsocketServerType) {
   const wss = webSocketServer;
 
-  function getBoxClient(userId: string) {
-    return [...(wss.clients as Set<ExtendedWebSocket>)].find((client) => client.source === 'box' && client.boxId === getBoxIdWithUserId(userId));
+  async function getBoxClient(userId: string) {
+    const boxId = await getBoxIdWithUserId(userId);
+    return [...(wss.clients as Set<ExtendedWebSocket>)].find((client) => client.source === 'box' && client.boxId === boxId);
   }
 
-  function getDashClient(boxId: string) {
-    return [...(wss.clients as Set<ExtendedWebSocket>)].find((client) => client.source === 'dash' && client.userId === getUserIdWithBoxId(boxId));
+  async function getDashClient(boxId: string) {
+    const userId = await getUserIdWithBoxId(boxId);
+    return [...(wss.clients as Set<ExtendedWebSocket>)].find((client) => client.source === 'dash' && client.userId === userId);
   }
 
   function sendToDash(dashClient: ExtendedWebSocket, callType: ValueOf<typeof DASH_CALL_TYPES>, message: ParsedSocketMessage) {
@@ -39,15 +41,15 @@ function WSServerHandler(webSocketServer: WebsocketServerType) {
     );
   }
 
-  function handleDashMessage(socket: ExtendedWebSocket, message: ParsedSocketMessage) {
+  async function handleDashMessage(socket: ExtendedWebSocket, message: ParsedSocketMessage) {
     if (message.type === DASH_CALL_TYPES.dash_handShakeType) {
       socket.source = 'dash';
       const email = message.data?.['email'] as string;
-      const password = message.data?.['password'] as string
-      socket.userId = getUserWithEmailAndPass(email, password)?.userId;
+      const password = message.data?.['password'] as string;
+      socket.userId = (await getUserWithEmailAndPass(email, password))?.userId;
       socket.send(jstr({ source: 'server', type: DASH_CALL_TYPES.dash_setUserIdType, data: socket.userId }));
     }
-    const boxClient = getBoxClient(socket.userId?.toString() || '');
+    const boxClient = await getBoxClient(socket.userId?.toString() || '');
     if (!boxClient) {
       console.error('No box client found !');
       return;
@@ -82,12 +84,12 @@ function WSServerHandler(webSocketServer: WebsocketServerType) {
     }
   }
 
-  function handleBoxMessage(socket: ExtendedWebSocket, message: ParsedSocketMessage) {
+  async function handleBoxMessage(socket: ExtendedWebSocket, message: ParsedSocketMessage) {
     if (message.type === BOX_CALL_TYPES.box_handShakeType) {
       socket.source = 'box';
       socket.boxId = message.boxId.toString();
     }
-    const dashClient = getDashClient(socket.boxId?.toString() || '');
+    const dashClient = await getDashClient(socket.boxId?.toString() || '');
     if (!dashClient) {
       console.error('No dash client found !');
       return;
@@ -100,7 +102,7 @@ function WSServerHandler(webSocketServer: WebsocketServerType) {
         break;
       case BOX_CALL_TYPES.box_getConfigType:
         sendToDash(dashClient, DASH_CALL_TYPES.dash_setConfigType, message);
-        console.log('SEND SET CONFIG')
+        console.log('SEND SET CONFIG');
         break;
       case BOX_CALL_TYPES.box_getDevicesInfoType:
         sendToDash(dashClient, DASH_CALL_TYPES.dash_setDevicesInfoType, message);
@@ -131,12 +133,12 @@ function WSServerHandler(webSocketServer: WebsocketServerType) {
         break;
       case BOX_CALL_TYPES.box_monitoringGetLiveType:
         sendToDash(dashClient, DASH_CALL_TYPES.dash_resultMonitoringGetLiveType, message);
-        break
+        break;
     }
   }
 
-  function handleBoxHistoricalStartEnd(socket: ExtendedWebSocket, message: string, startEnd: 'start' | 'end') {
-    const dashClient = getDashClient(socket.boxId?.toString() || '');
+  async function handleBoxHistoricalStartEnd(socket: ExtendedWebSocket, message: string, startEnd: 'start' | 'end') {
+    const dashClient = await getDashClient(socket.boxId?.toString() || '');
     if (!dashClient) {
       console.error('[handleBoxHistoricalStartEnd] No dash client found !');
       return;
@@ -152,8 +154,8 @@ function WSServerHandler(webSocketServer: WebsocketServerType) {
     sendToDash(dashClient, type, payload);
   }
 
-  function handleBoxHistoricalStream(socket: ExtendedWebSocket, message: string) {
-    const dashClient = getDashClient(socket.boxId?.toString() || '');
+  async function handleBoxHistoricalStream(socket: ExtendedWebSocket, message: string) {
+    const dashClient = await getDashClient(socket.boxId?.toString() || '');
     if (!dashClient) {
       console.error('[handleBoxHistoricalRow] No dash client found !');
       return;
