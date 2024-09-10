@@ -32,27 +32,27 @@
     return menuRoutes.find(({ route }) => route === $page.url?.pathname)?.label || 'Home';
   }
 
-  function onNewLogin(password: string, rememberMe: boolean, demoMode: boolean) {
+  function onNewLogin(email: string, password: string, rememberMe: boolean, demoMode: boolean) {
     authStore.setDemoMode(demoMode);
 
     if (rememberMe) {
-      authStore.saveSession({ password, demoMode });
+      authStore.saveSession({ email, password, demoMode });
     }
 
     authStore.needLogin = false;
     bluetoothStore.stopBluetooth();
-    startUp(password);
+    startUp(email, password);
     toggle();
   }
 
-  function startUp(password: string) {
+  function startUp(email: string, password: string) {
     mainLoading = true;
 
     windowStore.init();
 
     const handshakePayload = {
       type: DASH_CALL_TYPES.dash_handShakeType,
-      data: password
+      data: { email, password }
     };
     sendWSMessage(handshakePayload);
 
@@ -72,13 +72,13 @@
 
   function onWsOpen() {
     authStore.init();
-    if (authStore.password) {
+    if (authStore.email && authStore.password) {
       authStore.needLogin = false;
-      startUp(authStore.password);
+      startUp(authStore.email, authStore.password);
     } else {
       authStore.needLogin = true;
       toggle('login', {
-        onLogin: (password: string, rememberMe: boolean, demoMode: boolean) => onNewLogin(password, rememberMe, demoMode)
+        onLogin: (password: string, email: string, rememberMe: boolean, demoMode: boolean) => onNewLogin(password, email, rememberMe, demoMode)
       });
     }
   }

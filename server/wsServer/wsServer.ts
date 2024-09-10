@@ -7,7 +7,7 @@ import https from 'https';
 
 export type SocketSource = 'dash' | 'box';
 
-export type ParsedSocketMessage = Record<string, string | number | boolean>;
+export type ParsedSocketMessage = Record<string, string | number | boolean | Record<string, string | number | boolean | undefined>>;
 
 export interface ExtendedWebSocket extends WebSocketBase {
   socketId: string;

@@ -4,12 +4,12 @@
 
   interface Props {
     placeholder: string;
-    onInput: (value: string) => void;
     disabled?: boolean;
     maxlength?: number;
     minlength?: number;
-    onKeyPress?: (event: KeyboardEvent) => void;
     id?: string;
+    onKeyPress?: (event: KeyboardEvent) => void;
+    onInput: (value: string) => void;
   }
 
   const {
@@ -58,6 +58,8 @@
     border-radius: var(--radius-S);
     background-color: var(--primary-lighter);
     padding: 2px 4px;
+    height: 28px;
+    box-sizing: border-box;
 
     &.disabled {
       background-color: var(--primary-darker);
@@ -68,6 +70,7 @@
     border: none;
     outline: none;
     padding: 0;
+    height: 22px;
   }
 
   .show-hide-button {

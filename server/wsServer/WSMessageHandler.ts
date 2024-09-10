@@ -2,7 +2,7 @@ import type { WebSocketServer as WebsocketServerType } from 'ws';
 import { BOX_CALL_TYPES, DASH_CALL_TYPES } from '../wsGlobal/callTypes';
 import type { ExtendedWebSocket, ParsedSocketMessage } from './wsServer';
 import { jstr, parseMessage } from '../wsGlobal/wsUtils';
-import { getBoxIdWithUserId, getUserIdWithBoxId, getUserWithPass } from './utils';
+import { getBoxIdWithUserId, getUserIdWithBoxId, getUserWithEmailAndPass } from './utils';
 
 type ValueOf<T> = T[keyof T];
 
@@ -29,7 +29,7 @@ function WSServerHandler(webSocketServer: WebsocketServerType) {
     );
   }
 
-  function sendToBox(boxClient: ExtendedWebSocket, callType: ValueOf<typeof BOX_CALL_TYPES>, data: string | number | boolean | null = null) {
+  function sendToBox(boxClient: ExtendedWebSocket, callType: ValueOf<typeof BOX_CALL_TYPES>, data: unknown = null) {
     boxClient.send(
       jstr({
         source: 'server',
@@ -40,11 +40,11 @@ function WSServerHandler(webSocketServer: WebsocketServerType) {
   }
 
   function handleDashMessage(socket: ExtendedWebSocket, message: ParsedSocketMessage) {
-    console.log('handle dash message TYPE', message.type, message);
-
     if (message.type === DASH_CALL_TYPES.dash_handShakeType) {
       socket.source = 'dash';
-      socket.userId = getUserWithPass(message.data?.toString())?.userId;
+      const email = message.data?.['email'] as string;
+      const password = message.data?.['password'] as string
+      socket.userId = getUserWithEmailAndPass(email, password)?.userId;
       socket.send(jstr({ source: 'server', type: DASH_CALL_TYPES.dash_setUserIdType, data: socket.userId }));
     }
     const boxClient = getBoxClient(socket.userId?.toString() || '');
@@ -193,9 +193,8 @@ function WSServerHandler(webSocketServer: WebsocketServerType) {
 
     const parsedData = parseMessage(data);
     if (!parsedData) {
-      console.log(`Parsed message in falsy: ${parsedData}`);
+      console.error(`Parsed message in falsy: ${parsedData}`);
     } else {
-      console.log('parsedData', parsedData);
       if (parsedData.source === 'dash') {
         handleDashMessage(socket, parsedData);
       } else if (parsedData.source === 'box') {

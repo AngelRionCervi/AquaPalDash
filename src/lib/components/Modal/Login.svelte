@@ -10,20 +10,25 @@
   let loginErrorMsg = $state<string | null>(null);
   let btErrorMsg = $state<string | null>(null);
   let password = $state('');
+  let email = $state('');
   let demoMode = $state(false);
   let rememberMe = $state(false);
 
   function onLoginClick() {
-    if (!password && !demoMode) {
-      loginErrorMsg = 'Please enter a valid password';
+    if (!email.includes('@') || !email.includes('.')) {
+      loginErrorMsg = 'Please enter a valid email';
+      return;
+    }
+    if ((!email || !password) && !demoMode) {
+      loginErrorMsg = 'Please enter a valid email and password';
       return;
     } else {
       loginErrorMsg = null;
       if (typeof childProps?.onLogin !== 'function') return;
       if (demoMode) {
-        childProps?.onLogin('demo', rememberMe, demoMode);
+        childProps?.onLogin('demo', 'demo', rememberMe, demoMode);
       } else {
-        childProps?.onLogin(password, rememberMe, demoMode);
+        childProps?.onLogin(email, password, rememberMe, demoMode);
       }
     }
   }
@@ -56,9 +61,13 @@
 <div class="login-modal-container">
   <div class="top">
     <div class="input-row">
+      <label for="login_email">Email:</label>
+      <input type="email" id="login_email" placeholder="Email" bind:value={email} disabled={demoMode} maxlength={100} />
+    </div>
+    <div class="input-row">
       <label for="login_pass">Password:</label>
       <PasswordInput
-        placeholder="Login password"
+        placeholder="Password"
         id="login_pass"
         onInput={(value) => (password = value)}
         disabled={demoMode}
