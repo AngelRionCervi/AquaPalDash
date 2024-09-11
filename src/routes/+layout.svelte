@@ -83,7 +83,10 @@
     if (authStore.email && authStore.password) {
       const userExists = await authStore.checkIfUserExists(authStore.email, authStore.password);
       if (userExists) {
+        authStore.needLogin = false;
         startUp(authStore.email, authStore.password);
+      } else {
+        authStore.needLogin = true;
       }
     } else {
       authStore.needLogin = true;

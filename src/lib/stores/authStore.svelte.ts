@@ -137,17 +137,14 @@ const authStore: AuthStore = {
         })
       });
       if (res.ok) {
-        authState.needLogin = false;
         return true;
       } else {
-        authState.needLogin = true;
         console.error('Could not find user');
         authState.callStates.checkIfUserExists.error = 'Could not find user';
         return false;
       }
     } catch (err) {
       console.error('Error while checking if user exists', err);
-      authState.needLogin = true;
       authState.callStates.checkIfUserExists.error = 'Error while checking if user exists';
       return false;
     } finally {

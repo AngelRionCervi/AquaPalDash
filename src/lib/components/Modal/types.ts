@@ -7,7 +7,8 @@ export type ModalTypes =
   | 'login'
   | 'wifiSetup'
   | 'warningWifiReset'
-  | 'modifyPassword';
+  | 'modifyPassword'
+  | 'wifiSetupLogin';
 
 export type ModalSpecs = {
   [key in ModalTypes]: {

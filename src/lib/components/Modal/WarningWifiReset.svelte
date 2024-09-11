@@ -6,9 +6,11 @@
   import authStore from '$lib/stores/authStore.svelte';
 
   const { toggle } = modalStore;
+  const reloadDelay = 3000;
 
   function onResetWifiSettings() {
     try {
+      modalStore.frozen = true;
       configStore.updateSecret('wifiSSID', '');
       configStore.updateSecret('wifiPass', '');
       configStore.uploadNewConfig();
@@ -16,8 +18,9 @@
       authStore.removeSession();
       setTimeout(() => {
         toggle();
+        modalStore.frozen = false;
         window.location.reload();
-      }, 3000);
+      }, reloadDelay);
     } catch (err) {
       console.error(`Error resetting wifi credentials: ${err}`);
     }

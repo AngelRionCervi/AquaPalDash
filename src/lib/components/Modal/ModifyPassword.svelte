@@ -9,6 +9,7 @@
   import SuccessField from './SuccessField.svelte';
 
   const { toggle } = modalStore;
+  const reloadDelay = 3000;
 
   let oldPassword = $state('');
   let newPassword1 = $state('');
@@ -23,13 +24,17 @@
       authStore.modifyPasswordError = `Password must be at least ${MIN_PASSWORD_LENGTH} characters long`;
       return;
     }
+    modalStore.frozen = true;
     await authStore.modifyUserPassword(oldPassword, newPassword1);
     if (!authStore.modifyPasswordError) {
       successMsg = 'Password changed successfully ! Restarting...';
       setTimeout(() => {
         toggle();
+        modalStore.frozen = false;
         authStore.removeSessionAndReload();
-      }, 3000);
+      }, reloadDelay);
+    } else {
+      modalStore.frozen = false;
     }
   }
 

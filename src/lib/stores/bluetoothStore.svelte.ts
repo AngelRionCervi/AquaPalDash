@@ -5,6 +5,7 @@ import {
   BT_WIFI_TESTED_CHARACTERISTIC_NAME,
   WIFI_LIST_QUERY_INTERVAL
 } from '$lib/constants';
+import { sleep } from '$lib/helpers/utils';
 import type { WifiNetwork } from '$lib/types';
 
 interface BluetoothState {
@@ -158,6 +159,8 @@ const bluetoothStore: BluetoothStore = {
     }
 
     try {
+      bluetoothStore.toggleWifiListInterval(false);
+      await sleep(3000);
       const service = await bluetoothState.GATTServer.getPrimaryService(BLUETOOTH_GATT_SERVICE_UUID);
       const charac = await service.getCharacteristic(characUUID);
       await charac.startNotifications();
@@ -177,6 +180,8 @@ const bluetoothStore: BluetoothStore = {
       });
     } catch (err) {
       bluetoothStore.error = `Error subscribing to ${BT_WIFI_TESTED_CHARACTERISTIC_NAME} characteristic with UUID ${characUUID}: ${err}`;
+    } finally {
+      bluetoothStore.toggleWifiListInterval(true);
     }
   },
   async writeToCharacteristic(characName: keyof typeof BLUETOOTH_CHARACTERISTICS_UUID_MAP, value: string) {
@@ -243,6 +248,7 @@ const bluetoothStore: BluetoothStore = {
     }
   },
   async stopBluetooth() {
+    console.log('STOP BTC CALLED')
     bluetoothStore.toggleWifiListInterval(false);
     bluetoothState.isScanning = false;
     bluetoothState.error = '';

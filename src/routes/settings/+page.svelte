@@ -31,8 +31,8 @@
       onclick={() => controllerStore.restartController()}
       disabled={controllerStore.isRestarting}
     />
-    <PrimaryButton label="Forget session" type="green" onclick={() => authStore.removeSessionAndReload()} />
-    <PrimaryButton label="Change password" type="green" onclick={() => toggle('modifyPassword')} />
+    <PrimaryButton label="Forget session" type="green" disabled={controllerStore.isRestarting} onclick={() => authStore.removeSessionAndReload()} />
+    <PrimaryButton label="Change password" type="green" disabled={controllerStore.isRestarting} onclick={() => toggle('modifyPassword')} />
   </div>
 </div>
 

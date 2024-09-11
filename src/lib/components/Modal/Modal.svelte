@@ -14,6 +14,7 @@
   import ArrowLeftIcon from '$lib/icons/arrow-left.svg?component';
   import WarningIcon from '$lib/icons/warning.svg?component';
   import ModifyPassword from './ModifyPassword.svelte';
+  import WifiSetupLogin from './WifiSetupLogin.svelte';
 
   type ModalChildMap = {
     [key in ModalTypes]: Component;
@@ -29,6 +30,7 @@
     modifyDevice: ModifyDevice,
     login: Login,
     wifiSetup: WifiSetup,
+    wifiSetupLogin: WifiSetupLogin,
     warningWifiReset: WarningWifiReset,
     modifyPassword: ModifyPassword
   };
@@ -50,11 +52,15 @@
       title: 'Modify Device'
     },
     login: {
-      title: 'Login',
+      title: 'Log in',
       isStatic: true
     },
     wifiSetup: {
       title: 'Wi-Fi Setup',
+      isStatic: true
+    },
+    wifiSetupLogin: {
+      title: 'Log in',
       isStatic: true
     },
     warningWifiReset: {
@@ -73,7 +79,12 @@
       <div class="modal-top-left">
         <div class="button-title-container">
           {#if modalStore.childProps?.backButtonHandler}
-            <button class="back-button" onclick={modalStore.childProps?.backButtonHandler}>
+            <button
+              class="back-button"
+              class:button-froze={modalStore.frozen}
+              disabled={modalStore.frozen}
+              onclick={() => modalStore.childProps?.backButtonHandler()}
+            >
               <ArrowLeftIcon width={32} height={32} />
             </button>
           {/if}
@@ -90,7 +101,9 @@
         {/if}
       {/if}
       {#if !modalSpecs[modalStore.type || '']?.isStatic}
-        <button class="close-button" onclick={() => toggle()}><CloseIcon width={32} height={32} /></button>
+        <button class="close-button" disabled={modalStore.frozen} class:button-froze={modalStore.frozen} onclick={() => toggle()}>
+          <CloseIcon width={32} height={32} />
+        </button>
       {/if}
     </div>
     <div>
@@ -101,7 +114,7 @@
   </div>
   <!-- svelte-ignore a11y_click_events_have_key_events -->
   <!-- svelte-ignore a11y_no_static_element_interactions -->
-  <div class="backdrop" onclick={() => (modalStore.type && !modalSpecs[modalStore.type]?.isStatic ? toggle() : {})}></div>
+  <div class="backdrop" onclick={() => (modalStore.type && !modalStore.frozen && !modalSpecs[modalStore.type]?.isStatic ? toggle() : null)}></div>
 {/if}
 
 <style lang="scss">
@@ -210,5 +223,11 @@
 
   .empty-div {
     min-width: 32px;
+  }
+
+  .button-froze {
+    cursor: default;
+    pointer-events: none;
+    opacity: 0.4;
   }
 </style>

@@ -4,6 +4,7 @@ interface ModalState {
   isOpen: boolean;
   type: ModalTypes | null;
   subtitle?: string;
+  frozen?: boolean;
   childProps?: Record<string, any>;
 }
 
@@ -12,6 +13,7 @@ interface ModalStore {
   type: ModalTypes | null;
   subtitle?: string;
   childProps?: Record<string, any>;
+  frozen?: boolean;
   toggle: (type?: ModalTypes, childProps?: ModalState['childProps'], subtitle?: string) => void;
 }
 
@@ -28,6 +30,12 @@ const modalStore: ModalStore = {
   },
   get type() {
     return modalState.type;
+  },
+  get frozen() {
+    return modalState.frozen;
+  },
+  set frozen(value) {
+    modalState.frozen = value;
   },
   get childProps() {
     return modalState.childProps;
