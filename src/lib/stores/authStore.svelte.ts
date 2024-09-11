@@ -124,6 +124,9 @@ const authStore: AuthStore = {
     window.location.reload();
   },
   async checkIfUserExists(email: string, password: string) {
+    if (authState.isDemoMode) {
+      return true;
+    }
     try {
       authState.callStates.checkIfUserExists.isLoading = true;
       const res = await fetch('/api/account/checkUserExists', {
@@ -154,7 +157,7 @@ const authStore: AuthStore = {
   async modifyUserPassword(oldPassword: string, newPassword: string) {
     console.log('authState.email', authState.email);
     const email = authState.email;
-    if (!email) {
+    if (!email || authState.isDemoMode) {
       return;
     }
     try {
