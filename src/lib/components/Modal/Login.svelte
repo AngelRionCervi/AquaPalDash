@@ -4,6 +4,7 @@
   import modalStore from '$lib/stores/modalStore.svelte';
   import bluetoothStore from '$lib/stores/bluetoothStore.svelte';
   import PasswordInput from '../Inputs/PasswordInput.svelte';
+  import authStore from '$lib/stores/authStore.svelte';
 
   const { childProps, toggle } = modalStore;
 
@@ -71,7 +72,7 @@
         id="login_pass"
         onInput={(value) => (password = value)}
         disabled={demoMode}
-        maxlength={60}
+        maxlength={100}
         onKeyPress={() => onLoginClick()}
       />
     </div>
@@ -87,7 +88,7 @@
     </div>
   </div>
   <div class="error-button-container">
-    <ErrorField messages={loginErrorMsg} />
+    <ErrorField messages={loginErrorMsg || authStore.callStates.checkIfUserExists.error} />
     <PrimaryButton label="Log in" type="green" disabled={!password && !demoMode} onclick={onLoginClick} />
   </div>
   <div>

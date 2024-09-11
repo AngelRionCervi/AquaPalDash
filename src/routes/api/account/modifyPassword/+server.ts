@@ -14,21 +14,21 @@ export async function POST({ request }) {
     return json({ error: 'New password must be different' }, { status: 401 });
   }
 
-  const user = await getUserWithEmailAndPass(email, oldPassword);
-  console.log('USERUSERUSERUSERUSER', user, email, oldPassword);
-
-  if (!user) {
-    return json({ error: 'No user found with the previous password' }, { status: 401 });
-  }
-
   try {
+    const user = await getUserWithEmailAndPass(email, oldPassword);
+    console.log('USERUSERUSERUSERUSER', user, email, oldPassword);
+
+    if (!user) {
+      return json({ error: 'No user found with the previous password' }, { status: 401 });
+    }
+
     const isUpdated = await updateUserPassword(user.userId, newPassword);
 
     if (!isUpdated) {
       return json({ error: 'Error while changing password' }, { status: 500 });
     }
 
-    return json({ message: 'Success' }, { status: 201 });
+    return json({ message: 'Success', data: true }, { status: 201 });
   } catch (err) {
     console.error(err);
     return json({ error: 'Error while changing password' }, { status: 500 });

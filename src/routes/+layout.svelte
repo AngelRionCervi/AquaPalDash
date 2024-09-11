@@ -32,7 +32,13 @@
     return menuRoutes.find(({ route }) => route === $page.url?.pathname)?.label || 'Home';
   }
 
-  function onNewLogin(email: string, password: string, rememberMe: boolean, demoMode: boolean) {
+  async function onNewLogin(email: string, password: string, rememberMe: boolean, demoMode: boolean) {
+    const userExists = await authStore.checkIfUserExists(email, password);
+
+    if (!userExists) {
+      return;
+    }
+
     authStore.setDemoMode(demoMode);
 
     if (rememberMe) {
@@ -72,11 +78,13 @@
     }, TIMEOUT_FETCH_CONFIG);
   }
 
-  function onWsOpen() {
+  async function onWsOpen() {
     authStore.init();
     if (authStore.email && authStore.password) {
-      authStore.needLogin = false;
-      startUp(authStore.email, authStore.password);
+      const userExists = await authStore.checkIfUserExists(authStore.email, authStore.password);
+      if (userExists) {
+        startUp(authStore.email, authStore.password);
+      }
     } else {
       authStore.needLogin = true;
       toggle('login', {

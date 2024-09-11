@@ -1,6 +1,7 @@
 import path from 'path';
-import type { User } from '../wsGlobal/types';
 import fs from 'fs/promises';
+import bcrypt from 'bcrypt';
+import type { User } from '../wsGlobal/types';
 
 function usersPath() {
   return path.resolve('server', 'db', 'users.json');
@@ -29,15 +30,30 @@ export async function getUserIdWithBoxId(boxId: string) {
   return user?.userId;
 }
 
+export async function getUsersWithEmail(email: string) {
+  const users = await getUsers();
+  return users.filter((user) => user.email === email);
+}
+
 export async function getUserWithEmailAndPass(email: string, pass: string) {
-  const user = (await getUsers()).find((user) => user.email === email && user.password === pass);
-  console.log('getUserWithEmailAndPass USER', user);
-  return user;
+  const users = await getUsersWithEmail(email);
+  for (const user of users) {
+    const match = await bcrypt.compare(pass, user.password);
+    if (match) {
+      console.log('getUserWithEmailAndPass USER', user);
+      return user;
+    }
+  }
 }
 
 export async function getUserWithUserId(userId: string) {
   const user = (await getUsers()).find((user) => user.userId === userId);
   return user;
+}
+
+export async function hashPassword(password: string) {
+  const salt = await bcrypt.genSalt(10);
+  return bcrypt.hash(password, salt);
 }
 
 export async function updateUserPassword(userId: string, newPassword: string) {
@@ -47,7 +63,9 @@ export async function updateUserPassword(userId: string, newPassword: string) {
   if (userIndex === -1) {
     return false;
   }
-  users[userIndex].password = newPassword;
+  const hash = await hashPassword(newPassword);
+
+  users[userIndex].password = hash;
 
   try {
     await fs.writeFile(usersPath(), JSON.stringify(users, null, 2));

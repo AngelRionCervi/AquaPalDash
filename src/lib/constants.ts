@@ -22,4 +22,4 @@ export const BT_WIFI_LIST_CHARACTERISTIC_NAME = 'wifi_list';
 export const BT_WIFI_TESTED_CHARACTERISTIC_NAME = 'wifi_tested';
 export const BT_RESTART_CHARACTERISTIC_NAME = 'restart';
 export const AQUA_PAL_NAME = 'Aqua Pal';
-export const MIN_PASSWORD_LENGTH = 6;
+export const MIN_PASSWORD_LENGTH = 8;

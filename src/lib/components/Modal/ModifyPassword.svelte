@@ -13,14 +13,14 @@
   let oldPassword = $state('');
   let newPassword1 = $state('');
   let newPassword2 = $state('');
-  let successMsg = $state('Password changed successfully ! Restarting...');
+  let successMsg = $state('');
 
   async function onEdit() {
     if (newPassword1.toString() !== newPassword2.toString()) {
       authStore.modifyPasswordError = 'New passwords do not match';
       return;
     } else if (newPassword1.length < MIN_PASSWORD_LENGTH) {
-      authStore.modifyPasswordError = 'Password must be at least 6 characters long';
+      authStore.modifyPasswordError = `Password must be at least ${MIN_PASSWORD_LENGTH} characters long`;
       return;
     }
     await authStore.modifyUserPassword(oldPassword, newPassword1);
@@ -35,22 +35,23 @@
 
   onMount(() => {
     authStore.modifyPasswordError = '';
+    successMsg = '';
   });
 </script>
 
 <div class="modify-password-container">
   <div class="modify-row">
     <label for="old_pass">Old password:</label>
-    <PasswordInput id="old_pass" onInput={(value) => (oldPassword = value)} maxlength={40} minlength={6} />
+    <PasswordInput id="old_pass" onInput={(value) => (oldPassword = value)} maxlength={100} minlength={6} />
   </div>
   <div class="divider"></div>
   <div class="modify-row">
     <label for="new_pass_1">New password:</label>
-    <PasswordInput id="new_pass_1" onInput={(value) => (newPassword1 = value)} maxlength={40} minlength={6} />
+    <PasswordInput id="new_pass_1" onInput={(value) => (newPassword1 = value)} maxlength={100} minlength={6} />
   </div>
   <div class="modify-row">
     <label for="new_pass_2">Repeat new password:</label>
-    <PasswordInput id="new_pass_2" onInput={(value) => (newPassword2 = value)} maxlength={40} minlength={6} />
+    <PasswordInput id="new_pass_2" onInput={(value) => (newPassword2 = value)} maxlength={100} minlength={6} />
   </div>
   <div class="bottom">
     <ErrorField messages={authStore.modifyPasswordError} />

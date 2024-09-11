@@ -14,6 +14,7 @@ interface AuthState {
   email: string;
   callStates: {
     modifyPassword: CallState;
+    checkIfUserExists: CallState;
   };
 }
 
@@ -34,6 +35,7 @@ interface AuthStore {
   removeSession: () => void;
   setUserId: (userId: string) => void;
   removeSessionAndReload: () => void;
+  checkIfUserExists: (email: string, password: string) => Promise<boolean>;
   modifyUserPassword: (oldPassword: string, newPassword: string) => Promise<void>;
   init: () => void;
 }
@@ -46,7 +48,8 @@ const defaultAuthStoreValue: AuthState = {
   userId: '',
   needLogin: true,
   callStates: {
-    modifyPassword: { error: '', isLoading: false }
+    modifyPassword: { error: '', isLoading: false },
+    checkIfUserExists: { error: '', isLoading: false }
   }
 };
 
@@ -120,8 +123,39 @@ const authStore: AuthStore = {
     authStore.removeSession();
     window.location.reload();
   },
+  async checkIfUserExists(email: string, password: string) {
+    try {
+      authState.callStates.checkIfUserExists.isLoading = true;
+      const res = await fetch('/api/account/checkUserExists', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          email,
+          password
+        })
+      });
+      if (res.ok) {
+        authState.needLogin = false;
+        return true;
+      } else {
+        authState.needLogin = true;
+        console.error('Could not find user');
+        authState.callStates.checkIfUserExists.error = 'Could not find user';
+        return false;
+      }
+    } catch (err) {
+      console.error('Error while checking if user exists', err);
+      authState.needLogin = true;
+      authState.callStates.checkIfUserExists.error = 'Error while checking if user exists';
+      return false;
+    } finally {
+      authState.callStates.checkIfUserExists.isLoading = false;
+    }
+  },
   async modifyUserPassword(oldPassword: string, newPassword: string) {
-    console.log('authState.email', authState.email)
+    console.log('authState.email', authState.email);
     const email = authState.email;
     if (!email) {
       return;

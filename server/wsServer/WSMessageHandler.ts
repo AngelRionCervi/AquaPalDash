@@ -46,7 +46,9 @@ function WSServerHandler(webSocketServer: WebsocketServerType) {
       socket.source = 'dash';
       const email = message.data?.['email'] as string;
       const password = message.data?.['password'] as string;
-      socket.userId = (await getUserWithEmailAndPass(email, password))?.userId;
+      const user = await getUserWithEmailAndPass(email, password);
+      console.log('socket user', user);
+      socket.userId = user?.userId;
       socket.send(jstr({ source: 'server', type: DASH_CALL_TYPES.dash_setUserIdType, data: socket.userId }));
     }
     const boxClient = await getBoxClient(socket.userId?.toString() || '');
