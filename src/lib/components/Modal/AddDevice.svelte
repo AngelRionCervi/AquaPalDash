@@ -72,7 +72,7 @@
       <div class="button-input-row">
         <label for="button_input">Button:</label>
         <div class="box-graph">
-          <!-- eslint-disable @typescript-eslint/no-unused-vars -->
+          <!-- eslint-disable-next-line @typescript-eslint/no-unused-vars -->
           {#each { length: MAX_DEVICES } as _, index}
             <div class="button-label-radio">
               <input
