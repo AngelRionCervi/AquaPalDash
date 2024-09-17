@@ -81,12 +81,8 @@
     background-color: var(--secondary);
   }
 
-  .select,
   .input {
     font-size: var(--font-M);
-  }
-
-  .input {
     width: 250px;
   }
 </style>

@@ -48,7 +48,6 @@ export function sleep(ms: number) {
 export function getScheduleLabel(schedule: Schedule, timeFormat: '24h' | '12h' = '24h'): string | ScheduleRangeLabels {
   if (Array.isArray(schedule)) {
     return [minsToReadableTime(schedule[0], timeFormat), minsToReadableTime(schedule[1], timeFormat) ];
-    return `On between <b>${minsToReadableTime(schedule[0], timeFormat)}</b> and <b>${minsToReadableTime(schedule[1], timeFormat)}</b>.`;
   } else if (typeof schedule === 'boolean') {
     return schedule ? 'Always on' : 'Always off';
   }

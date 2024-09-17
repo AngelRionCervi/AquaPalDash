@@ -159,10 +159,6 @@
 
 		&.left {
 			gap: 16px;
-
-			p {
-				width: 150px;
-			}
 		}
 
 		&.right {
@@ -181,10 +177,6 @@
 		@media screen and (max-width: $mobile-bp) {
 			text-align: center;
 		}
-	}
-
-	.id-free {
-		color: var(--primary-success);
 	}
 
 	.table-row {

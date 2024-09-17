@@ -1,4 +1,5 @@
 import devicesStatusMock from '$lib/mock/devicesStatusMock.json';
+import type { RawDeviceStatus } from '$lib/types';
 
 interface DeviceStatus {
   id: string | null;

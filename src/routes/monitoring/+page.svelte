@@ -86,11 +86,7 @@
     display: flex;
     flex-direction: column;
     width: 85%;
-
-    h3 {
-      margin-left: 32px;
-    }
-
+    
     @media screen and (max-width: $mobile-bp) {
       width: 95%;
     }
