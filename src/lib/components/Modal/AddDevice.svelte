@@ -1,10 +1,12 @@
 <script lang="ts">
   import PrimaryButton from '$lib/components/Buttons/PrimaryButton.svelte';
-  import { MAX_DEVICES } from '$lib/constants';
+  import { MAX_DEVICES, SMART_PLUG_TYPES } from '$lib/constants';
   import modalStore from '$lib/stores/modalStore.svelte';
   import configStore from '$lib/stores/configStore.svelte';
   import ScheduleInput from '$lib/components/Inputs/ScheduleInput.svelte';
   import { generateUniqueId } from '$lib/helpers/utils';
+  import { type Schedule, type SmartPlugs } from '$lib/types';
+  import Select from '$lib/components/Inputs/Select.svelte';
 
   const { toggle } = modalStore;
 
@@ -12,16 +14,23 @@
   let ipAddress: string = $state('');
   let buttonSlot: number | null = $state(null);
   let newSchedule = $state<Schedule | null>(null);
-  let isValidateDisabled = $derived(!name || !ipAddress || typeof buttonSlot !== 'number' || newSchedule === null);
+  let smartPlugType = $state<SmartPlugs | null>(null);
+  let isValidateDisabled = $derived(!name || !ipAddress || typeof buttonSlot !== 'number' || newSchedule === null || !smartPlugType);
 
   function onAddDevice() {
-    console.log('name ip', name, ipAddress);
     const id = generateUniqueId();
-    if (!isValidateDisabled && typeof buttonSlot === 'number' && ipAddress && name && newSchedule !== null) {
-      configStore.addDevice({ id, name, ip: ipAddress, button: buttonSlot, schedule: newSchedule });
+    if (
+      !isValidateDisabled &&
+      typeof buttonSlot === 'number' &&
+      ipAddress &&
+      name &&
+      newSchedule !== null &&
+      SMART_PLUG_TYPES.map((type) => type.value).includes(smartPlugType as SmartPlugs) &&
+      smartPlugType
+    ) {
+      configStore.addDevice({ id, name, ip: ipAddress, smartPlugType, button: buttonSlot, schedule: newSchedule });
+      toggle();
     }
-
-    toggle();
   }
 
   function onButtonBindChange(value: number) {
@@ -38,6 +47,11 @@
   function onChange(schedule: Schedule) {
     newSchedule = schedule;
   }
+
+  function onSmartPlugChange(event: Event) {
+    const value = (event.target as HTMLSelectElement).value as SmartPlugs;
+    smartPlugType = value;
+  }
 </script>
 
 <div class="add-device-container">
@@ -51,9 +65,14 @@
         <label for="ip_input">IP:</label>
         <input class="text-input" type="text" id="ip_input" name="ip" maxlength="40" bind:value={ipAddress} />
       </div>
+      <div class="input-row">
+        <label for="smartplug_type">Smart plug type:</label>
+        <Select name="smartplug_type" id="smartplug_type" values={[...SMART_PLUG_TYPES]} onchange={onSmartPlugChange} />
+      </div>
       <div class="button-input-row">
         <label for="button_input">Button:</label>
         <div class="box-graph">
+          <!-- eslint-disable @typescript-eslint/no-unused-vars -->
           {#each { length: MAX_DEVICES } as _, index}
             <div class="button-label-radio">
               <input

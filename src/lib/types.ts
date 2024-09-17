@@ -12,41 +12,43 @@ export interface WifiNetwork {
 
 export interface RawDeviceStatus {
   id: string;
-	name: string;
-	state: boolean;
-	isOnline: boolean;
+  name: string;
+  state: boolean;
+  isOnline: boolean;
 }
 
 export interface Device {
   id: string;
-	name: string;
-	ip: string;
-	button: number;
-	schedule: Schedule;
+  name: string;
+  ip: string;
+  smartPlugType: SmartPlugs;
+  button: number;
+  schedule: Schedule;
   isUnsaved?: boolean;
   toBeRemoved?: boolean;
   isModified?: boolean;
 }
 
 export interface ConfigSecrets {
-	wifiSSID: string;
-	wifiPass: string;
-	serverPass: string;
+  wifiSSID: string;
+  wifiPass: string;
+  serverPass: string;
 }
 
 export interface ConfigSettings {
-	autoSchedulesOnAfter: number;
-	prefetchHistorical: boolean;
-	theme: 'light' | 'dark';
-	tempUnit: 'celsius' | 'fahrenheit';
+  autoSchedulesOnAfter: number;
+  prefetchHistorical: boolean;
+  theme: 'light' | 'dark';
+  tempUnit: 'celsius' | 'fahrenheit';
   timeFormat: '24h' | '12h';
-	aquariumLabel: string;
+  aquariumLabel: string;
   enableMonitoring: boolean;
 }
 
 export interface Config {
-	devices: Array<Device>;
-	secrets: ConfigSecrets;
-	settings: ConfigSettings;
+  devices: Array<Device>;
+  secrets: ConfigSecrets;
+  settings: ConfigSettings;
 }
 
+export type SmartPlugs = 'shelly_plug_s' | 'tasmota';

@@ -1,3 +1,4 @@
+import { API_ACCOUNT } from '$lib/apiCalls/account';
 import SessionLS, { type Session } from '$lib/localStorage/session';
 
 interface CallState {
@@ -129,16 +130,7 @@ const authStore: AuthStore = {
     }
     try {
       authState.callStates.checkIfUserExists.isLoading = true;
-      const res = await fetch('/api/account/checkUserExists', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          email,
-          password
-        })
-      });
+      const res = await API_ACCOUNT.checkIfUserExists(email, password);
       if (res.ok) {
         return true;
       } else {
@@ -155,24 +147,13 @@ const authStore: AuthStore = {
     }
   },
   async modifyUserPassword(oldPassword: string, newPassword: string) {
-    console.log('authState.email', authState.email);
     const email = authState.email;
     if (!email || authState.isDemoMode) {
       return;
     }
     try {
       authState.callStates.modifyPassword.isLoading = true;
-      const res = await fetch('/api/account/modifyPassword', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          email,
-          oldPassword,
-          newPassword
-        })
-      });
+      const res = await API_ACCOUNT.modifyUserPassword(email, oldPassword, newPassword);
       if (res.ok) {
         authState.callStates.modifyPassword.error = '';
       } else {

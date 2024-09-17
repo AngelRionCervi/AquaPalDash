@@ -1,3 +1,5 @@
+import type { ConfigSettings } from "$lib/types";
+
 export interface SettingValue {
 	label: string;
 	value: string | number | boolean;

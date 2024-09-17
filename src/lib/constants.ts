@@ -23,3 +23,7 @@ export const BT_WIFI_TESTED_CHARACTERISTIC_NAME = 'wifi_tested';
 export const BT_RESTART_CHARACTERISTIC_NAME = 'restart';
 export const AQUA_PAL_NAME = 'Aqua Pal';
 export const MIN_PASSWORD_LENGTH = 8;
+export const SMART_PLUG_TYPES = [
+  { label: 'Shelly Plug S', value: 'shelly_plug_s' },
+  { label: 'Tasmota', value: 'tasmota' }
+] as const;

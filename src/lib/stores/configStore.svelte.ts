@@ -1,8 +1,8 @@
 import { DASH_CALL_TYPES } from '$wsGlobal/callTypes';
-import { MAX_DEVICES } from '$lib/constants';
+import { MAX_DEVICES, SMART_PLUG_TYPES } from '$lib/constants';
 import configMock from '$lib/mock/configMock.json';
 import { sendWSMessage } from '$lib/wsClient/WSClientHandler';
-import type { Config, ConfigSecrets, ConfigSettings, Device, Schedule } from '$lib/types';
+import type { Config, ConfigSecrets, ConfigSettings, Device, Schedule, SmartPlugs } from '$lib/types';
 
 interface CallState {
   isLoading?: boolean;
@@ -251,7 +251,8 @@ const configStore: ConfigStore = {
       oldDevice.schedule.toString() === newDevice.schedule.toString() &&
       oldDevice.name === newDevice.name &&
       oldDevice.ip === newDevice.ip &&
-      oldDevice.button === newDevice.button
+      oldDevice.button === newDevice.button &&
+      oldDevice.smartPlugType === newDevice.smartPlugType
     );
   },
   checkSync() {
@@ -344,6 +345,10 @@ function validateNumber(nbr: number) {
   return typeof nbr === 'number';
 }
 
+function validateSmartPluType(type: string) {
+  return SMART_PLUG_TYPES.map((plug) => plug.value).includes(type as SmartPlugs);
+}
+
 function validateSchedule(schedule: Schedule) {
   if (Array.isArray(schedule)) {
     return validateNumber(schedule[0]) && validateNumber(schedule[1]);
@@ -358,7 +363,8 @@ function checkDeviceIntegrity(device: Device) {
     validateTruthyString(device.name) &&
     validateTruthyString(device.ip) &&
     validateNumber(device.button) &&
-    validateSchedule(device.schedule)
+    validateSchedule(device.schedule) &&
+    validateSmartPluType(device.smartPlugType)
   );
 }
 
