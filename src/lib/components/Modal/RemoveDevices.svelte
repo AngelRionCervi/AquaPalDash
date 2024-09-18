@@ -9,8 +9,8 @@
 	let numbersToRemove = $derived(devicesList.filter(({ checked }) => checked).length);
 
 	function onRemoveDevices() {
-    const devicesTopRemove = devicesList.filter(({ checked }) => checked).map(({ id }) => id);
-    configStore.removeDevices(devicesTopRemove);
+    const devicesToRemove = devicesList.filter(({ checked }) => checked).map(({ id }) => id);
+    configStore.removeDevices(devicesToRemove);
 		toggle();
 	}
 

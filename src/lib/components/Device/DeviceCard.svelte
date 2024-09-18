@@ -7,6 +7,7 @@
   import UnsyncIcon from '$lib/icons/unsync.svg?component';
   import configStore from '$lib/stores/configStore.svelte';
   import type { Device } from '$lib/types';
+  import controllerStore from '$lib/stores/controllerStore.svelte';
 
   interface Props {
     device: Device;
@@ -34,6 +35,7 @@
   }
 
   function onRevertDevice() {
+    console.log('REVERT DEVICE', device.id);
     configStore.revertDevice(device.id);
   }
 
@@ -48,55 +50,103 @@
   }
 </script>
 
-<div class="card-container" class:card-device-unsaved={deviceDisabled} class:card-device-modified={device.isModified}>
-  <div class="device-name-container">
-    <div class="device-modified">
-      <div class="unsync-icon-container">
-        {#if device.isModified}
-          <button onclick={onRevertDevice} class="revert-device-button" title="Revert device modifications" aria-label="Revert device modifications">
-            <UnsyncIcon fill="var(--warning)" />
-          </button>
-        {/if}
+<div class="card-outer-container">
+  <div class="card-container" class:card-device-unsaved={deviceDisabled} class:card-device-modified={device.isModified}>
+    <div class="device-name-container">
+      <div class="device-modified">
+        <div class="unsync-icon-container">
+          {#if device.isModified && !device.isUnsaved && !device.toBeRemoved}
+            <button
+              onclick={onRevertDevice}
+              class="revert-device-button"
+              title="Revert device modifications"
+              aria-label="Revert device modifications"
+            >
+              <UnsyncIcon fill="var(--warning)" />
+            </button>
+          {/if}
+        </div>
+      </div>
+      <div class="device-name">
+        <span>{device.name}</span>
+        <button onclick={onModifyName} class="device-edit-button" aria-label="Edit device"><GearIcon width={16} height={16} /></button>
       </div>
     </div>
-    <div class="device-name">
-      <span>{device.name}</span>
-      <button onclick={onModifyName} class="device-edit-button" aria-label="Edit device"><GearIcon width={16} height={16} /></button>
-    </div>
-  </div>
-  <div class="separator"></div>
-  <div class="device-status">
-    <span class="setting-title">Status:</span>
-    <div class="status-pills">
-      <span class="pill is-{deviceStatus?.isConnected ? 'on' : 'off'}">{getPillStatusConnected(deviceStatus?.isConnected)}</span>
-      <span class="pill is-{deviceStatus?.isOn ? 'on' : 'off'}">{getPillStatusOn(deviceStatus?.isOn)}</span>
-    </div>
-  </div>
-  <div class="semi-separator"></div>
-  <div class="device-controls">
-    <div class="editable-row-slot">
-      <div class="row-values-slot">
-        <span class="setting-title">Button slot:</span>
-        <div class="current-value-slot"><span>{device.button + 1}</span></div>
+    <div class="separator"></div>
+    <div class="device-status">
+      <span class="setting-title">Status:</span>
+      <div class="status-pills">
+        <span class="pill is-{deviceStatus?.isConnected ? 'on' : 'off'}">{getPillStatusConnected(deviceStatus?.isConnected)}</span>
+        <span class="pill is-{deviceStatus?.isOn ? 'on' : 'off'}">{getPillStatusOn(deviceStatus?.isOn)}</span>
       </div>
-      <SmallButton onclick={onButtonSlotEdit} disabled={deviceDisabled} label="Edit" />
     </div>
     <div class="semi-separator"></div>
-    <div class="editable-row-schedule">
-      <span class="setting-title">Schedule:</span>
-      <div class="current-value-schedule">
-        {#if Array.isArray(scheduleLabels)}
-          <span><p>On between <b>{scheduleLabels[0]}</b> and <b>{scheduleLabels[1]}</b>.</p></span>
-        {:else}
-          <span>{scheduleLabels}.</span>
-        {/if}
+    <div class="device-controls">
+      <div class="editable-row-slot">
+        <div class="row-values-slot">
+          <span class="setting-title">Button slot:</span>
+          <div class="current-value-slot"><span>{device.button + 1}</span></div>
+        </div>
+        <SmallButton onclick={onButtonSlotEdit} disabled={deviceDisabled} label="Edit" />
       </div>
-      <SmallButton onclick={onScheduleEdit} disabled={deviceDisabled} label="Edit" />
+      <div class="semi-separator"></div>
+      <div class="editable-row-schedule">
+        <span class="setting-title">Schedule:</span>
+        <div class="current-value-schedule">
+          {#if Array.isArray(scheduleLabels)}
+            <span><p>On between <b>{scheduleLabels[0]}</b> and <b>{scheduleLabels[1]}</b>.</p></span>
+          {:else}
+            <span>{scheduleLabels}.</span>
+          {/if}
+        </div>
+        <SmallButton onclick={onScheduleEdit} disabled={deviceDisabled} label="Edit" />
+      </div>
     </div>
   </div>
+  {#if device.toBeRemoved || device.isUnsaved}
+    <button
+      onclick={onRevertDevice}
+      class="revert-device-full-button"
+      class:disabled={controllerStore.isRestarting}
+      title="Revert device modifications"
+      aria-label="Revert device modifications"
+      disabled={controllerStore.isRestarting}
+    >
+      <UnsyncIcon fill="var(--warning)" />
+    </button>
+  {/if}
 </div>
 
 <style lang="scss">
+  .card-outer-container {
+    position: relative;
+  }
+
+  .revert-device-full-button {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 80px;
+    color: var(--warning);
+    border-radius: var(--radius-XL);
+    background-color: var(--warning-lighter);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    border: 2px solid transparent;
+    visibility: visible;
+
+    &:not(.disabled):hover {
+      border: 2px solid var(--warning);
+    }
+
+    &.disabled {
+      visibility: hidden;
+    }
+  }
+
   .card-container {
     border: 1px solid var(--secondary);
     background-color: var(--primary);

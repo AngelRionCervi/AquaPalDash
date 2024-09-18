@@ -60,7 +60,7 @@
     display: flex;
     justify-content: space-between;
     padding: 16px 0;
-	font-size: var(--font-M);
+    font-size: var(--font-M);
 
     @media screen and (max-width: $mobile-bp) {
       flex-direction: column;

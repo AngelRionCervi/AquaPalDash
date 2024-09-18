@@ -44,7 +44,7 @@
     appearance: none;
     padding-right: 2rem;
     background-color: var(--primary-lighter);
-	height: 100%;
+    height: 100%;
 
     &.borders {
       border: 1px solid var(--secondary);

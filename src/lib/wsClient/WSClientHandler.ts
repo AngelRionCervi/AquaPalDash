@@ -36,6 +36,7 @@ function handleMessage(ws: WebSocket, message: Record<string, unknown>) {
       break;
     }
     case DASH_CALL_TYPES.dash_setConfigType: {
+      console.log('setConfig', message.data);
       configStore.setConfig(message.data as Config);
       controllerStore.setIsOn(true);
       authStore.needLogin = false;

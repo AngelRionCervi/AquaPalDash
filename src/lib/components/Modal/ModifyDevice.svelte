@@ -15,6 +15,7 @@
   let newSmartPlugType = $state<SmartPlugs | undefined>(smartPlugType);
   let ipErrorMsg = $state<string | null>(null);
   let nameErrorMsg = $state<string | null>(null);
+  let notOkCondition = $derived(!newName || !newIp || !newSmartPlugType || (newName === name && newIp === ip && smartPlugType === newSmartPlugType));
 
   function checkNameError() {
     if (!newName) {
@@ -35,7 +36,7 @@
   function onEdit() {
     checkNameError();
     checkIpError();
-    if (!newName || !newIp || !newSmartPlugType || (newName === name && newIp === ip && smartPlugType === newSmartPlugType)) return;
+    if (notOkCondition) return;
     configStore.updateDevice(id, { ip: newIp, name: newName, smartPlugType });
     modalStore.toggle();
   }
@@ -51,18 +52,18 @@
     <label for="device-name">Device name:</label>
     <input type="text" id="device-name" bind:value={newName} maxlength="40" />
   </div>
+  <div class="modify-row row-flat">
+    <label for="smartplug_type">Smart plug type:</label>
+    <Select name="smartplug_type" id="smartplug_type" values={[...SMART_PLUG_TYPES]} currentValue={smartPlugType} onchange={onSmartPlugChange} hasBorders />
+  </div>
   <div class="modify-row">
     <label for="device-ip">Device ip:</label>
     <input type="text" id="device-ip" bind:value={newIp} maxlength="100" />
   </div>
-  <div class="modify-row">
-    <label for="smartplug_type">Smart plug type:</label>
-    <Select name="smartplug_type" id="smartplug_type" values={[...SMART_PLUG_TYPES]} onchange={onSmartPlugChange} />
-  </div>
   <div class="bottom">
     <ErrorField messages={nameErrorMsg} />
     <ErrorField messages={ipErrorMsg} />
-    <PrimaryButton label="Save" disabled={!newName || !newIp || (newName === name && newIp === ip)} onclick={onEdit} />
+    <PrimaryButton label="Save" disabled={notOkCondition} onclick={onEdit} />
   </div>
 </div>
 
@@ -89,5 +90,12 @@
     flex-direction: column;
     gap: 8px;
     justify-content: space-between;
+
+    &.row-flat {
+      flex-direction: row;
+      gap: 16px;
+
+      align-items: center;
+    }
   }
 </style>

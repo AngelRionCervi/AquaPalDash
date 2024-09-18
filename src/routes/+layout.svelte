@@ -121,8 +121,10 @@
   {:else if configStore.config}
     <Modal />
     <Header />
-    <span class="page-title">{getCurrentPageTitle()}</span>
-    {@render children()}
+    <div class="content">
+      <span class="page-title">{getCurrentPageTitle()}</span>
+      {@render children()}
+    </div>
     <Footer />
   {:else if noConfigFetch}
     <div class="no-config-container">
@@ -156,8 +158,14 @@
     }
   }
 
+  .content {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+  }
+
   .page-title {
-    margin: 32px 42px;
+    margin: 64px 42px;
     font-size: var(--font-L);
     font-weight: bold;
 

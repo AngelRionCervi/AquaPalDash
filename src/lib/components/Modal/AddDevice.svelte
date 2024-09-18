@@ -14,11 +14,12 @@
   let ipAddress: string = $state('');
   let buttonSlot: number | null = $state(null);
   let newSchedule = $state<Schedule | null>(null);
-  let smartPlugType = $state<SmartPlugs | null>(null);
+  let smartPlugType = $state<SmartPlugs | null>(SMART_PLUG_TYPES[0].value);
   let isValidateDisabled = $derived(!name || !ipAddress || typeof buttonSlot !== 'number' || newSchedule === null || !smartPlugType);
 
   function onAddDevice() {
     const id = generateUniqueId();
+    console.log('smart plug type', SMART_PLUG_TYPES.map((type) => type.value).includes(smartPlugType as SmartPlugs), smartPlugType);
     if (
       !isValidateDisabled &&
       typeof buttonSlot === 'number' &&
@@ -67,7 +68,14 @@
       </div>
       <div class="input-row">
         <label for="smartplug_type">Smart plug type:</label>
-        <Select name="smartplug_type" id="smartplug_type" values={[...SMART_PLUG_TYPES]} onchange={onSmartPlugChange} />
+        <Select
+          name="smartplug_type"
+          id="smartplug_type"
+          values={[...SMART_PLUG_TYPES]}
+          onchange={onSmartPlugChange}
+          currentValue={SMART_PLUG_TYPES[0].value}
+          hasBorders
+        />
       </div>
       <div class="button-input-row">
         <label for="button_input">Button:</label>

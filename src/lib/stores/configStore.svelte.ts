@@ -56,7 +56,6 @@ interface ConfigStore {
 }
 
 const callStates: ConfigState['callStates'] = $state({
-  fetchAndSetConfig: {},
   updateDevice: {},
   updateSetting: {},
   updateSecret: {},
@@ -153,6 +152,11 @@ const configStore: ConfigStore = {
     const corDeviceIndex = devices.findIndex((device) => device.id === id);
     const oldDevice = previousConfig?.devices.find((device) => device.id === id);
 
+    if (corDeviceIndex > -1 && !oldDevice) {
+      configState.config.devices.splice(corDeviceIndex, 1);
+      return;
+    }
+
     if (corDeviceIndex === -1 || !oldDevice) {
       const message = 'No device to revert found.';
       console.error(message);
@@ -160,7 +164,7 @@ const configStore: ConfigStore = {
       return;
     }
 
-    configState.config.devices[corDeviceIndex] = oldDevice;
+    configState.config.devices[corDeviceIndex] = structuredClone(oldDevice);
     configStore.checkSync();
   },
   addDevice(newDevice: Device) {
@@ -196,12 +200,13 @@ const configStore: ConfigStore = {
 
     idList.forEach((id) => {
       const corDevice = devices.find((device) => device.id === id);
-
+      console.log('removeDevices', corDevice);
       if (corDevice) {
         if (corDevice.isUnsaved && configState.config) {
           configState.config.devices = devices.filter((device) => device.id !== id);
         } else {
           corDevice.toBeRemoved = true;
+          corDevice.isModified = true;
         }
       }
     });
@@ -245,7 +250,7 @@ const configStore: ConfigStore = {
     configStore.checkSync();
   },
   checkDeviceSync(oldDevice: Device, newDevice: Device) {
-    if (newDevice.toBeRemoved || newDevice.isUnsaved) return true;
+    if (newDevice.toBeRemoved || newDevice.isUnsaved || newDevice.isModified) return false;
 
     return (
       oldDevice.schedule.toString() === newDevice.schedule.toString() &&
@@ -284,6 +289,11 @@ const configStore: ConfigStore = {
       if (!newSync) {
         break;
       }
+    }
+
+    if (!newSync) {
+      configState.isSync = false;
+      return;
     }
 
     let settingsCheck = true;

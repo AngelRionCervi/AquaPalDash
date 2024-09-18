@@ -51,4 +51,4 @@ export interface Config {
   settings: ConfigSettings;
 }
 
-export type SmartPlugs = 'shelly_plug_s' | 'tasmota';
+export type SmartPlugs = 'shelly_plug_s' | 'tasmota_plug';
