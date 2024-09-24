@@ -6,6 +6,7 @@
   import configStore from '$lib/stores/configStore.svelte';
   import authStore from '$lib/stores/authStore.svelte';
   import TopRightStat from '$lib/components/Header/TopRightStat.svelte';
+  import PrimaryButton from '$lib/components/Buttons/PrimaryButton.svelte';
 
   const chartData = $derived(
     convertToChartData(monitoringStore.historicals, {
@@ -17,6 +18,10 @@
   function getCorrectTempUnit() {
     const unit = configStore.config?.settings?.tempUnit;
     return unit === 'fahrenheit' ? '°F' : '°C';
+  }
+
+  function onCalibratePh() {
+    console.log("calibrate ph")
   }
 
   onMount(() => {
@@ -42,6 +47,7 @@
       <TopRightStat stat="temp" />
       <TopRightStat stat="ph" />
     </div>
+    <PrimaryButton type="default" label="Calibrate PH" onclick={onCalibratePh} />
     <div class="data-container">
       <div class="chart-container">
         <LineChart

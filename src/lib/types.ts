@@ -52,3 +52,12 @@ export interface Config {
 }
 
 export type SmartPlugs = 'shelly_plug_s' | 'tasmota_plug';
+
+export type CalibrationTypes = 'ph';
+
+export interface CalibrationTable {
+  type: CalibrationTypes;
+  label: string;
+  max: 13;
+  min: 0;
+}
