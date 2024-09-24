@@ -58,6 +58,7 @@ export type CalibrationTypes = 'ph';
 export interface CalibrationTable {
   type: CalibrationTypes;
   label: string;
-  max: 13;
+  validateLabel: string;
+  max: 14;
   min: 0;
 }

@@ -5,11 +5,10 @@
   interface Props {
     calibrationTable: CalibrationTable;
     onValidate: () => void;
-    validateButtonLabel: string;
   }
 
-  const { calibrationTable, onValidate, validateButtonLabel }: Props = $props();
-  const { min, max, label } = calibrationTable;
+  const { calibrationTable, onValidate }: Props = $props();
+  const { min, max, label, validateLabel } = calibrationTable;
   const id = `calibration_input_${label}`;
 
   let value = $state<number | null>(null);
@@ -20,7 +19,7 @@
     <label for={id}>{label}</label>
     <input type="number" bind:value {min} {max} />
   </div>
-  <PrimaryButton onclick={onValidate} type="green" label={validateButtonLabel} />
+  <PrimaryButton onclick={onValidate} type="green" label={validateLabel} />
 </div>
 
 <style lang="scss">

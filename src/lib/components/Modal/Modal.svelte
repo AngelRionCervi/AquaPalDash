@@ -15,6 +15,7 @@
   import WarningIcon from '$lib/icons/warning.svg?component';
   import ModifyPassword from './ModifyPassword.svelte';
   import WifiSetupLogin from './WifiSetupLogin.svelte';
+  import PhCalibration from './PhCalibration.svelte';
 
   type ModalChildMap = {
     [key in ModalTypes]: Component;
@@ -32,7 +33,8 @@
     wifiSetup: WifiSetup,
     wifiSetupLogin: WifiSetupLogin,
     warningWifiReset: WarningWifiReset,
-    modifyPassword: ModifyPassword
+    modifyPassword: ModifyPassword,
+    phCalibration: PhCalibration
   };
 
   const modalSpecs: ModalSpecs = {
@@ -69,6 +71,9 @@
     },
     modifyPassword: {
       title: 'Change Password'
+    },
+    phCalibration: {
+      title: 'Calibrate PH'
     }
   };
 </script>
