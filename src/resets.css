@@ -140,5 +140,4 @@ input[type='radio']:checked {
 
 .no-scroll {
   overflow: hidden;
-  position: fixed;
 }

@@ -79,7 +79,7 @@
 </script>
 
 {#if modalStore.isOpen && modalStore.type}
-  <div class="modal-container" class:modal-warning={modalSpecs[modalStore.type]?.variant === 'warning'}>
+  <div class="modal-container" style="top: calc(50% + {modalStore.scrolledTop}px);" class:modal-warning={modalSpecs[modalStore.type]?.variant === 'warning'}>
     <div class="modal-header">
       <div class="modal-top-left">
         <div class="button-title-container">
@@ -119,7 +119,7 @@
   </div>
   <!-- svelte-ignore a11y_click_events_have_key_events -->
   <!-- svelte-ignore a11y_no_static_element_interactions -->
-  <div class="backdrop" onclick={() => (modalStore.type && !modalStore.frozen && !modalSpecs[modalStore.type]?.isStatic ? toggle() : null)}></div>
+  <div class="backdrop" style="top: calc({modalStore.scrolledTop}px - 50vh);" onclick={() => (modalStore.type && !modalStore.frozen && !modalSpecs[modalStore.type]?.isStatic ? toggle() : null)}></div>
 {/if}
 
 <style lang="scss">
@@ -127,23 +127,21 @@
 
   .backdrop {
     background-color: rgba(0, 0, 0, 0.5);
-    width: 100vw;
-    height: 100vh;
+    width: 200vw;
+    height: 200vh;
     position: absolute;
-    top: 0;
     left: 0;
-    z-index: 10;
+    z-index: 20;
   }
 
   .modal-container {
     min-width: 600px;
-    z-index: 11;
+    z-index: 21;
     border: 1px solid var(--secondary);
     border-radius: var(--radius-XL);
     padding: 24px;
     background-color: var(--primary);
     position: absolute;
-    top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
 

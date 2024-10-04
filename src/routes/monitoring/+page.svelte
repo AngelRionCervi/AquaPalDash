@@ -7,6 +7,7 @@
   import authStore from '$lib/stores/authStore.svelte';
   import TopRightStat from '$lib/components/Header/TopRightStat.svelte';
   import PrimaryButton from '$lib/components/Buttons/PrimaryButton.svelte';
+  import modalStore from '$lib/stores/modalStore.svelte';
 
   const chartData = $derived(
     convertToChartData(monitoringStore.historicals, {
@@ -21,10 +22,16 @@
   }
 
   function onCalibratePh() {
-    console.log("calibrate ph")
+    console.log("entering ph calibration");
+    modalStore.toggle('phCalibration');
   }
 
   onMount(() => {
+    // FOR DEVELOPMENT PURPOSES
+    monitoringStore.loadMockData();
+    return;
+
+
     const { enableMonitoring } = configStore.config?.settings || {};
     if (!enableMonitoring) return;
 
