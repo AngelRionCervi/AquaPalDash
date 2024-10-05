@@ -35,11 +35,16 @@ interface MonitoringError {
   temp: ValueError;
 }
 
+interface MonitoringLoadings {
+  phCalibration: boolean;
+}
+
 interface MonitoringState {
   last: MonitoringLast;
   historicals: MonitoringPayload[];
   errors: MonitoringError;
   lastUpdate: number;
+  loadings: MonitoringLoadings;
   hFlow: 'idle' | 'stream';
 }
 
@@ -51,6 +56,7 @@ interface MonitoringStore {
   errors: MonitoringError;
   lastUpdate: number;
   hFlow: 'idle' | 'stream';
+  loadings: MonitoringLoadings;
   setError: (param: MonitoringValueParam, error: null | string) => void;
   checkError: (payload: MonitoringPayload) => boolean;
   updateHistoricalLast: (data: RawMonitoringPayload) => void;
@@ -59,6 +65,7 @@ interface MonitoringStore {
   queryHistorical: (totalDays?: number) => void;
   updateHistorical: (flow: HistoricalDataFlow, data: string) => void;
   updateLive: (data: LiveMonitoringPayload) => void;
+  setLoading: (key: keyof MonitoringLoadings, value: boolean) => void;
 }
 
 const defaultMonitoringStoreValue: MonitoringState = {
@@ -66,7 +73,10 @@ const defaultMonitoringStoreValue: MonitoringState = {
   last: { ph: 0, temp: 0 },
   errors: { ph: null, temp: null },
   historicals: [],
-  lastUpdate: 0
+  lastUpdate: 0,
+  loadings: {
+    phCalibration: false
+  }
 };
 
 const monitoringState = $state<MonitoringState>(defaultMonitoringStoreValue);
@@ -86,6 +96,12 @@ const monitoringStore: MonitoringStore = {
   },
   get hFlow() {
     return monitoringState.hFlow;
+  },
+  get loadings() {
+    return monitoringState.loadings;
+  },
+  setLoading(key: keyof MonitoringLoadings, bool: boolean) {
+    monitoringState.loadings[key] = bool;
   },
   setError(param: MonitoringValueParam, error: null | string) {
     monitoringState.errors[param] = error;

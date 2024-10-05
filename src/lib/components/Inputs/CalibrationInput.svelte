@@ -2,6 +2,7 @@
   import type { CalibrationTable } from '$lib/types';
   import PrimaryButton from '$lib/components/Buttons/PrimaryButton.svelte';
   import ErrorField from '$lib/components/Modal/ErrorField.svelte';
+  import { onMount } from 'svelte';
 
   interface Props {
     calibrationTable: CalibrationTable;
@@ -32,11 +33,17 @@
 
     onValidate(value);
   }
+
+  $effect(() => {
+    if (id) {
+      value = null;
+    }
+  });
 </script>
 
 <div class="calibration-input-container">
   <div class="input-row">
-    <label for={id}>{label}</label>
+    <label for={id}>{label}:</label>
     <div class="input-and-unit">
       <input type="number" bind:value {min} {max} />
       <span>{unit}</span>
@@ -50,11 +57,10 @@
 
 <style lang="scss">
   .calibration-input-container {
-    width: 60%;
     display: flex;
     justify-content: space-between;
     flex-direction: column;
-    gap: 16px;
+    gap: 24px;
   }
 
   .input-row {
@@ -68,6 +74,7 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
+    align-items: center;
   }
 
   .input-and-unit {

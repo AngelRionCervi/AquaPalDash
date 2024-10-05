@@ -59,6 +59,7 @@ export interface CalibrationTable {
   type: CalibrationType;
   label: string;
   validateLabel: string;
+  steplabels: Array<string>;
   unit: string;
   max?: number;
   min?: number;

@@ -49,6 +49,7 @@
     align-items: center;
     justify-content: space-between;
     border-radius: var(--radius-S);
+    width: fit-content;
 
     &.size-small {
       gap: 6px;

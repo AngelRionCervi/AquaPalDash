@@ -15,7 +15,7 @@
   import WarningIcon from '$lib/icons/warning.svg?component';
   import ModifyPassword from './ModifyPassword.svelte';
   import WifiSetupLogin from './WifiSetupLogin.svelte';
-  import PhCalibration from './PhCalibration.svelte';
+  import PhCalibration from './PhCalibration/PhCalibration.svelte';
 
   type ModalChildMap = {
     [key in ModalTypes]: Component;
@@ -73,7 +73,7 @@
       title: 'Change Password'
     },
     phCalibration: {
-      title: 'Calibrate PH'
+      title: 'Calibrate PH Probe',
     }
   };
 </script>
