@@ -1,5 +1,6 @@
 <script lang="ts">
   import PrimaryButton from '$lib/components/Buttons/PrimaryButton.svelte';
+  import ArrowRightIcon from '$lib/icons/arrow-right.svg?component';
   import type { CalibrationTable } from '$lib/types';
 
   interface Props {
@@ -20,16 +21,16 @@
 <div class="ph-calibration-end-container">
   <div class="end-content">
     <span class="step-label">Calibrated values:</span>
-    <div class="calibrated-values-container">
-      <div class="calibrated-values">
-        {#each calibrationTables as table, index (table.label)}
-          <div class="calibrated-value">
-            <span>{table.label} → </span>
-            <span>{stepValues[index]} {table.unit}</span>
-          </div>
-        {/each}
+    {#each calibrationTables as table, index (table.label)}
+      <div class="calibrated-value">
+        <span class="label">{table.label}</span>
+        <ArrowRightIcon width="24" height="24" />
+        <div class="value-and-unit">
+          <span class="value">{stepValues[index]}</span>
+          <span class="unit">{table.unit}</span>
+        </div>
       </div>
-    </div>
+    {/each}
   </div>
   <div class="button-container">
     <PrimaryButton onclick={() => onValidateCalibration()} type="green" label="Validate calibration" {isLoading} />
@@ -77,5 +78,27 @@
   .button-container {
     display: flex;
     justify-content: center;
+  }
+
+  .calibrated-value {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .value-and-unit {
+    display: flex;
+    align-items: flex-end;
+    gap: 4px;
+  }
+
+  .unit {
+    margin-bottom: 1px;
+  }
+
+  .label,
+  .value {
+    font-size: var(--font-ML);
+    font-weight: bold;
   }
 </style>

@@ -26,12 +26,6 @@
     bin: BinIcon,
     bluetooth: BluetoothIcon
   };
-
-  $effect(() => {
-    if (label) { // svelte 5 bug
-      void label;
-    }
-  });
 </script>
 
 <button class="primary-button button-{type} size-{size}" class:disabled={disabled || isLoading} {onclick} disabled={disabled || isLoading}>

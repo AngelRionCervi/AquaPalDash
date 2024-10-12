@@ -35,7 +35,7 @@
     setTimeout(() => {
       fakeLoading = false;
       onValidate(value);
-    }, 1000);
+    }, 500);
   }
 </script>
 
