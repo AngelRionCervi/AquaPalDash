@@ -45,6 +45,7 @@ interface MonitoringState {
   errors: MonitoringError;
   lastUpdate: number;
   loadings: MonitoringLoadings;
+  phMv: number;
   hFlow: 'idle' | 'stream';
 }
 
@@ -57,6 +58,8 @@ interface MonitoringStore {
   lastUpdate: number;
   hFlow: 'idle' | 'stream';
   loadings: MonitoringLoadings;
+  phMv: number;
+  setPhMv: (value: number) => void;
   setError: (param: MonitoringValueParam, error: null | string) => void;
   checkError: (payload: MonitoringPayload) => boolean;
   updateHistoricalLast: (data: RawMonitoringPayload) => void;
@@ -66,6 +69,8 @@ interface MonitoringStore {
   updateHistorical: (flow: HistoricalDataFlow, data: string) => void;
   updateLive: (data: LiveMonitoringPayload) => void;
   setLoading: (key: keyof MonitoringLoadings, value: boolean) => void;
+  startPhCalibration: () => void;
+  endPhCalibration: () => void;
 }
 
 const defaultMonitoringStoreValue: MonitoringState = {
@@ -74,6 +79,7 @@ const defaultMonitoringStoreValue: MonitoringState = {
   errors: { ph: null, temp: null },
   historicals: [],
   lastUpdate: 0,
+  phMv: 0,
   loadings: {
     phCalibration: false
   }
@@ -99,6 +105,12 @@ const monitoringStore: MonitoringStore = {
   },
   get loadings() {
     return monitoringState.loadings;
+  },
+  get phMv() {
+    return monitoringState.phMv;
+  },
+  setPhMv(value: number) {
+    monitoringState.phMv = value;
   },
   setLoading(key: keyof MonitoringLoadings, bool: boolean) {
     monitoringState.loadings[key] = bool;
@@ -170,7 +182,13 @@ const monitoringStore: MonitoringStore = {
     } catch (err) {
       console.error('Error parsing historical data', err);
     }
-  }
+  },
+  startPhCalibration() {
+    sendWSMessage({ type: DASH_CALL_TYPES.dash_setOnPhPhCalibrationType });
+  },
+  endPhCalibration() {
+    sendWSMessage({ type: DASH_CALL_TYPES.dash_setOffPhPhCalibrationType });
+  },
 };
 
 function getReadableMonitoring(payload: RawMonitoringPayload): MonitoringPayload {

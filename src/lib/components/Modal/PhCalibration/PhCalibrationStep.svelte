@@ -1,5 +1,6 @@
 <script lang="ts">
   import CalibrationInput from '$lib/components/Inputs/CalibrationInput.svelte';
+  import monitoringStore from '$lib/stores/monitoringStore.svelte';
   import type { CalibrationTable } from '$lib/types';
 
   interface Props {
@@ -19,7 +20,7 @@
       {/each}
     </ul>
   </div>
-  <CalibrationInput {calibrationTable} {onValidate} />
+  <CalibrationInput {calibrationTable} {onValidate} value={monitoringStore.phMv} />
 </div>
 
 <style lang="scss">

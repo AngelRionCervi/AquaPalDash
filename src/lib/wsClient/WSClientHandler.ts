@@ -96,6 +96,11 @@ function handleMessage(ws: WebSocket, message: Record<string, unknown>) {
       console.log('END HISTORICAL DATA', message.data);
       break;
     }
+    case DASH_CALL_TYPES.dash_phMvCalibrationType: {
+      console.log('PH CALIBRATION MV', message.data);
+      monitoringStore.setPhMv(message.data as number);
+      break;
+    }
   }
 }
 

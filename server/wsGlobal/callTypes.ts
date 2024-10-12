@@ -15,6 +15,9 @@ const box_monitoringGetLiveType = 'box_monitoring_get_live';
 const box_startHistoricalType = 'box_start_historical';
 const box_endHistoricalType = 'box_end_historical';
 const box_historicalDataStreamType = 'box_hds';
+const box_setOnPhPhCalibrationType = 'box_set_on_ph_calibration';
+const box_setOffPhPhCalibrationType = 'box_set_off_ph_calibration';
+const box_phMvCalibrationType = 'box_ph_mv_calibration';
 
 const dash_handShakeType = 'dash_handshake';
 const dash_setConfigType = 'dash_set_config';
@@ -40,6 +43,9 @@ const dash_resultMonitoringGetLiveType = 'dash_result_monitoring_get_live';
 const dash_startHistoricalType = 'dash_start_historical';
 const dash_endHistoricalType = 'dash_end_historical';
 const dash_historicalDataStreamType = 'dash_hds';
+const dash_setOnPhPhCalibrationType = 'dash_set_on_ph_calibration';
+const dash_setOffPhPhCalibrationType = 'dash_set_off_ph_calibration';
+const dash_phMvCalibrationType = 'dash_ph_mv_calibration';
 
 const BOX_CALL_TYPES = {
   box_handShakeType,
@@ -58,7 +64,10 @@ const BOX_CALL_TYPES = {
   box_historicalDataStreamType,
   box_startHistoricalType,
   box_endHistoricalType,
-  box_monitoringGetLiveType
+  box_monitoringGetLiveType,
+  box_setOnPhPhCalibrationType,
+  box_setOffPhPhCalibrationType,
+  box_phMvCalibrationType
 };
 
 const DASH_CALL_TYPES = {
@@ -85,7 +94,10 @@ const DASH_CALL_TYPES = {
   dash_startHistoricalType,
   dash_endHistoricalType,
   dash_historicalDataStreamType,
-  dash_resultMonitoringGetLiveType
+  dash_resultMonitoringGetLiveType,
+  dash_setOnPhPhCalibrationType,
+  dash_setOffPhPhCalibrationType,
+  dash_phMvCalibrationType
 };
 
 export { BOX_CALL_TYPES, DASH_CALL_TYPES };

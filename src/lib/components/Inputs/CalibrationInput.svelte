@@ -2,56 +2,51 @@
   import type { CalibrationTable } from '$lib/types';
   import PrimaryButton from '$lib/components/Buttons/PrimaryButton.svelte';
   import ErrorField from '$lib/components/Modal/ErrorField.svelte';
-  import { onMount } from 'svelte';
 
   interface Props {
     calibrationTable: CalibrationTable;
     onValidate: (value: number | null) => void;
+    value: number;
   }
 
-  const { calibrationTable, onValidate }: Props = $props();
-  const { min, max, label, validateLabel, unit } = $derived(calibrationTable);
-  const id = $derived(`calibration_input_${label}`);
+  const { calibrationTable, onValidate, value }: Props = $props();
+  const { min, max, validateLabel, unit } = $derived(calibrationTable);
 
-  let value = $state<number | null>(null);
   let valueError = $state<string>('');
+  let fakeLoading = $state<boolean>(false);
 
   function onButtonClick() {
     if (!value || typeof value !== 'number') {
-      valueError = 'Please enter a valid number';
+      valueError = 'the value shoudl be a valid number';
       return;
     }
     if (min && value && value < min) {
-      valueError = `Please enter a value greater than ${min}`;
+      valueError = `The value should be greater than ${min}`;
       return;
     }
     if (max && value && value > max) {
-      valueError = `Please enter a value less than ${max}`;
+      valueError = `The value should be less than ${max}`;
       return;
     }
     valueError = '';
 
-    onValidate(value);
-  }
+    fakeLoading = true;
 
-  $effect(() => {
-    if (id) {
-      value = null;
-    }
-  });
+    setTimeout(() => {
+      fakeLoading = false;
+      onValidate(value);
+    }, 1000);
+  }
 </script>
 
 <div class="calibration-input-container">
   <div class="input-row">
-    <label for={id}>{label}:</label>
-    <div class="input-and-unit">
-      <input type="number" bind:value {min} {max} />
-      <span>{unit}</span>
-    </div>
+    <span class="value">{value}</span>
+    <span class="unit">{unit}</span>
   </div>
   <div class="button-container">
     <ErrorField messages={valueError} />
-    <PrimaryButton onclick={() => onButtonClick()} type="green" label={validateLabel} />
+    <PrimaryButton onclick={() => onButtonClick()} type="green" label={validateLabel} isLoading={fakeLoading} />
   </div>
 </div>
 
@@ -63,13 +58,6 @@
     gap: 24px;
   }
 
-  .input-row {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    gap: 8px;
-  }
-
   .button-container {
     display: flex;
     flex-direction: column;
@@ -77,9 +65,18 @@
     align-items: center;
   }
 
-  .input-and-unit {
+  .input-row {
     display: flex;
-    align-items: center;
+    align-items: flex-end;
     gap: 8px;
+  }
+
+  .value {
+    font-size: var(--font-L);
+    font-weight: bold;
+  }
+
+  .unit {
+    margin-bottom: 4px;
   }
 </style>
