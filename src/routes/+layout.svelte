@@ -33,13 +33,12 @@
   }
 
   async function onNewLogin(email: string, password: string, rememberMe: boolean, demoMode: boolean) {
+    authStore.setDemoMode(demoMode);
+
     const userExists = await authStore.checkIfUserExists(email, password);
 
-    if (!userExists) {
-      return;
-    }
 
-    authStore.setDemoMode(demoMode);
+    if (!userExists) return;
 
     if (rememberMe) {
       authStore.saveSession({ email, password, demoMode });
