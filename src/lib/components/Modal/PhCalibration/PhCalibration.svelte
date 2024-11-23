@@ -105,7 +105,7 @@
 </div>
 
 <style lang="scss">
-  @import '$lib/variables.scss';
+  @use '$lib/variables.scss';
 
   .ph-calibration-container {
     width: 650px;
@@ -115,12 +115,8 @@
     justify-content: space-between;
     align-items: center;
 
-    @media screen and (max-width: $small-mobile-bp) {
+    @media screen and (max-width: variables.$small-mobile-bp) {
       width: 350px;
     }
-  }
-
-  .step-label {
-    font-size: var(--font-ML);
   }
 </style>

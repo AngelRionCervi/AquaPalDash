@@ -29,12 +29,14 @@
       return 1;
     }
   }
+
+  const WifiRssiIcon = wirelessIconMap[getSignalStrength()];
 </script>
 
 <button class="card-container" class:is-selected={isSelected} onclick={() => onSelect(ssid, fingerprint)}>
   <div class="signal-strength-container">
     <div class="signal-strength-icon">
-      <svelte:component this={wirelessIconMap[getSignalStrength()]} />
+      <WifiRssiIcon />
     </div>
     <p class="ssid-label">{ssid}</p>
   </div>

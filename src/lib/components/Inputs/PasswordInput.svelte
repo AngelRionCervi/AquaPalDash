@@ -46,7 +46,11 @@
     {disabled}
   />
   <button class="show-hide-button" onclick={() => (show = !show)}>
-    <svelte:component this={show ? EyeShowIcon : EyeHideIcon} />
+    {#if show}
+      <EyeShowIcon />
+    {:else}
+      <EyeHideIcon/>
+    {/if}
   </button>
 </div>
 

@@ -28,6 +28,8 @@
   $effect(() => {
     devicesInOrder = configStore.config?.devices.sort((a, b) => a.button - b.button) || [];
   });
+
+  const LockIconComponent = $derived(lockIconMap[controllerStore.isScheduleOn ? 'lock' : 'unlock']);
 </script>
 
 <div class="home-main-container">
@@ -40,12 +42,7 @@
       />
     </div>
     <div class="lock-container">
-      <svelte:component
-        this={lockIconMap[controllerStore.isScheduleOn ? 'lock' : 'unlock']}
-        width={windowStore.width < MOBILE_BP ? 48 : 96}
-        height={windowStore.width < MOBILE_BP ? 48 : 96}
-        fill="var(--secondary)"
-      />
+      <LockIconComponent width={windowStore.width < MOBILE_BP ? 48 : 96} height={windowStore.width < MOBILE_BP ? 48 : 96} fill="var(--secondary)" />
     </div>
     <div class="device-buttons-container">
       {#if configStore.config?.devices}
@@ -64,7 +61,7 @@
 </div>
 
 <style lang="scss">
-  @import '$lib/variables.scss';
+  @use '$lib/variables.scss';
 
   .home-main-container {
     display: flex;
@@ -72,7 +69,7 @@
     margin: 0 64px;
     justify-content: center;
 
-    @media screen and (max-width: $mobile-bp) {
+    @media screen and (max-width: variables.$mobile-bp) {
       margin: 0 32px 32px 32px;
     }
   }
@@ -83,7 +80,7 @@
     justify-content: center;
     align-items: center;
 
-    @media screen and (max-width: $mobile-bp) {
+    @media screen and (max-width: variables.$mobile-bp) {
       flex-direction: column;
       gap: 32px;
     }
@@ -96,7 +93,7 @@
     justify-content: center;
     margin: 32px 0;
 
-    @media screen and (max-width: $mobile-bp) {
+    @media screen and (max-width: variables.$mobile-bp) {
       margin: 0;
     }
   }
@@ -104,7 +101,7 @@
   .schedule-button-container {
     margin: 32px 0;
 
-    @media screen and (max-width: $mobile-bp) {
+    @media screen and (max-width: variables.$mobile-bp) {
       margin: 0;
     }
   }

@@ -30,7 +30,7 @@
 </div>
 
 <style lang="scss">
-  @import '$lib/variables.scss';
+  @use '$lib/variables.scss';
 
   .main-container {
     display: flex;
@@ -43,7 +43,7 @@
     align-items: flex-end;
     gap: 16px;
 
-    @media screen and (max-width: $mobile-bp) {
+    @media screen and (max-width: variables.$mobile-bp) {
       flex-direction: column;
       align-items: flex-start;
     }
@@ -77,7 +77,7 @@
     display: flex;
     gap: 36px;
 
-    @media screen and (max-width: $mobile-bp) {
+    @media screen and (max-width: variables.$mobile-bp) {
       display: none;
     }
   }

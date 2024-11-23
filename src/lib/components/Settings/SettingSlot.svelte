@@ -44,14 +44,14 @@
 </div>
 
 <style lang="scss">
-  @import '$lib/variables.scss';
+  @use '$lib/variables.scss';
 
   .setting-slot-container {
     display: flex;
     flex-direction: column;
     justify-content: center;
 
-    @media screen and (max-width: $mobile-bp) {
+    @media screen and (max-width: variables.$mobile-bp) {
       margin: 0 16px;
     }
   }
@@ -62,7 +62,7 @@
     padding: 16px 0;
     font-size: var(--font-M);
 
-    @media screen and (max-width: $mobile-bp) {
+    @media screen and (max-width: variables.$mobile-bp) {
       flex-direction: column;
       gap: 8px;
       align-items: flex-end;

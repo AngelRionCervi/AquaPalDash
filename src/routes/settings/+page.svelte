@@ -37,7 +37,7 @@
 </div>
 
 <style lang="scss">
-  @import '$lib/variables.scss';
+  @use '$lib/variables.scss';
 
   .settings-main-container {
     justify-content: center;
@@ -48,7 +48,7 @@
     flex-direction: column;
     gap: 64px;
 
-    @media screen and (max-width: $mobile-bp) {
+    @media screen and (max-width: variables.$mobile-bp) {
       gap: 32px;
       margin: 0;
       overflow: auto;

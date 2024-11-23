@@ -140,7 +140,7 @@
 </div>
 
 <style lang="scss">
-  @import '$lib/variables.scss';
+  @use '$lib/variables.scss';
 
   .main-layout {
     width: calc(100vw - 128px);
@@ -150,7 +150,7 @@
     justify-content: space-between;
     margin: 32px 64px;
 
-    @media screen and (max-width: $mobile-bp) {
+    @media screen and (max-width: variables.$mobile-bp) {
       margin: 8px;
       width: calc(100vw - 16px);
       min-height: calc(100vh - 16px);
@@ -169,11 +169,11 @@
     font-size: var(--font-L);
     font-weight: bold;
 
-    @media screen and (max-width: $mobile-bp) {
+    @media screen and (max-width: variables.$mobile-bp) {
       margin: 32px;
     }
 
-    @media screen and (max-width: $small-mobile-bp) {
+    @media screen and (max-width: variables.$small-mobile-bp) {
       margin: 24px;
     }
   }

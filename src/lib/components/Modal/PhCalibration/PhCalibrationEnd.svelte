@@ -62,19 +62,6 @@
     margin-bottom: 16px;
   }
 
-  .warning-span {
-    color: var(--warning);
-    background-color: var(--warning-lighter);
-
-    padding: 8px 16px;
-    border-radius: var(--radius-S);
-    font-weight: bold;
-  }
-
-  .list-item {
-    margin-bottom: 8px;
-  }
-
   .button-container {
     display: flex;
     justify-content: center;

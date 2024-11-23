@@ -24,7 +24,7 @@
 </div>
 
 <style lang="scss">
-  @import '$lib/variables.scss';
+  @use '$lib/variables.scss';
 
 	.container {
 		display: flex;
@@ -37,7 +37,7 @@
 		padding: 56px 26px;
     box-shadow: 0px 4px 4px -2px var(--secondary-lighter);
 
-    @media screen and (max-width: $mobile-bp) {
+    @media screen and (max-width: variables.$mobile-bp) {
       padding: 40px 20px;
     }
 	}
@@ -50,7 +50,7 @@
 		align-items: center;
 		justify-content: center;
 
-    @media screen and (max-width: $mobile-bp) {
+    @media screen and (max-width: variables.$mobile-bp) {
       width: 120px;
       height: 120px;
     }

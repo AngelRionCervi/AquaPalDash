@@ -1,24 +1,24 @@
-@import "$lib/themes/light.scss";
+@use '$lib/themes/light.scss' as lightTheme;
 
 $mobile-bp: 820px;
 $small-mobile-bp: 400px;
 
 :root {
-  --primary: #{$primary-light};
-  --primary-darker: #{$primary-darker-light};
-  --primary-lighter: #{$primary-lighter-light};
-  --secondary: #{$secondary-light};
-  --secondary-lighter: #{$secondary-lighter-light};
-  --primary-success: #{$primary-success-light};
-  --primary-error: #{$primary-error-light};
-  --secondary-success: #{$secondary-success-light};
-  --secondary-error: #{$secondary-error-light};
-  --primary-success-darker: #{$primary-success-darker-light};
-  --primary-error-darker: #{$primary-error-darker-light};
-  --primary-text: #{$primary-text};
-  --secondary-text: #{$secondary-text};
-  --warning: #{$warning-light};
-  --warning-lighter: #{$warning-lighter-light};
+  --primary: #{lightTheme.$primary-light};
+  --primary-darker: #{lightTheme.$primary-darker-light};
+  --primary-lighter: #{lightTheme.$primary-lighter-light};
+  --secondary: #{lightTheme.$secondary-light};
+  --secondary-lighter: #{lightTheme.$secondary-lighter-light};
+  --primary-success: #{lightTheme.$primary-success-light};
+  --primary-error: #{lightTheme.$primary-error-light};
+  --secondary-success: #{lightTheme.$secondary-success-light};
+  --secondary-error: #{lightTheme.$secondary-error-light};
+  --primary-success-darker: #{lightTheme.$primary-success-darker-light};
+  --primary-error-darker: #{lightTheme.$primary-error-darker-light};
+  --primary-text: #{lightTheme.$primary-text};
+  --secondary-text: #{lightTheme.$secondary-text};
+  --warning: #{lightTheme.$warning-light};
+  --warning-lighter: #{lightTheme.$warning-lighter-light};
   --font-XL: 44px;
   --font-L: 32px;
   --font-ML: 20px;

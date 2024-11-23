@@ -22,7 +22,7 @@
 </div>
 
 <style lang="scss">
-  @import '$lib/variables.scss';
+  @use '$lib/variables.scss';
 
   .devices-main-container {
     margin: 0 64px 32px 64px;
@@ -31,7 +31,7 @@
     margin: 0 0 32px 0;
     overflow: auto;
 
-    @media screen and (max-width: $mobile-bp) {
+    @media screen and (max-width: variables.$mobile-bp) {
       margin: 0 0 32px 0;
     }
   }

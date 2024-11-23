@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { ComponentType } from 'svelte';
+  import type { Component } from 'svelte';
   import AddIcon from '$lib/icons/add.svg?component';
   import BinIcon from '$lib/icons/bin.svg?component';
   import BluetoothIcon from '$lib/icons/bluetooth.svg?component';
@@ -16,7 +16,7 @@
   }
 
   type IconMapType = {
-    [key in Exclude<Props['icon'], undefined>]: ComponentType;
+    [key in Exclude<Props['icon'], undefined>]: Component;
   };
 
   const { label, onclick, type = 'default', icon = undefined, disabled = false, isLoading = false, size = 'medium' }: Props = $props();
@@ -26,12 +26,14 @@
     bin: BinIcon,
     bluetooth: BluetoothIcon
   };
+
+  const Icon = icon ? iconMap[icon] : null;
 </script>
 
 <button class="primary-button button-{type} size-{size}" class:disabled={disabled || isLoading} {onclick} disabled={disabled || isLoading}>
   {#if icon}
     <div class="icon-container size-icon-{size}">
-      <svelte:component this={iconMap[icon]} width="100%" height="100%" />
+      <Icon width="100%" height="100%" />
     </div>
   {/if}
   {#if isLoading}
@@ -42,7 +44,7 @@
 </button>
 
 <style lang="scss">
-  @import '$lib/variables.scss';
+  @use '$lib/variables.scss';
 
   .primary-button {
     display: flex;
@@ -63,7 +65,7 @@
       font-size: var(--font-M);
     }
 
-    @media screen and (max-width: $mobile-bp) {
+    @media screen and (max-width: variables.$mobile-bp) {
       padding: 8px 12px;
 
       &.size-small {
@@ -72,7 +74,7 @@
       }
     }
 
-    @media screen and (max-width: $small-mobile-bp) {
+    @media screen and (max-width: variables.$small-mobile-bp) {
       font-size: var(--font-S);
 
       &.size-small {
@@ -90,7 +92,7 @@
       height: 20px;
     }
 
-    @media screen and (max-width: $mobile-bp) {
+    @media screen and (max-width: variables.$mobile-bp) {
       width: 24px;
       height: 24px;
 

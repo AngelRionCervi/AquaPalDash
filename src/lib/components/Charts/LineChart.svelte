@@ -85,7 +85,7 @@
 </div>
 
 <style lang="scss">
-  @import '$lib/variables.scss';
+  @use '$lib/variables.scss';
 
   .chart-title-container {
     padding: 16px;
@@ -96,7 +96,7 @@
     display: flex;
     flex-direction: column;
 
-    @media screen and (max-width: $mobile-bp) {
+    @media screen and (max-width: variables.$mobile-bp) {
       padding: 12px;
     }
   }
@@ -127,7 +127,7 @@
     margin-left: 32px;
     font-size: var(--font-ML);
 
-    @media screen and (max-width: $mobile-bp) {
+    @media screen and (max-width: variables.$mobile-bp) {
       margin: 16px;
     }
   }

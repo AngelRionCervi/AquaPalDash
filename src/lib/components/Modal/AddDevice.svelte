@@ -112,7 +112,7 @@
 </div>
 
 <style lang="scss">
-  @import '$lib/variables.scss';
+  @use '$lib/variables.scss';
 
   .add-device-container {
     display: flex;
@@ -121,7 +121,7 @@
     align-items: center;
     gap: 32px;
 
-    @media screen and (max-width: $mobile-bp) {
+    @media screen and (max-width: variables.$mobile-bp) {
       gap: 24px;
     }
   }

@@ -74,7 +74,7 @@
 </div>
 
 <style lang="scss">
-  @import '$lib/variables.scss';
+  @use '$lib/variables.scss';
 
   .footer-container {
     width: 100%;
@@ -98,7 +98,7 @@
     font-size: var(--font-M);
     background-color: var(--primary);
 
-    @media (max-width: $mobile-bp) {
+    @media (max-width: variables.$mobile-bp) {
       padding: 16px 32px;
       gap: 20px;
       flex-direction: column;
@@ -111,7 +111,7 @@
     align-items: center;
     gap: 32px;
 
-    @media (max-width: $mobile-bp) {
+    @media (max-width: variables.$mobile-bp) {
       gap: 24px;
     }
   }
@@ -121,7 +121,7 @@
     align-items: center;
     gap: 32px;
 
-    @media (max-width: $mobile-bp) {
+    @media (max-width: variables.$mobile-bp) {
       gap: 20px;
     }
   }

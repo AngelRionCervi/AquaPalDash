@@ -123,7 +123,7 @@
 {/if}
 
 <style lang="scss">
-  @import '$lib/variables.scss';
+  @use '$lib/variables.scss';
 
   .backdrop {
     background-color: rgba(0, 0, 0, 0.5);
@@ -149,13 +149,13 @@
       border: 4px solid var(--warning);
     }
 
-    @media screen and (max-width: $mobile-bp) {
+    @media screen and (max-width: variables.$mobile-bp) {
       min-width: unset;
       width: 95vw;
       padding: 16px;
     }
 
-    @media screen and (max-width: $small-mobile-bp) {
+    @media screen and (max-width: variables.$small-mobile-bp) {
       font-size: var(--font-S);
     }
   }
@@ -171,7 +171,7 @@
     font-size: var(--font-L);
     font-weight: bold;
 
-    @media screen and (max-width: $small-mobile-bp) {
+    @media screen and (max-width: variables.$small-mobile-bp) {
       font-size: var(--font-M);
     }
   }
@@ -180,7 +180,7 @@
     font-size: var(--font-M);
     margin-bottom: 4px;
 
-    @media screen and (max-width: $small-mobile-bp) {
+    @media screen and (max-width: variables.$small-mobile-bp) {
       font-size: var(--font-S);
       margin-bottom: 0;
     }

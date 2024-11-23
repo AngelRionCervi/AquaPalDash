@@ -75,7 +75,7 @@
 </div>
 
 <style lang="scss">
-  @import '$lib/variables.scss';
+  @use '$lib/variables.scss';
 
   .monitoring-main-container {
     display: flex;
@@ -100,7 +100,7 @@
     flex-direction: column;
     width: 85%;
     
-    @media screen and (max-width: $mobile-bp) {
+    @media screen and (max-width: variables.$mobile-bp) {
       width: 95%;
     }
   }
@@ -110,7 +110,7 @@
     justify-content: space-evenly;
     margin: 16px;
 
-    @media screen and (max-width: $mobile-bp) {
+    @media screen and (max-width: variables.$mobile-bp) {
       display: flex;
     }
   }

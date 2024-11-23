@@ -18,7 +18,7 @@
 </nav>
 
 <style lang="scss">
-	@import '$lib/variables.scss';
+	@use '$lib/variables.scss';
 
 	.nav-container {
 		width: 100%;
@@ -26,11 +26,11 @@
 		border-bottom: 1px solid var(--secondary);
 		padding: 16px 0;
 
-		@media screen and (max-width: $mobile-bp) {
+		@media screen and (max-width: variables.$mobile-bp) {
 			padding: 8px 0;
 		}
 
-		@media screen and (max-width: $small-mobile-bp) {
+		@media screen and (max-width: variables.$small-mobile-bp) {
 			padding: 3px;
 		}
 	}
@@ -38,7 +38,7 @@
 	.nav-list {
 		display: flex;
 
-		@media screen and (max-width: $mobile-bp) {
+		@media screen and (max-width: variables.$mobile-bp) {
 			flex-wrap: wrap;
 			justify-content: space-around;
 		}
@@ -56,11 +56,11 @@
 			color: var(--primary);
 		}
 
-		@media screen and (max-width: $mobile-bp) {
+		@media screen and (max-width: variables.$mobile-bp) {
 			padding: 8px;
 		}
 
-		@media screen and (max-width: $small-mobile-bp) {
+		@media screen and (max-width: variables.$small-mobile-bp) {
 			font-size: var(--font-S);
 			padding: 6px;
 		}

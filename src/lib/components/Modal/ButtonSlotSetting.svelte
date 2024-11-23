@@ -107,7 +107,7 @@
 </div>
 
 <style lang="scss">
-	@import '$lib/variables.scss';
+	@use '$lib/variables.scss';
 
 	.button-slot-setting-container {
 		display: flex;
@@ -120,7 +120,7 @@
 		display: flex;
 		justify-content: space-between;
 
-		@media screen and (max-width: $mobile-bp) {
+		@media screen and (max-width: variables.$mobile-bp) {
 			flex-direction: column;
 			align-items: center;
 		}
@@ -133,7 +133,7 @@
 		flex-direction: column;
 		gap: 16px;
 
-		@media screen and (max-width: $mobile-bp) {
+		@media screen and (max-width: variables.$mobile-bp) {
 			margin-top: 8px;
 		}
 	}
@@ -143,7 +143,7 @@
 		height: auto;
 		background-color: var(--secondary);
 
-		@media screen and (max-width: $mobile-bp) {
+		@media screen and (max-width: variables.$mobile-bp) {
 			width: 80%;
 			height: 1px;
 		}
@@ -164,7 +164,7 @@
 		&.right {
 			margin-top: -32px;
 
-			@media screen and (max-width: $mobile-bp) {
+			@media screen and (max-width: variables.$mobile-bp) {
 				margin-top: 0;
         text-align: center;
 			}
@@ -174,7 +174,7 @@
 	.buttons-table {
 		text-align: left;
 
-		@media screen and (max-width: $mobile-bp) {
+		@media screen and (max-width: variables.$mobile-bp) {
 			text-align: center;
 		}
 	}
@@ -189,7 +189,7 @@
 			width: 90px;
 		}
 
-		@media screen and (max-width: $mobile-bp) {
+		@media screen and (max-width: variables.$mobile-bp) {
 			justify-content: center;
 		}
 	}
