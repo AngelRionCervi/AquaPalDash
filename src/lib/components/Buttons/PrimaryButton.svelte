@@ -3,13 +3,14 @@
   import AddIcon from '$lib/icons/add.svg?component';
   import BinIcon from '$lib/icons/bin.svg?component';
   import BluetoothIcon from '$lib/icons/bluetooth.svg?component';
+  import GearIcon from '$lib/icons/gear.svg?component';
   import Loader from '$lib/components/Loaders/Loader.svelte';
 
   interface Props {
     label: string;
     onclick: () => void;
     type?: 'default' | 'green' | 'red';
-    icon?: 'add' | 'bin' | 'bluetooth';
+    icon?: 'add' | 'bin' | 'bluetooth' | 'gear';
     disabled?: boolean;
     isLoading?: boolean;
     size?: 'small' | 'medium';
@@ -24,7 +25,8 @@
   const iconMap: IconMapType = {
     add: AddIcon,
     bin: BinIcon,
-    bluetooth: BluetoothIcon
+    bluetooth: BluetoothIcon,
+    gear: GearIcon,
   };
 
   const Icon = icon ? iconMap[icon] : null;
@@ -84,8 +86,8 @@
   }
 
   .icon-container {
-    width: 28px;
-    height: 28px;
+    width: 24px;
+    height: 24px;
 
     &.size-icon-small {
       width: 20px;

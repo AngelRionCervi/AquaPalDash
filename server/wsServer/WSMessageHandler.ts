@@ -89,6 +89,9 @@ function WSServerHandler(webSocketServer: WebsocketServerType) {
       case DASH_CALL_TYPES.dash_setOffPhPhCalibrationType:
         sendToBox(boxClient, BOX_CALL_TYPES.box_setOffPhPhCalibrationType, message.data);
         break;
+      case DASH_CALL_TYPES.dash_phSetCalibrationValuesType:
+        sendToBox(boxClient, BOX_CALL_TYPES.box_phSetCalibrationValuesType, message.data);
+        break;
     }
   }
 
@@ -144,6 +147,9 @@ function WSServerHandler(webSocketServer: WebsocketServerType) {
         break;
       case BOX_CALL_TYPES.box_phMvCalibrationType:
         sendToDash(dashClient, DASH_CALL_TYPES.dash_phMvCalibrationType, message);
+        break;
+      case BOX_CALL_TYPES.box_phSetCalibrationValuesType:
+        sendToDash(dashClient, DASH_CALL_TYPES.dash_resultPhSetCalibrationValuesType, message);
         break;
     }
   }

@@ -11,10 +11,10 @@
 
 <div class="ph-calibration-start-container">
   <div class="start-content">
-    <span class="step-label">PH calibration intro</span>
+    <span class="step-label">PH calibration instructions</span>
     <ul>
-      <li class="list-item">1. Get a calibration solution of PH4 and PH7.</li>
-      <li class="list-item">2. Validate the millivolt reading for the solution of PH4 and then for the solution of PH7.</li>
+      <li class="list-item">1. Get a calibration solution of PH 4 and PH 7.</li>
+      <li class="list-item">2. Validate the millivolt reading for the solution of PH 4 and then for the solution of PH 7.</li>
     </ul>
     <span class="warning-span">Make sure the readings stabilizes for a few seconds before validating.</span>
   </div>

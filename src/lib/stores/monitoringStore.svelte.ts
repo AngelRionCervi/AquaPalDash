@@ -36,7 +36,7 @@ interface MonitoringError {
 }
 
 interface MonitoringLoadings {
-  phCalibration: boolean;
+  completePhCalibration: boolean;
 }
 
 interface MonitoringState {
@@ -70,6 +70,7 @@ interface MonitoringStore {
   updateLive: (data: LiveMonitoringPayload) => void;
   setLoading: (key: keyof MonitoringLoadings, value: boolean) => void;
   startPhCalibration: () => void;
+  sendPhCalibration: (stepValues: [number, number]) => void;
   endPhCalibration: () => void;
 }
 
@@ -81,7 +82,7 @@ const defaultMonitoringStoreValue: MonitoringState = {
   lastUpdate: 0,
   phMv: 0,
   loadings: {
-    phCalibration: false
+    completePhCalibration: false
   }
 };
 
@@ -187,7 +188,10 @@ const monitoringStore: MonitoringStore = {
     sendWSMessage({ type: DASH_CALL_TYPES.dash_setOnPhPhCalibrationType });
   },
   endPhCalibration() {
-    sendWSMessage({ type: DASH_CALL_TYPES.dash_setOffPhPhCalibrationType });
+    sendWSMessage({ type: DASH_CALL_TYPES.dash_setOnPhPhCalibrationType });
+  },
+  sendPhCalibration(stepValues: [number, number]) {
+    sendWSMessage({ type: DASH_CALL_TYPES.dash_phSetCalibrationValuesType, data: stepValues });
   },
 };
 

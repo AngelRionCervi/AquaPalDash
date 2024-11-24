@@ -11,7 +11,7 @@
     {
       label: 'PH 4',
       validateLabel: 'Validate PH 4',
-      steplabels: ['Dip the probe in the calibration solution of PH4.', 'Wait for the millivolt reading to stabilize.', 'Press validate.'],
+      steplabels: ['Dip the probe in the calibration solution of PH 4.', 'Wait for the millivolt reading to stabilize.', 'Press validate.'],
       type: 'ph',
       unit: 'Mv',
       min: 0
@@ -19,7 +19,7 @@
     {
       label: 'PH 7',
       validateLabel: 'Validate PH 7',
-      steplabels: ['Dip the probe in the calibration solution of PH7.', 'Wait for the millivolt reading to stabilize.', 'Press validate.'],
+      steplabels: ['Dip the probe in the calibration solution of PH 7.', 'Wait for the millivolt reading to stabilize.', 'Press validate.'],
       type: 'ph',
       unit: 'Mv',
       min: 0
@@ -27,14 +27,14 @@
   ];
 
   let step = $state<number>(0);
-  let stepValues = $state<Array<number | null>>([]);
+  let stepValues = $state<[number, number]>([0, 0]);
 
   function onValidateStep(newValue: number | null) {
     if (step > 0 && step < 3) {
       if (step === 1) {
-        stepValues[0] = newValue;
+        stepValues[0] = newValue || 0;
       } else if (step === 2) {
-        stepValues[1] = newValue;
+        stepValues[1] = newValue || 0;
       }
     }
     if (step < 3) {
@@ -49,15 +49,15 @@
 
   function onValidateCalibration() {
     console.log('Validating calibration', stepValues);
-    monitoringStore.setLoading('phCalibration', true);
+    monitoringStore.setLoading('completePhCalibration', true);
 
     if (!modalStore.childProps) return;
     modalStore.childProps.backButtonHandler = null;
 
     // FOR DEV PURPOSE
     setTimeout(() => {
-      monitoringStore.setLoading('phCalibration', false);
-      monitoringStore.endPhCalibration();
+      monitoringStore.setLoading('completePhCalibration', false);
+      monitoringStore.sendPhCalibration(stepValues);
       modalStore.toggle();
     }, 2000);
   }

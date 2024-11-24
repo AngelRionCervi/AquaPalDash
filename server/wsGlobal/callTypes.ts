@@ -18,6 +18,7 @@ const box_historicalDataStreamType = 'box_hds';
 const box_setOnPhPhCalibrationType = 'box_set_on_ph_calibration';
 const box_setOffPhPhCalibrationType = 'box_set_off_ph_calibration';
 const box_phMvCalibrationType = 'box_ph_mv_calibration';
+const box_phSetCalibrationValuesType = 'box_ph_set_calibration_values';
 
 const dash_handShakeType = 'dash_handshake';
 const dash_setConfigType = 'dash_set_config';
@@ -46,6 +47,8 @@ const dash_historicalDataStreamType = 'dash_hds';
 const dash_setOnPhPhCalibrationType = 'dash_set_on_ph_calibration';
 const dash_setOffPhPhCalibrationType = 'dash_set_off_ph_calibration';
 const dash_phMvCalibrationType = 'dash_ph_mv_calibration';
+const dash_phSetCalibrationValuesType = 'dash_ph_set_calibration_values';
+const dash_resultPhSetCalibrationValuesType = 'dash_result_ph_set_calibration_values';
 
 const BOX_CALL_TYPES = {
   box_handShakeType,
@@ -67,7 +70,8 @@ const BOX_CALL_TYPES = {
   box_monitoringGetLiveType,
   box_setOnPhPhCalibrationType,
   box_setOffPhPhCalibrationType,
-  box_phMvCalibrationType
+  box_phMvCalibrationType,
+  box_phSetCalibrationValuesType
 };
 
 const DASH_CALL_TYPES = {
@@ -97,7 +101,9 @@ const DASH_CALL_TYPES = {
   dash_resultMonitoringGetLiveType,
   dash_setOnPhPhCalibrationType,
   dash_setOffPhPhCalibrationType,
-  dash_phMvCalibrationType
+  dash_phMvCalibrationType,
+  dash_phSetCalibrationValuesType,
+  dash_resultPhSetCalibrationValuesType
 };
 
 export { BOX_CALL_TYPES, DASH_CALL_TYPES };

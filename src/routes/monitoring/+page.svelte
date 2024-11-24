@@ -22,7 +22,7 @@
   }
 
   function onCalibratePh() {
-    console.log("entering ph calibration");
+    console.log('entering ph calibration');
     modalStore.toggle('phCalibration');
   }
 
@@ -30,7 +30,6 @@
     // FOR DEVELOPMENT PURPOSES
     monitoringStore.loadMockData();
     return;
-
 
     const { enableMonitoring } = configStore.config?.settings || {};
     if (!enableMonitoring) return;
@@ -54,7 +53,7 @@
       <TopRightStat stat="temp" />
       <TopRightStat stat="ph" />
     </div>
-    <PrimaryButton type="default" label="Calibrate PH" onclick={onCalibratePh} />
+    <div class="calibration-buttons"><PrimaryButton type="default" icon="gear" label="Calibrate PH probe" onclick={onCalibratePh} /></div>
     <div class="data-container">
       <div class="chart-container">
         <LineChart
@@ -99,7 +98,7 @@
     display: flex;
     flex-direction: column;
     width: 85%;
-    
+
     @media screen and (max-width: variables.$mobile-bp) {
       width: 95%;
     }
@@ -113,5 +112,11 @@
     @media screen and (max-width: variables.$mobile-bp) {
       display: flex;
     }
+  }
+
+  .calibration-buttons {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 32px;
   }
 </style>
