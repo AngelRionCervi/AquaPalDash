@@ -17,6 +17,7 @@ const box_endHistoricalType = 'box_end_historical';
 const box_historicalDataStreamType = 'box_hds';
 const box_setOnPhPhCalibrationType = 'box_set_on_ph_calibration';
 const box_setOffPhPhCalibrationType = 'box_set_off_ph_calibration';
+const box_phMvCalibrationType = 'box_ph_mv_calibration';
 
 const dash_handShakeType = 'dash_handshake';
 const dash_setConfigType = 'dash_set_config';
@@ -65,7 +66,8 @@ const BOX_CALL_TYPES = {
   box_endHistoricalType,
   box_monitoringGetLiveType,
   box_setOnPhPhCalibrationType,
-  box_setOffPhPhCalibrationType
+  box_setOffPhPhCalibrationType,
+  box_phMvCalibrationType 
 };
 
 const DASH_CALL_TYPES = {

@@ -142,6 +142,9 @@ function WSServerHandler(webSocketServer: WebsocketServerType) {
       case BOX_CALL_TYPES.box_monitoringGetLiveType:
         sendToDash(dashClient, DASH_CALL_TYPES.dash_resultMonitoringGetLiveType, message);
         break;
+      case BOX_CALL_TYPES.box_phMvCalibrationType:
+        sendToDash(dashClient, DASH_CALL_TYPES.dash_phMvCalibrationType, message);
+        break;
     }
   }
 

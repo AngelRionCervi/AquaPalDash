@@ -97,7 +97,7 @@ function handleMessage(ws: WebSocket, message: Record<string, unknown>) {
       break;
     }
     case DASH_CALL_TYPES.dash_phMvCalibrationType: {
-      console.log('PH CALIBRATION MV', message.data);
+      console.log('SET PH CALIBRATION MV', message.data);
       monitoringStore.setPhMv(message.data as number);
       break;
     }
