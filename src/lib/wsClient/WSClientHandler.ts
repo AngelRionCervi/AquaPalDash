@@ -101,11 +101,6 @@ function handleMessage(ws: WebSocket, message: Record<string, unknown>) {
       monitoringStore.setPhMv(message.data as number);
       break;
     }
-    case DASH_CALL_TYPES.dash_resultPhSetCalibrationValuesType: {
-      console.log('PH CALIBRATION VALUES', message.data);
-      monitoringStore.endPhCalibration();
-      break;
-    }
   }
 }
 

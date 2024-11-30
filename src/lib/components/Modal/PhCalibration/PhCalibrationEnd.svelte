@@ -6,16 +6,10 @@
   interface Props {
     calibrationTables: Array<CalibrationTable>;
     stepValues: Array<number | null>;
-    isLoading: boolean;
     onValidate: () => void;
   }
 
   const { calibrationTables, stepValues, onValidate, isLoading }: Props = $props();
-
-  function onValidateCalibration() {
-    console.log('Validating calibration');
-    onValidate();
-  }
 </script>
 
 <div class="ph-calibration-end-container">
@@ -33,7 +27,7 @@
     {/each}
   </div>
   <div class="button-container">
-    <PrimaryButton onclick={() => onValidateCalibration()} type="green" label="Validate calibration" {isLoading} />
+    <PrimaryButton onclick={() => onValidate()} type="green" label="Validate and restart" {isLoading} />
   </div>
 </div>
 

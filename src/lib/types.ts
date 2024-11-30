@@ -30,12 +30,14 @@ export interface Device {
 }
 
 export interface ConfigSecrets {
+  [key: string]: string;
   wifiSSID: string;
   wifiPass: string;
   serverPass: string;
 }
 
 export interface ConfigSettings {
+  [key: string]: string | number | boolean | PhCalibrationSettings;
   autoSchedulesOnAfter: number;
   prefetchHistorical: boolean;
   theme: 'light' | 'dark';
@@ -43,6 +45,7 @@ export interface ConfigSettings {
   timeFormat: '24h' | '12h';
   aquariumLabel: string;
   enableMonitoring: boolean;
+  phCalibration: PhCalibrationSettings;
 }
 
 export interface Config {
@@ -63,4 +66,9 @@ export interface CalibrationTable {
   unit: string;
   max?: number;
   min?: number;
+}
+
+export interface PhCalibrationSettings {
+  ph4Mv: number;
+  ph7Mv: number;
 }

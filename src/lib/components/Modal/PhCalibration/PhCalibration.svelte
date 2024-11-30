@@ -6,6 +6,7 @@
   import PhCalibrationStep from './PhCalibrationStep.svelte';
   import monitoringStore from '$lib/stores/monitoringStore.svelte';
   import { onMount } from 'svelte';
+  import configStore from '$lib/stores/configStore.svelte';
 
   const calibrationTables: Array<CalibrationTable> = [
     {
@@ -49,17 +50,14 @@
 
   function onValidateCalibration() {
     console.log('Validating calibration', stepValues);
-    monitoringStore.setLoading('completePhCalibration', true);
 
     if (!modalStore.childProps) return;
     modalStore.childProps.backButtonHandler = null;
 
-    // FOR DEV PURPOSE
-    setTimeout(() => {
-      monitoringStore.setLoading('completePhCalibration', false);
-      monitoringStore.sendPhCalibration(stepValues);
-      modalStore.toggle();
-    }, 2000);
+    monitoringStore.endPhCalibration();
+    configStore.updateSetting('phCalibration', { ph4Mv: stepValues[0], ph7Mv: stepValues[1] });
+    configStore.uploadNewConfig();
+    modalStore.toggle();
   }
 
   function onValidateStart() {
@@ -100,7 +98,7 @@
       onValidate={onValidateStep}
     />
   {:else if step === 3}
-    <PhCalibrationEnd {calibrationTables} {stepValues} onValidate={onValidateCalibration} isLoading={monitoringStore.loadings.phCalibration} />
+    <PhCalibrationEnd {calibrationTables} {stepValues} onValidate={onValidateCalibration} />
   {/if}
 </div>
 

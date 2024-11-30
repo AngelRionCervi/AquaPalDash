@@ -21,11 +21,6 @@
     return unit === 'fahrenheit' ? '°F' : '°C';
   }
 
-  function onCalibratePh() {
-    console.log('entering ph calibration');
-    modalStore.toggle('phCalibration');
-  }
-
   onMount(() => {
     // FOR DEVELOPMENT PURPOSES
     monitoringStore.loadMockData();
@@ -53,7 +48,6 @@
       <TopRightStat stat="temp" />
       <TopRightStat stat="ph" />
     </div>
-    <div class="calibration-buttons"><PrimaryButton type="default" icon="gear" label="Calibrate PH probe" onclick={onCalibratePh} /></div>
     <div class="data-container">
       <div class="chart-container">
         <LineChart
@@ -112,11 +106,5 @@
     @media screen and (max-width: variables.$mobile-bp) {
       display: flex;
     }
-  }
-
-  .calibration-buttons {
-    display: flex;
-    justify-content: flex-end;
-    margin-bottom: 32px;
   }
 </style>

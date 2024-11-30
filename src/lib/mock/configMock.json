@@ -1,44 +1,48 @@
 {
-	"devices": [
-		{
-			"id": "CYPUxM7SMX",
-			"name": "light",
-			"ip": "192.168.1.14",
-			"button": 0,
-			"schedule": [720, 1140]
-		},
-		{
-			"id": "amdZTXpcbN",
-			"name": "co2",
-			"ip": "192.168.1.15",
-			"button": 1,
-			"schedule": [690, 1110]
-		},
-		{
-			"id": "yDnsvsv6H2",
-			"name": "filter",
-			"ip": "192.168.1.16",
-			"button": 2,
-			"schedule": true
-		},
+  "devices": [
     {
-			"id": "qldqwXAcSm",
-			"name": "skimmer",
-			"ip": "192.168.1.13",
-			"button": 3,
-			"schedule": true
-		}
-	],
-	"secrets": {
-		"wifiSSID": "MyWifiSSID",
-		"wifiPass": "MyWifiPassword",
-		"serverPass": "1234"
-	},
-	"settings": {
-		"autoSchedulesOnAfter": 60,
-		"prefetchHistorical": false,
-		"tempUnit": "celsius",
-		"aquariumLabel": "Main aquarium",
-		"enableMonitoring": true
-	}
+      "id": "CYPUxM7SMX",
+      "name": "light",
+      "ip": "192.168.1.14",
+      "button": 0,
+      "schedule": [720, 1140]
+    },
+    {
+      "id": "amdZTXpcbN",
+      "name": "co2",
+      "ip": "192.168.1.15",
+      "button": 1,
+      "schedule": [690, 1110]
+    },
+    {
+      "id": "yDnsvsv6H2",
+      "name": "filter",
+      "ip": "192.168.1.16",
+      "button": 2,
+      "schedule": true
+    },
+    {
+      "id": "qldqwXAcSm",
+      "name": "skimmer",
+      "ip": "192.168.1.13",
+      "button": 3,
+      "schedule": true
+    }
+  ],
+  "secrets": {
+    "wifiSSID": "MyWifiSSID",
+    "wifiPass": "MyWifiPassword",
+    "serverPass": "1234"
+  },
+  "settings": {
+    "autoSchedulesOnAfter": 60,
+    "prefetchHistorical": false,
+    "tempUnit": "celsius",
+    "aquariumLabel": "Main aquarium",
+    "enableMonitoring": true,
+    "phCalibration": {
+      "ph4Mv": 0,
+      "ph7Mv": 0
+    }
+  }
 }

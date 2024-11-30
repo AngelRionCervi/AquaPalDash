@@ -3,6 +3,7 @@ import { MAX_DEVICES, SMART_PLUG_TYPES } from '$lib/constants';
 import configMock from '$lib/mock/configMock.json';
 import { sendWSMessage } from '$lib/wsClient/WSClientHandler';
 import type { Config, ConfigSecrets, ConfigSettings, Device, Schedule, SmartPlugs } from '$lib/types';
+import { objectCompare } from '$lib/helpers/objects';
 
 interface CallState {
   isLoading?: boolean;
@@ -227,7 +228,6 @@ const configStore: ConfigStore = {
 
     configState.config.settings[key] = value;
 
-    console.log('configState.config.settings[key]', configState.config.settings[key]);
     configStore.checkSync();
   },
   updateSecret<T extends keyof ConfigSecrets>(key: T, value: ConfigSecrets[T]) {
@@ -296,20 +296,8 @@ const configStore: ConfigStore = {
       return;
     }
 
-    let settingsCheck = true;
-    let secretsCheck = true;
-
-    Object.entries(newConfig.settings).forEach(([key, value]) => {
-      if (previousConfig?.settings?.[key as keyof ConfigSettings] !== value) {
-        settingsCheck = false;
-      }
-    });
-
-    Object.entries(newConfig.secrets).forEach(([key, value]) => {
-      if (previousConfig?.secrets?.[key as keyof ConfigSecrets] !== value) {
-        secretsCheck = false;
-      }
-    });
+    const settingsCheck = objectCompare(newConfig.settings, previousConfig.settings);
+    const secretsCheck = objectCompare(newConfig.secrets, previousConfig.secrets);
 
     if (!settingsCheck || !secretsCheck) {
       newSync = false;
@@ -338,7 +326,8 @@ function validateKey(type: 'settings' | 'secrets', key: keyof ConfigSettings | k
     'theme',
     'tempUnit',
     'aquariumLabel',
-    'enableMonitoring'
+    'enableMonitoring',
+    'phCalibration'
   ];
 
   const secretsKeys: Array<keyof ConfigSecrets> = ['wifiSSID', 'wifiPass'];

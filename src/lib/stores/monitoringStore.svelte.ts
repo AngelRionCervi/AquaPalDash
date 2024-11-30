@@ -70,7 +70,6 @@ interface MonitoringStore {
   updateLive: (data: LiveMonitoringPayload) => void;
   setLoading: (key: keyof MonitoringLoadings, value: boolean) => void;
   startPhCalibration: () => void;
-  sendPhCalibration: (stepValues: [number, number]) => void;
   endPhCalibration: () => void;
 }
 
@@ -185,13 +184,11 @@ const monitoringStore: MonitoringStore = {
     }
   },
   startPhCalibration() {
-    sendWSMessage({ type: DASH_CALL_TYPES.dash_setOnPhPhCalibrationType });
+    sendWSMessage({ type: DASH_CALL_TYPES.dash_setOnPhCalibrationType });
   },
   endPhCalibration() {
-    sendWSMessage({ type: DASH_CALL_TYPES.dash_setOnPhPhCalibrationType });
-  },
-  sendPhCalibration(stepValues: [number, number]) {
-    sendWSMessage({ type: DASH_CALL_TYPES.dash_phSetCalibrationValuesType, data: stepValues });
+    monitoringStore.setLoading('completePhCalibration', false);
+    sendWSMessage({ type: DASH_CALL_TYPES.dash_setOffPhCalibrationType });
   },
 };
 

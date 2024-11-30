@@ -20,7 +20,7 @@
 <div class="settings-main-container">
   <div class="settings-container">
     {#each settings as setting, index}
-      <SettingSlot {setting} {index} currentValue={configStore.config?.settings[(setting.name as keyof ConfigSettings)] ?? ''} {onSettingChange} />
+      <SettingSlot {setting} {index} currentValue={configStore.config?.settings[setting.name as keyof ConfigSettings] ?? ''} {onSettingChange} />
     {/each}
   </div>
   <div class="special-control-row">
@@ -33,6 +33,9 @@
     />
     <PrimaryButton label="Forget session" type="green" disabled={controllerStore.isRestarting} onclick={() => authStore.removeSessionAndReload()} />
     <PrimaryButton label="Change password" type="green" disabled={controllerStore.isRestarting} onclick={() => toggle('modifyPassword')} />
+  </div>
+  <div class="special-control-row">
+    <PrimaryButton label="Calibrate PH" type="default" icon="gear" disabled={controllerStore.isRestarting} onclick={() => toggle('phCalibration')} />
   </div>
 </div>
 
