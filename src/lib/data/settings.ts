@@ -8,12 +8,14 @@ const settings: Array<Setting> = [
 		type: 'select',
     valueType: 'number',
 		values: [
-			{ label: '5 mins', value: 5 },
-			{ label: '10 mins', value: 10 },
-			{ label: '15 mins', value: 15 },
-			{ label: '30 mins', value: 30 },
-			{ label: '1 hour', value: 60 },
-			{ label: '2 hours', value: 120 },
+      { label: '5 sec', value: 5 },
+      { label: '1 min', value: 60 },
+			{ label: '5 min', value: 5*60 },
+			{ label: '10 min', value: 10*60 },
+			{ label: '15 min', value: 15*60 },
+			{ label: '30 min', value: 30*60 },
+			{ label: '1 hour', value: 60*60 },
+			{ label: '2 hours', value: 120*60 },
       { label: 'never', value: 0 }
 		]
 	},
