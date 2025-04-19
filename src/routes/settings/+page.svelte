@@ -24,18 +24,18 @@
     {/each}
   </div>
   <div class="special-control-row">
-    <PrimaryButton label="Reset Wi-Fi settings" type="green" onclick={() => toggle('warningWifiReset')} disabled={controllerStore.isRestarting} />
+    <PrimaryButton label="Reset Wi-Fi settings" type="green" onclick={() => toggle('warningWifiReset')} disabled={!controllerStore.isOn} />
     <PrimaryButton
       label="Restart controller"
       type="green"
       onclick={() => controllerStore.restartController()}
-      disabled={controllerStore.isRestarting}
+      disabled={!controllerStore.isOn}
     />
-    <PrimaryButton label="Forget session" type="green" disabled={controllerStore.isRestarting} onclick={() => authStore.removeSessionAndReload()} />
-    <PrimaryButton label="Change password" type="green" disabled={controllerStore.isRestarting} onclick={() => toggle('modifyPassword')} />
+    <PrimaryButton label="Forget session" type="green" disabled={!controllerStore.isOn} onclick={() => authStore.removeSessionAndReload()} />
+    <PrimaryButton label="Change password" type="green" disabled={!controllerStore.isOn} onclick={() => toggle('modifyPassword')} />
   </div>
   <div class="special-control-row">
-    <PrimaryButton label="Calibrate PH" type="default" icon="gear" disabled={controllerStore.isRestarting} onclick={() => toggle('phCalibration')} />
+    <PrimaryButton label="Calibrate PH" type="default" icon="gear" disabled={!controllerStore.isOn} onclick={() => toggle('phCalibration')} />
   </div>
 </div>
 

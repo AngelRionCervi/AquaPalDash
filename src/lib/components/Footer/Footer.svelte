@@ -40,10 +40,15 @@
         <PrimaryButton
           label="Add device"
           icon="add"
-          disabled={(configStore.config?.devices.length || MAX_DEVICES) === MAX_DEVICES}
+          disabled={(configStore.config?.devices.length || MAX_DEVICES) === MAX_DEVICES || !controllerStore.isOn}
           onclick={onAddDevice}
         />
-        <PrimaryButton label="Remove devices" icon="bin" disabled={configStore.config?.devices.length === 0} onclick={onRemoveDevices} />
+        <PrimaryButton
+          label="Remove devices"
+          icon="bin"
+          disabled={configStore.config?.devices.length === 0 || !controllerStore.isOn}
+          onclick={onRemoveDevices}
+        />
       {/if}
     </div>
     <div class="right-container">
@@ -65,7 +70,7 @@
       <PrimaryButton
         type="green"
         label="Save and restart"
-        disabled={configStore.isSync}
+        disabled={configStore.isSync || !controllerStore.isOn}
         onclick={onSaveAndRestart}
         isLoading={configStore.callStates.uploadNewConfig.isLoading || controllerStore.isRestarting}
       />

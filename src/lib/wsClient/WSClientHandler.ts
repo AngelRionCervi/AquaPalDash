@@ -130,8 +130,6 @@ export const sendWSMessage = (message: Record<string, unknown>) => {
 
   const userId = authStore.userId;
 
-  console.log('userId', authStore.userId, message)
-
   if (!userId && message.type !== DASH_CALL_TYPES.dash_handShakeType) {
     console.error('No userId set, cannot send message', message, userId);
     return;

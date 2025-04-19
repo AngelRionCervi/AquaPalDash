@@ -50,7 +50,7 @@
           <DeviceButton
             onClick={() => onDeviceButtonClick(id)}
             {name}
-            disabled={controllerStore.isScheduleOn}
+            disabled={controllerStore.isScheduleOn || !controllerStore.isOn || !deviceStatusStore.getDeviceStatus(id)?.isConnected}
             isLoading={!!controllerStore.deviceCallStates[id]?.isLoading}
             state={!!deviceStatusStore.getDeviceStatus(id)?.isOn}
           />

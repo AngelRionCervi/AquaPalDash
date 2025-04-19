@@ -117,7 +117,7 @@
     }, PING_CONTROLLER_FREQUENCY);
 
     setInterval(() => {
-      if (controllerStore.elapsedNoResponseTime > (TIMEOUT_PING_CONTROLLER / 1000)) {
+      if (controllerStore.elapsedNoResponseTime > TIMEOUT_PING_CONTROLLER / 1000) {
         controllerStore.setIsOn(false);
       }
       controllerStore.elapsedNoResponseTime++;
@@ -141,7 +141,10 @@
   {:else if noConfigFetch}
     <div class="no-config-container">
       <span class="no-config-msg">Could not fetch config...</span>
-      <PrimaryButton label="New Login" type="green" onclick={() => authStore.removeSessionAndReload()} />
+      <div class="no-config-buttons">
+        <PrimaryButton label="New login" type="green" onclick={() => authStore.removeSessionAndReload()} />
+        <PrimaryButton label="Reload page" type="green" onclick={() => window.location.reload()} />
+      </div>
     </div>
   {:else if noWsConnection}
     <div class="no-config-container">
@@ -203,5 +206,11 @@
 
   .no-config-msg {
     font-size: var(--font-ML);
+  }
+
+  .no-config-buttons {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
   }
 </style>

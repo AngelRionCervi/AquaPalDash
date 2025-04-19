@@ -153,6 +153,7 @@ const controllerStore: ControllerStore = {
   },
   handleRestarting() {
     constrollerState.isRestarting = true;
+    constrollerState.isOn = false;
   },
   restartController() {
     if (authStore.isDemoMode) return;
@@ -161,6 +162,7 @@ const controllerStore: ControllerStore = {
   },
   handleRestarted() {
     constrollerState.isRestarting = false;
+    constrollerState.isOn = true;
   }
 };
 

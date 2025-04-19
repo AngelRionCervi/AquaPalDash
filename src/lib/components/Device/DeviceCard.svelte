@@ -47,7 +47,7 @@
 </script>
 
 <div class="card-outer-container">
-  <div class="card-container" class:card-device-unsaved={deviceDisabled} class:card-device-modified={device.isModified}>
+  <div class="card-container" class:card-device-disabled={deviceDisabled || !controllerStore.isOn} class:card-device-modified={device.isModified}>
     <div class="device-name-container">
       <div class="device-modified">
         <div class="unsync-icon-container">
@@ -65,7 +65,9 @@
       </div>
       <div class="device-name">
         <span>{device.name}</span>
-        <button onclick={onModifyName} class="device-edit-button" aria-label="Edit device"><GearIcon width={16} height={16} /></button>
+        <button onclick={onModifyName} class="device-edit-button" disabled={deviceDisabled || !controllerStore.isOn} aria-label="Edit device">
+          <GearIcon width={16} height={16} />
+        </button>
       </div>
     </div>
     <div class="separator"></div>
@@ -73,7 +75,7 @@
       <span class="setting-title">Status:</span>
       <div class="status-pills">
         <span class="pill is-{deviceStatus?.isConnected ? 'on' : 'off'}">{getPillStatusConnected()}</span>
-        <span class="pill is-{(deviceStatus?.isConnected && deviceStatus?.isOn) ? 'on' : 'off'}">{getPillStatusOn()}</span>
+        <span class="pill is-{deviceStatus?.isConnected && deviceStatus?.isOn ? 'on' : 'off'}">{getPillStatusOn()}</span>
       </div>
     </div>
     <div class="semi-separator"></div>
@@ -83,7 +85,7 @@
           <span class="setting-title">Button slot:</span>
           <div class="current-value-slot"><span>{device.button + 1}</span></div>
         </div>
-        <SmallButton onclick={onButtonSlotEdit} disabled={deviceDisabled} label="Edit" />
+        <SmallButton onclick={onButtonSlotEdit} disabled={deviceDisabled || !controllerStore.isOn} label="Edit" />
       </div>
       <div class="semi-separator"></div>
       <div class="editable-row-schedule">
@@ -95,7 +97,7 @@
             <span>{scheduleLabels}.</span>
           {/if}
         </div>
-        <SmallButton onclick={onScheduleEdit} disabled={deviceDisabled} label="Edit" />
+        <SmallButton onclick={onScheduleEdit} disabled={deviceDisabled || !controllerStore.isOn} label="Edit" />
       </div>
     </div>
   </div>
@@ -103,10 +105,10 @@
     <button
       onclick={onRevertDevice}
       class="revert-device-full-button"
-      class:disabled={controllerStore.isRestarting}
+      class:disabled={!controllerStore.isOn}
       title="Revert device modifications"
       aria-label="Revert device modifications"
-      disabled={controllerStore.isRestarting}
+      disabled={!controllerStore.isOn}
     >
       <UnsyncIcon fill="var(--warning)" />
     </button>
@@ -153,13 +155,13 @@
     box-shadow: 0px 4px 4px -2px var(--secondary-lighter);
   }
 
-  .card-device-unsaved {
-    opacity: 0.35;
-    cursor: not-allowed;
-  }
-
   .card-device-modified {
     border: 1px solid var(--warning);
+  }
+
+  .card-device-disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
   }
 
   .device-name-container {
