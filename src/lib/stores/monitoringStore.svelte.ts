@@ -143,7 +143,6 @@ const monitoringStore: MonitoringStore = {
   },
   queryHistorical(pastDaysCount = DEFAULT_HISTORICAL_DAYS) {
     const historicalArg = getHistoricalDaysArg(pastDaysCount);
-    console.log('HISTORICAL ARG', historicalArg);
     sendWSMessage({ type: DASH_CALL_TYPES.dash_monitoringGetHistoricalType, data: historicalArg });
   },
   updateLive(data: LiveMonitoringPayload) {
@@ -151,7 +150,6 @@ const monitoringStore: MonitoringStore = {
     monitoringState.lastUpdate = Date.now();
   },
   updateHistoricalLast(data: RawMonitoringPayload) {
-    console.log('LAST HISTORICAL DATA', data);
     const lastUpdate = getReadableMonitoring(data);
     monitoringStore.checkError(lastUpdate);
 
@@ -166,7 +164,6 @@ const monitoringStore: MonitoringStore = {
       monitoringState.hFlow = 'stream';
       return;
     } else if (flow === 'end') {
-      console.log('END FLOW')
       monitoringState.hFlow = 'idle';
       return;
     }
@@ -175,8 +172,6 @@ const monitoringStore: MonitoringStore = {
     try {
       const parsedData = JSON.parse(`[${data.split('\n').join(',').slice(0, -1)}]`) as Array<RawMonitoringPayload>;
       const readableData = parsedData.map(getReadableMonitoring);
-
-      console.log('HOSTORICALS DATA', readableData);
 
       monitoringState.historicals = [...readableData, ...monitoringState.historicals];
     } catch (err) {

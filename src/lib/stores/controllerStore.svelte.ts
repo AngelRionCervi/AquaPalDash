@@ -25,6 +25,8 @@ type BasicCallStates = Record<
     | 'resultToggleSchedule'
     | 'setIsOn'
     | 'handleRestarting'
+    | 'pingController'
+    | 'elapsedNoResponseTime'
   >,
   CallState
 >;
@@ -44,6 +46,7 @@ interface ControllerStore {
   isScheduleOn: ControllerState['isScheduleOn'];
   callStates: ControllerState['callStates'];
   deviceCallStates: ControllerState['deviceCallStates'];
+  elapsedNoResponseTime: number;
   restartController: () => void;
   handleRestarted: () => void;
   toggleSchedule: () => void;
@@ -54,6 +57,7 @@ interface ControllerStore {
   loadMockData: () => void;
   setIsOn: (isOn: boolean) => void;
   handleRestarting: () => void;
+  pingController: () => void;
 }
 
 const callStates: ControllerState['callStates'] = $state({
@@ -90,6 +94,12 @@ const controllerStore: ControllerStore = {
   get deviceCallStates() {
     return constrollerState.deviceCallStates;
   },
+  get elapsedNoResponseTime() {
+    return constrollerState.checkUpdateWithInterval;
+  },
+  set elapsedNoResponseTime(value: number) {
+    constrollerState.checkUpdateWithInterval = value;
+  },
   loadMockData() {
     constrollerState.isOn = true;
     constrollerState.isScheduleOn = true;
@@ -108,6 +118,14 @@ const controllerStore: ControllerStore = {
   },
   setIsOn(isOn: boolean) {
     constrollerState.isOn = isOn;
+    if (isOn) {
+      controllerStore.elapsedNoResponseTime = 0;
+    }
+  },
+  pingController() {
+    if (authStore.isDemoMode) return;
+
+    sendWSMessage({ type: DASH_CALL_TYPES.dash_pingType });
   },
   toggleDevice(id: string) {
     if (constrollerState.isScheduleOn) return;

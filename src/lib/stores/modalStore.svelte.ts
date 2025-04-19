@@ -49,7 +49,6 @@ const modalStore: ModalStore = {
     return modalState.scrolledTop;
   },
   toggle(type?: ModalTypes, childProps?: ModalState['childProps'], subtitle?: string) {
-    console.log('toggle', type, childProps, subtitle);
 
     modalState.isOpen = !!type;
 

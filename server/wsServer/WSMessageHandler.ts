@@ -47,7 +47,6 @@ function WSServerHandler(webSocketServer: WebsocketServerType) {
       const email = message.data?.['email'] as string;
       const password = message.data?.['password'] as string;
       const user = await getUserWithEmailAndPass(email, password);
-      console.log('socket user', user);
       socket.userId = user?.userId;
       socket.send(jstr({ source: 'server', type: DASH_CALL_TYPES.dash_setUserIdType, data: socket.userId }));
     }
@@ -59,7 +58,6 @@ function WSServerHandler(webSocketServer: WebsocketServerType) {
 
     switch (message.type) {
       case DASH_CALL_TYPES.dash_handShakeType:
-        console.log('DASH_CALL_TYPES.dash_handShakeType', DASH_CALL_TYPES.dash_handShakeType);
         sendToBox(boxClient, BOX_CALL_TYPES.box_handShakeType);
         break;
       case DASH_CALL_TYPES.dash_restartType:
@@ -89,6 +87,9 @@ function WSServerHandler(webSocketServer: WebsocketServerType) {
       case DASH_CALL_TYPES.dash_setOffPhCalibrationType:
         sendToBox(boxClient, BOX_CALL_TYPES.box_setOffPhPhCalibrationType, message.data);
         break;
+      case DASH_CALL_TYPES.dash_pingType:
+        sendToBox(boxClient, BOX_CALL_TYPES.box_pingType);
+        break;
     }
   }
 
@@ -110,7 +111,6 @@ function WSServerHandler(webSocketServer: WebsocketServerType) {
         break;
       case BOX_CALL_TYPES.box_getConfigType:
         sendToDash(dashClient, DASH_CALL_TYPES.dash_setConfigType, message);
-        console.log('SEND SET CONFIG');
         break;
       case BOX_CALL_TYPES.box_getDevicesInfoType:
         sendToDash(dashClient, DASH_CALL_TYPES.dash_setDevicesInfoType, message);
@@ -144,6 +144,9 @@ function WSServerHandler(webSocketServer: WebsocketServerType) {
         break;
       case BOX_CALL_TYPES.box_phMvCalibrationType:
         sendToDash(dashClient, DASH_CALL_TYPES.dash_phMvCalibrationType, message);
+        break;
+      case BOX_CALL_TYPES.box_pingType:
+        sendToDash(dashClient, DASH_CALL_TYPES.dash_pingType, message);
         break;
     }
   }
@@ -187,19 +190,16 @@ function WSServerHandler(webSocketServer: WebsocketServerType) {
     const data = rawData.toString();
 
     if (data.startsWith(BOX_CALL_TYPES.box_startHistoricalType)) {
-      console.log('SERVER HISTORICAL DATA', data);
       handleBoxHistoricalStartEnd(socket, data, 'start');
       return;
     }
 
     if (data.startsWith(BOX_CALL_TYPES.box_historicalDataStreamType)) {
-      console.log('SERVER HISTORICAL DATA ROW', data);
       handleBoxHistoricalStream(socket, data);
       return;
     }
 
     if (data.startsWith(BOX_CALL_TYPES.box_endHistoricalType)) {
-      console.log('SERVER END HISTORICAL', data);
       handleBoxHistoricalStartEnd(socket, data, 'end');
       return;
     }

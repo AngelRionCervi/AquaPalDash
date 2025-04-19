@@ -40,7 +40,6 @@ export async function getUserWithEmailAndPass(email: string, pass: string) {
   for (const user of users) {
     const match = await bcrypt.compare(pass, user.password);
     if (match) {
-      console.log('getUserWithEmailAndPass USER', user);
       return user;
     }
   }
@@ -58,7 +57,6 @@ export async function hashPassword(password: string) {
 
 export async function updateUserPassword(userId: string, newPassword: string) {
   const users = await getUsers();
-  console.log('updateUserPassword', userId, newPassword, users);
   const userIndex = users.findIndex((user) => user.userId === userId);
   if (userIndex === -1) {
     return false;

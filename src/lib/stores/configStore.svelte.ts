@@ -81,7 +81,6 @@ const configStore: ConfigStore = {
   },
   setConfig(newConfig: Config) {
     configState.config = newConfig;
-    console.log('newConfig', newConfig);
     previousConfig = Object.freeze(structuredClone(newConfig));
     configState.isSync = true;
   },
@@ -188,7 +187,6 @@ const configStore: ConfigStore = {
     }
 
     newDevice.isUnsaved = true;
-    console.log('newDevice', newDevice);
 
     configState.config.devices = [...devices, newDevice];
     configStore.checkSync();
@@ -201,7 +199,6 @@ const configStore: ConfigStore = {
 
     idList.forEach((id) => {
       const corDevice = devices.find((device) => device.id === id);
-      console.log('removeDevices', corDevice);
       if (corDevice) {
         if (corDevice.isUnsaved && configState.config) {
           configState.config.devices = devices.filter((device) => device.id !== id);
@@ -216,8 +213,6 @@ const configStore: ConfigStore = {
   },
   updateSetting<T extends keyof ConfigSettings>(key: T, value: ConfigSettings[T]) {
     if (!configState.config) return;
-
-    console.log('update setting', key, value);
 
     if (!validateKey('settings', key)) {
       const message = 'Wrong setting.';

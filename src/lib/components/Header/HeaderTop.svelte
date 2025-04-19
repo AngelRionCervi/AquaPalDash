@@ -15,7 +15,9 @@
         </span>
       </div>
       <div class="aquarium-stat">
-        <span>schedules:</span><span class="status-{controllerStore.isScheduleOn ? 'on' : 'off'}">{controllerStore.isScheduleOn ? 'on' : 'off'}</span>
+        <span>schedules:</span><span class="status-{controllerStore.isOn && controllerStore.isScheduleOn ? 'on' : 'off'}"
+          >{controllerStore.isOn && controllerStore.isScheduleOn ? 'on' : 'off'}</span
+        >
       </div>
     </div>
   </div>

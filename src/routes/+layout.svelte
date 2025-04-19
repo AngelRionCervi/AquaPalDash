@@ -16,7 +16,7 @@
   import deviceStatusStore from '$lib/stores/deviceStatusStore.svelte';
   import WSClientHandler, { sendWSMessage } from '$lib/wsClient/WSClientHandler';
   import { DASH_CALL_TYPES } from '$wsGlobal/callTypes';
-  import { TIMEOUT_FETCH_CONFIG } from '$lib/constants';
+  import { PING_CONTROLLER_FREQUENCY, TIMEOUT_FETCH_CONFIG, TIMEOUT_PING_CONTROLLER } from '$lib/constants';
   import PrimaryButton from '$lib/components/Buttons/PrimaryButton.svelte';
   import monitoringStore from '$lib/stores/monitoringStore.svelte';
 
@@ -36,7 +36,6 @@
     authStore.setDemoMode(demoMode);
 
     const userExists = await authStore.checkIfUserExists(email, password);
-
 
     if (!userExists) return;
 
@@ -61,6 +60,7 @@
       type: DASH_CALL_TYPES.dash_handShakeType,
       data: { email, password }
     };
+
     sendWSMessage(handshakePayload);
 
     if (authStore.isDemoMode) {
@@ -106,9 +106,22 @@
     }
   });
 
-  onMount(async () => {
+  onMount(() => {
     WSClientHandler(onWsOpen, onWsClose);
     bluetoothStore.init();
+
+    setInterval(() => {
+      if (!controllerStore.isRestarting) {
+        controllerStore.pingController();
+      }
+    }, PING_CONTROLLER_FREQUENCY);
+
+    setInterval(() => {
+      if (controllerStore.elapsedNoResponseTime > (TIMEOUT_PING_CONTROLLER / 1000)) {
+        controllerStore.setIsOn(false);
+      }
+      controllerStore.elapsedNoResponseTime++;
+    }, 1000);
   });
 </script>
 

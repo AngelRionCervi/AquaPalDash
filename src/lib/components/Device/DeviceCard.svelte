@@ -20,33 +20,29 @@
   const { toggle } = modalStore;
 
   function onScheduleEdit() {
-    console.log('schedule edit');
     toggle('scheduleSetting', { id: device.id }, device.name);
   }
 
   function onButtonSlotEdit() {
-    console.log('button slot edit');
     toggle('buttonSlotSetting', { id: device.id }, device.name);
   }
 
   function onModifyName() {
-    console.log('modify name');
     toggle('modifyDevice', { id: device.id }, device.name);
   }
 
   function onRevertDevice() {
-    console.log('REVERT DEVICE', device.id);
     configStore.revertDevice(device.id);
   }
 
-  function getPillStatusOn(status: boolean | null | undefined) {
-    if (status === null) return 'unknown';
-    return status ? 'on' : 'off';
+  function getPillStatusOn() {
+    if (!deviceStatus?.isConnected) return '?';
+    return deviceStatus?.isOn ? 'on' : 'off';
   }
 
-  function getPillStatusConnected(status: boolean | null | undefined) {
-    if (status === null) return 'unknown';
-    return status ? 'online' : 'offline';
+  function getPillStatusConnected() {
+    if (deviceStatus?.isOn === null) return '?';
+    return deviceStatus?.isOn ? 'online' : 'offline';
   }
 </script>
 
@@ -76,8 +72,8 @@
     <div class="device-status">
       <span class="setting-title">Status:</span>
       <div class="status-pills">
-        <span class="pill is-{deviceStatus?.isConnected ? 'on' : 'off'}">{getPillStatusConnected(deviceStatus?.isConnected)}</span>
-        <span class="pill is-{deviceStatus?.isOn ? 'on' : 'off'}">{getPillStatusOn(deviceStatus?.isOn)}</span>
+        <span class="pill is-{deviceStatus?.isConnected ? 'on' : 'off'}">{getPillStatusConnected()}</span>
+        <span class="pill is-{(deviceStatus?.isConnected && deviceStatus?.isOn) ? 'on' : 'off'}">{getPillStatusOn()}</span>
       </div>
     </div>
     <div class="semi-separator"></div>

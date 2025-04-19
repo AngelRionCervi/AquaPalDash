@@ -19,7 +19,7 @@ export interface ExtendedWebSocket extends WebSocketBase {
 const uuid = new ShortUniqueId({ length: 14 });
 
 export function configureWSServer(server: http.Server | https.Server) {
-  console.log('Starting websocket server...');
+  console.debug('Starting websocket server...');
   const wss = new WebSocketServer({
     server,
     path: '/websocket'
@@ -29,7 +29,7 @@ export function configureWSServer(server: http.Server | https.Server) {
 
   wss.on('connection', (socket: ExtendedWebSocket) => {
     socket.socketId = uuid.randomUUID();
-    console.log('New connection !', socket.socketId);
+    console.debug('New connection !', socket.socketId);
     socket.on('message', (data: string) => {
       messageHandler(socket, data);
     });

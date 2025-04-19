@@ -118,7 +118,7 @@ const bluetoothStore: BluetoothStore = {
 
       bluetoothState.connectedDevice = device;
 
-      console.log('bluetooth device found !', device);
+      console.debug('bluetooth device found !', device);
     } catch (error) {
       bluetoothStore.error = 'Bluetooth error: ' + error;
     } finally {
@@ -175,8 +175,6 @@ const bluetoothStore: BluetoothStore = {
           bluetoothState.isSelectedWifiTested = decodedValue === 'true';
           bluetoothState.isSelectedWifiError = decodedValue === 'error';
         });
-
-        console.log('WIFI_TESTED value changed:', decodedValue);
       });
     } catch (err) {
       bluetoothStore.error = `Error subscribing to ${BT_WIFI_TESTED_CHARACTERISTIC_NAME} characteristic with UUID ${characUUID}: ${err}`;
@@ -216,7 +214,6 @@ const bluetoothStore: BluetoothStore = {
     return Promise.all(writePromises);
   },
   async readCharacteristic(characName: keyof typeof BLUETOOTH_CHARACTERISTICS_UUID_MAP) {
-    console.log('"readCharacteristic" called with characName:', characName);
     if (!bluetoothState.GATTServer) {
       bluetoothStore.error = 'No GATT server found !';
       return;
@@ -248,7 +245,6 @@ const bluetoothStore: BluetoothStore = {
     }
   },
   async stopBluetooth() {
-    console.log('STOP BTC CALLED')
     bluetoothStore.toggleWifiListInterval(false);
     bluetoothState.isScanning = false;
     bluetoothState.error = '';

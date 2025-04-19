@@ -19,7 +19,6 @@
 
   function onAddDevice() {
     const id = generateUniqueId();
-    console.log('smart plug type', SMART_PLUG_TYPES.map((type) => type.value).includes(smartPlugType as SmartPlugs), smartPlugType);
     if (
       !isValidateDisabled &&
       typeof buttonSlot === 'number' &&

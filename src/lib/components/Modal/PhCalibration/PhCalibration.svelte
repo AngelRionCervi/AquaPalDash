@@ -42,15 +42,10 @@
       step++;
     } else {
       modalStore.toggle();
-      console.log('PH calibration completed');
     }
-
-    console.log('Validating step', step, stepValues);
   }
 
   function onValidateCalibration() {
-    console.log('Validating calibration', stepValues);
-
     if (!modalStore.childProps) return;
     modalStore.childProps.backButtonHandler = null;
 
@@ -61,7 +56,6 @@
   }
 
   function onValidateStart() {
-    console.log('Starting calibration');
     step++;
   }
 

@@ -23,12 +23,12 @@ function checkForError(message: Record<string, unknown>) {
 }
 
 function handleMessage(ws: WebSocket, message: Record<string, unknown>) {
-  console.log('[websocket] parsed message received', message);
+  console.debug('[websocket] message received', message);
   if (!checkForError(message)) return;
 
   switch (message.type) {
     case DASH_CALL_TYPES.dash_handShakeType: {
-      console.log('controller RESTARTED !');
+      console.debug('controller restarted !');
 
       controllerStore.handleRestarted();
       configStore.handleConfigUpdated();
@@ -36,7 +36,6 @@ function handleMessage(ws: WebSocket, message: Record<string, unknown>) {
       break;
     }
     case DASH_CALL_TYPES.dash_setConfigType: {
-      console.log('setConfig', message.data);
       configStore.setConfig(message.data as Config);
       controllerStore.setIsOn(true);
       authStore.needLogin = false;
@@ -67,38 +66,35 @@ function handleMessage(ws: WebSocket, message: Record<string, unknown>) {
       break;
     }
     case DASH_CALL_TYPES.dash_setUserIdType: {
-      console.log('setUserId', message.data);
       authStore.setUserId(message.data as string);
       break;
     }
     case DASH_CALL_TYPES.dash_resultMonitoringGetLastType: {
-      console.log('LAST HSITORICAL', message.data);
       monitoringStore.updateHistoricalLast(message.data as RawMonitoringPayload);
       break;
     }
     case DASH_CALL_TYPES.dash_resultMonitoringGetLiveType: {
       monitoringStore.updateLive(message.data as LiveMonitoringPayload);
-      console.log('LIVE DATA', message.data);
       break;
     }
     case DASH_CALL_TYPES.dash_startHistoricalType: {
       monitoringStore.updateHistorical('start', message.data as string);
-      console.log('START HISTORICAL DATA', message.data);
       break;
     }
     case DASH_CALL_TYPES.dash_historicalDataStreamType: {
       monitoringStore.updateHistorical('stream', message.data as string);
-      console.log('HISTORICAL DATA ROW', message.data);
       break;
     }
     case DASH_CALL_TYPES.dash_endHistoricalType: {
       monitoringStore.updateHistorical('end', message.data as string);
-      console.log('END HISTORICAL DATA', message.data);
       break;
     }
     case DASH_CALL_TYPES.dash_phMvCalibrationType: {
-      console.log('SET PH CALIBRATION MV', message.data);
       monitoringStore.setPhMv(message.data as number);
+      break;
+    }
+    case DASH_CALL_TYPES.dash_pingType: {
+      controllerStore.setIsOn(true);
       break;
     }
   }
@@ -107,23 +103,18 @@ function handleMessage(ws: WebSocket, message: Record<string, unknown>) {
 function WSClientHandler(onOpen: () => void, onClose: () => void) {
   const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
   const { hostname } = window.location;
-  console.log('window.location', window.location);
   const host = hostname.startsWith('192.168.1.') ? `${hostname}:3000` : hostname;
   ws = new WebSocket(`${protocol}//${host}/websocket`);
-  console.log('WSClientHandler', ws);
 
-  function onConnectionOpen(event: WebSocketEventMap['open']) {
+  function onConnectionOpen() {
     onOpen();
-    console.log('[websocket] connection open', event);
   }
 
-  function onConnectionClose(event: WebSocketEventMap['close']) {
+  function onConnectionClose() {
     onClose();
-    console.log('[websocket] connection closed', event);
   }
 
   function onMessage(event: WebSocketEventMap['message']) {
-    console.log('[websocket] message received', event);
     const message = event.data;
     const parsedMessage = parseMessage(message);
     handleMessage(ws, parsedMessage);
@@ -139,7 +130,10 @@ export const sendWSMessage = (message: Record<string, unknown>) => {
 
   const userId = authStore.userId;
 
+  console.log('userId', authStore.userId, message)
+
   if (!userId && message.type !== DASH_CALL_TYPES.dash_handShakeType) {
+    console.error('No userId set, cannot send message', message, userId);
     return;
   }
 

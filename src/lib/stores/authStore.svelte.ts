@@ -92,7 +92,6 @@ const authStore: AuthStore = {
   },
   init() {
     const session = SessionLS.getLoginSession();
-    console.log('init session', session);
     if (session) {
       authStore.setDemoMode(!!session.demoMode);
       authStore.setPassword(session.password);

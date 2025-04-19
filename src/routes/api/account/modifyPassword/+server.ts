@@ -4,7 +4,6 @@ import { MIN_PASSWORD_LENGTH } from '$lib/constants.js';
 
 export async function POST({ request }) {
   const { email, oldPassword, newPassword } = await request.json();
-  console.log('POST NEW PASS', email, oldPassword, newPassword);
 
   if (newPassword.length < MIN_PASSWORD_LENGTH) {
     return json({ error: 'Password must be at least 6 characters long' }, { status: 401 });
@@ -16,7 +15,6 @@ export async function POST({ request }) {
 
   try {
     const user = await getUserWithEmailAndPass(email, oldPassword);
-    console.log('USERUSERUSERUSERUSER', user, email, oldPassword);
 
     if (!user) {
       return json({ error: 'No user found with the previous password' }, { status: 401 });

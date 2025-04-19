@@ -100,7 +100,11 @@
   $effect(() => {
     if (bluetoothStore.isSelectedWifiTested && !selectedWifiDone) {
       selectedWifiDone = true;
-      toggle('wifiSetupLogin', { backButtonHandler: () => {toggle('wifiSetup'); console.log('toggled from wifisetuplogin')} });
+      toggle('wifiSetupLogin', {
+        backButtonHandler: () => {
+          toggle('wifiSetup');
+        }
+      });
     }
   });
 </script>

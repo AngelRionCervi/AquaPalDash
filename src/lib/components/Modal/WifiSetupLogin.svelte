@@ -47,7 +47,6 @@
     authStore.setPassword(password);
     authStore.setEmail(email);
 
-    console.log('config done');
     modalStore.childProps = { ...modalStore.childProps, backButtonHandler: null };
 
     await bluetoothStore.writeToCharacteristic(BT_RESTART_CHARACTERISTIC_NAME, 'true');
@@ -108,7 +107,6 @@
 
   $effect(() => {
     if (configStore.config) {
-      console.log('CONFIG STORE CONFIG', configStore.config);
       bluetoothStore.stopBluetooth();
       toggle();
     }

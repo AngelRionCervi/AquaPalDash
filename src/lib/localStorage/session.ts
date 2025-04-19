@@ -10,7 +10,6 @@ function setLoginSession(session: Session) {
 
 function getLoginSession(): Session | null {
   const session = localStorage.getItem('session');
-  console.log('getLoginSession', session);
   return session ? JSON.parse(session) : null;
 }
 

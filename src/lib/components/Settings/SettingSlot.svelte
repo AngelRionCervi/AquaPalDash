@@ -19,7 +19,6 @@
   function onChange({ target }: Event) {
     const value = (target as HTMLInputElement).value;
     const typedValue = convertToType(valueType, value) as string | number | boolean;
-    console.log('typedValue', typedValue);
     onSettingChange(name, typedValue);
   }
 </script>
