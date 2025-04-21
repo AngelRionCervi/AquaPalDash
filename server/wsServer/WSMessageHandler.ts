@@ -148,6 +148,9 @@ function WSServerHandler(webSocketServer: WebsocketServerType) {
       case BOX_CALL_TYPES.box_pingType:
         sendToDash(dashClient, DASH_CALL_TYPES.dash_pingType, message);
         break;
+      case BOX_CALL_TYPES.box_hardwareToggleType:
+        sendToDash(dashClient, DASH_CALL_TYPES.dash_hardwareToggleType, message);
+        break;
     }
   }
 

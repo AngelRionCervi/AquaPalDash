@@ -27,6 +27,7 @@ type BasicCallStates = Record<
     | 'handleRestarting'
     | 'pingController'
     | 'elapsedNoResponseTime'
+    | 'resultHardwareToggle'
   >,
   CallState
 >;
@@ -51,6 +52,7 @@ interface ControllerStore {
   handleRestarted: () => void;
   toggleSchedule: () => void;
   resultToggleSchedule: (state: boolean) => void;
+  resultHardwareToggle: (data: Array<{ id: string; state: boolean }>) => void;
   toggleDevice: (id: string) => void;
   resultToggleDevice: ({ id, state }: { id: string; state: boolean }) => void;
   errorToggleDevice: (id: string) => void;
@@ -145,6 +147,15 @@ const controllerStore: ControllerStore = {
   resultToggleDevice({ id, state }) {
     devicesStatusStore.updateDeviceState(id, state);
     deviceCallStates[id].isLoading = false;
+  },
+  resultHardwareToggle(toggleData: Array<{ id: string; state: boolean }>) {
+    toggleData.forEach(({ id, state }) => {
+      if (id === 'schedule') {
+        constrollerState.isScheduleOn = state;
+      } else {
+        devicesStatusStore.updateDeviceState(id, state);
+      }
+    });
   },
   errorToggleDevice(id: string) {
     if (deviceCallStates[id]) {

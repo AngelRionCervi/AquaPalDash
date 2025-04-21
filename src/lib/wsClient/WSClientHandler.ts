@@ -97,6 +97,10 @@ function handleMessage(ws: WebSocket, message: Record<string, unknown>) {
       controllerStore.setIsOn(true);
       break;
     }
+    case DASH_CALL_TYPES.dash_hardwareToggleType: {
+      controllerStore.resultHardwareToggle(message.data as Array<{ id: string; state: boolean }>);
+      break;
+    }
   }
 }
 
