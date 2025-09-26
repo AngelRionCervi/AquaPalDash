@@ -15,7 +15,8 @@ export default defineConfig(() => {
         https: {
           key: fs.readFileSync('./cert/dev.pem'),
           cert: fs.readFileSync('./cert/cert.pem')
-        }
+        },
+        port: 4359
       }
     };
   } else {
