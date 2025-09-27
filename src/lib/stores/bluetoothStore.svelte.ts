@@ -200,6 +200,7 @@ const bluetoothStore: BluetoothStore = {
       const charac = await service.getCharacteristic(characUUID);
       const encodedText = new TextEncoder().encode(value);
       await charac.writeValue(encodedText);
+
       return true;
     } catch (err) {
       bluetoothStore.error = `Error writing to characteristic ${characName} with UUID ${characUUID}: ${err}`;

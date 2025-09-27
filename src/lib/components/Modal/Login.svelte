@@ -44,7 +44,7 @@
     toggle('login', { onLogin: childProps?.onLogin });
   }
 
-  async function onWifiSetup() {
+  async function onSetup() {
     if (!bluetoothStore.isBluetoothEnabled) {
       btErrorMsg = 'Web bluetooth not compatible with this browser. Please use Chrome or Edge.';
     }
@@ -96,7 +96,7 @@
   </div>
   <div class="error-button-container">
     <ErrorField messages={btErrorMsg} />
-    <PrimaryButton icon="bluetooth" label="Connect Aqua Pal to Wi-Fi" type="green" size="small" onclick={onWifiSetup} />
+    <PrimaryButton icon="bluetooth" label="Set Up AquaPal" type="green" size="small" onclick={onSetup} />
   </div>
 </div>
 

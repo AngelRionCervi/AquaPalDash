@@ -24,6 +24,8 @@
   let wifiNetworkFingerprint = $state<string | null>(null);
   let validateLoading = $state<boolean>(false);
 
+  const sortedWifiList = $derived(sortWifiList(bluetoothStore.wifiList));
+
   const { toggle } = modalStore;
 
   async function onValidate() {
@@ -35,10 +37,10 @@
 
     bluetoothStore.isSelectedWifiTested = false;
 
-    const newCredValues = {
-      [BT_SSID_CHARACTERISTIC_NAME]: ssid || '',
-      [BT_WIFIPASS_CHARACTERISTIC_NAME]: wifiPass || ''
-    } as Record<keyof typeof BLUETOOTH_CHARACTERISTICS_UUID_MAP, string>;
+    const newCredValues = { [BT_SSID_CHARACTERISTIC_NAME]: ssid || '', [BT_WIFIPASS_CHARACTERISTIC_NAME]: wifiPass || '' } as Record<
+      keyof typeof BLUETOOTH_CHARACTERISTICS_UUID_MAP,
+      string
+    >;
 
     try {
       validateLoading = true;
@@ -49,7 +51,7 @@
         return;
       }
 
-      throw new Error();
+      throw new Error('Could not write all the new network credentials to the device');
     } catch (error) {
       errorMessage = 'Could not save the network informations. Please try again.';
       console.error(`${errorMessage}: ${error}`);
@@ -68,7 +70,7 @@
   }
 
   function sortWifiList(wifiList: WifiNetwork[]) {
-    return wifiList.sort((a, b) => {
+    return [...wifiList].sort((a, b) => {
       if (a.rssi > b.rssi) {
         return -1;
       }
@@ -102,7 +104,7 @@
       selectedWifiDone = true;
       toggle('wifiSetupLogin', {
         backButtonHandler: () => {
-          toggle('wsServerSetup');
+          toggle('wifiSetup');
         }
       });
     }
@@ -121,7 +123,7 @@
           <Loader size="medium" theme="dark" />
         </div>
       {:else}
-        {#each sortWifiList(bluetoothStore.wifiList) as wifiNetwork}
+        {#each sortedWifiList as wifiNetwork}
           <WifiNetworkCard {wifiNetwork} isSelected={wifiNetwork.fingerprint === wifiNetworkFingerprint} onSelect={onWifiNetworkSelect} />
         {/each}
       {/if}

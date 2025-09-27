@@ -78,7 +78,8 @@
       title: 'Calibrate PH Probe',
     },
     wsServerSetup: {
-      title: 'WebSocket Server Setup'
+      title: 'WebSocket Server Setup',
+      isStatic: true
     }
   };
 </script>

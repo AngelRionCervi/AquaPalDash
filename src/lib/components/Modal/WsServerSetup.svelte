@@ -22,14 +22,18 @@
 
   async function onValidate() {
     const newCredValues = {
-      [BT_WS_SERVER_HOSTNAME_CHARACTERISTIC_NAME]: wsServerHostName || '',
+      [BT_WS_SERVER_HOSTNAME_CHARACTERISTIC_NAME]: wsServerHostName || window.location.hostname,
       [BT_WS_SERVER_PORT_CHARACTERISTIC_NAME]: wsServerPort || ''
     } as Record<keyof typeof BLUETOOTH_CHARACTERISTICS_UUID_MAP, string>;
 
     try {
       validateLoading = true;
-      await bluetoothStore.writeToMultipleCharacteristics(newCredValues);
-      wsServerSetupDone = true;
+
+      const newWsServerInfo = await bluetoothStore.writeToMultipleCharacteristics(newCredValues);
+      if (newWsServerInfo.every((r) => !!r)) {
+        wsServerSetupDone = true;
+        return;
+      }
     } catch (error) {
       errorMessage = 'Could not save the websocket server informations. Please try again.';
       console.error(`${errorMessage}: ${error}`);
@@ -49,6 +53,7 @@
   });
 
   onMount(() => {
+    modalStore.childProps = { ...modalStore.childProps, backButtonHandler: () => window.location.reload() };
     currentHost = window.location.hostname;
   });
 </script>
@@ -56,11 +61,11 @@
 <div class="ws-server-setup-container">
   <div class="modify-row">
     <label for="ws_server_host">Websocket server host (default to {currentHost}):</label>
-    <input type="text" id="ws_server_host" bind:value={wsServerHostName} />
+    <input type="text" id="ws_server_host" bind:value={wsServerHostName} placeholder={currentHost} />
   </div>
   <div class="modify-row">
-    <label for="ws_server_port">Websocket server port (default: {defaultWsServerPort}):</label>
-    <input type="number" id="ws_server_port" bind:value={wsServerPort} />
+    <label for="ws_server_port">Websocket server port (default to {defaultWsServerPort}):</label>
+    <input type="number" id="ws_server_port" bind:value={wsServerPort} placeholder={defaultWsServerPort.toString()} />
   </div>
   <div class="bottom">
     <PrimaryButton label="Save" isLoading={validateLoading} onclick={onValidate} />
