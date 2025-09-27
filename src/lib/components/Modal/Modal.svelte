@@ -16,6 +16,7 @@
   import ModifyPassword from './ModifyPassword.svelte';
   import WifiSetupLogin from './WifiSetupLogin.svelte';
   import PhCalibration from './PhCalibration/PhCalibration.svelte';
+  import WsServerSetup from './WsServerSetup.svelte';
 
   type ModalChildMap = {
     [key in ModalTypes]: Component;
@@ -32,6 +33,7 @@
     login: Login,
     wifiSetup: WifiSetup,
     wifiSetupLogin: WifiSetupLogin,
+    wsServerSetup: WsServerSetup,
     warningWifiReset: WarningWifiReset,
     modifyPassword: ModifyPassword,
     phCalibration: PhCalibration
@@ -74,6 +76,9 @@
     },
     phCalibration: {
       title: 'Calibrate PH Probe',
+    },
+    wsServerSetup: {
+      title: 'WebSocket Server Setup'
     }
   };
 </script>

@@ -9,6 +9,7 @@ export type ModalTypes =
   | 'warningWifiReset'
   | 'modifyPassword'
   | 'wifiSetupLogin'
+  | 'wsServerSetup'
   | 'phCalibration';
 
 export type ModalSpecs = {

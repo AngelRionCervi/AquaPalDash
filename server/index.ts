@@ -3,9 +3,10 @@ import express from 'express';
 import fs from 'fs';
 import http from 'http';
 import https from 'https';
+import config from 'config';
 
 (async () => {
-  const port = 3000;
+  const port = config.get<number>('wsServer.port');
   const app = express();
   let server: http.Server | https.Server;
 

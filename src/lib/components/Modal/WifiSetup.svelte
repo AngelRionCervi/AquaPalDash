@@ -13,7 +13,7 @@
   import Loader from '$lib/components/Loaders/Loader.svelte';
   import WifiNetworkCard from '$lib/components/Inputs/WifiNetworkCard.svelte';
   import type { WifiNetwork } from '$lib/types';
-  import PasswordInput from '../Inputs/PasswordInput.svelte';
+  import PasswordInput from '$lib/components/Inputs/PasswordInput.svelte';
   import modalStore from '$lib/stores/modalStore.svelte';
 
   let ssid = $state<string | null>(null);
@@ -102,7 +102,7 @@
       selectedWifiDone = true;
       toggle('wifiSetupLogin', {
         backButtonHandler: () => {
-          toggle('wifiSetup');
+          toggle('wsServerSetup');
         }
       });
     }
@@ -129,7 +129,7 @@
   </div>
   <div class="modify-row">
     <label for="network_pass">
-      <span class="main-label">Network password:</span> <span class="public-indication">(leave empty if the network is public)</span>
+      <span class="main-label">Network password:</span>
     </label>
     <PasswordInput placeholder="Network password" onInput={(value) => (wifiPass = value)} id="network_pass" />
   </div>
@@ -196,9 +196,5 @@
     text-align: left;
     font-weight: bold;
     width: 70%;
-  }
-
-  .public-indication {
-    font-size: var(--font-S);
   }
 </style>

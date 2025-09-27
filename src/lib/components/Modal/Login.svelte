@@ -51,7 +51,7 @@
     const deviceFound = await bluetoothStore.findDevice();
     if (deviceFound) {
       bluetoothStore.toggleWifiListInterval(true);
-      toggle('wifiSetup', { backButtonHandler: () => stopBluetoothSetup() });
+      toggle('wsServerSetup', { backButtonHandler: () => stopBluetoothSetup() });
       setTimeout(() => {
         bluetoothStore.updateWifiList();
       });
