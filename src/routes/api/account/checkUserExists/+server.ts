@@ -6,8 +6,7 @@ export async function POST({ request }) {
 
   try {
     const user = await getUserWithEmailAndPass(email, password);
-    console.log('User found: ', user);
-
+    
     if (!user) {
       return json({ error: 'User not found' }, { status: 404 });
     }
