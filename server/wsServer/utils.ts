@@ -4,7 +4,7 @@ import bcrypt from 'bcrypt';
 import type { User } from '../wsGlobal/types';
 
 function usersPath() {
-  return path.join('..', 'db', 'users.json');
+  return path.resolve('server', 'db', 'users.json');
 }
 
 async function getUsers() {

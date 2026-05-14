@@ -29,6 +29,7 @@ function handleMessage(ws: WebSocket, message: Record<string, unknown>) {
   switch (message.type) {
     case DASH_CALL_TYPES.dash_handShakeType: {
       console.debug('controller restarted !');
+      console.log('handshake message data: ', message.data);
 
       controllerStore.handleRestarted();
       configStore.handleConfigUpdated();
@@ -66,6 +67,7 @@ function handleMessage(ws: WebSocket, message: Record<string, unknown>) {
       break;
     }
     case DASH_CALL_TYPES.dash_setUserIdType: {
+      console.log('User ID set to: ', message.data);
       authStore.setUserId(message.data as string);
       break;
     }
@@ -107,7 +109,7 @@ function handleMessage(ws: WebSocket, message: Record<string, unknown>) {
 function WSClientHandler(onOpen: () => void, onClose: () => void) {
   const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
   const { hostname } = window.location;
-  const host = `${hostname}${hostname.split('.').length > 2 ? '' : ':3000'}`;
+  const host = `${hostname}${hostname.split('.').length <= 2 ? '' : ':3000'}`;
   ws = new WebSocket(`${protocol}//${host}/websocket`);
 
   function onConnectionOpen() {
